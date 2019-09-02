@@ -60,11 +60,11 @@
 	(list 3.1 3.2 3.3 3.4 3.5)
 	(list 4.1 4.2 4.3 4.4 4.5)))
 
+;;; R.A
 (define weight-ar
-  (list (list 1.1 1.2 1.3)
-	(list 2.1 2.2 2.3)
-	(list 3.1 3.2 3.3)
-	(list 4.1 4.2 4.3)))
+  (list (list 1.1 1.2 1.3 1.4)
+	(list 2.1 2.2 2.3 2.4)
+	(list 3.1 3.2 3.3 3.4)))
 
 (define (calculate-layer in weight)
   (define (iter list-in weight-in tmp result-list)
@@ -74,12 +74,17 @@
 	       (newline)))
     (if (null? weight-in)
 	result-list
-	(iter list-in (cdr weight-in) tmp result-list)))
+	(iter list-in
+	      (cdr weight-in)
+	      tmp
+	      (append result-list (list (apply + (map * list-in (car weight-in))))))))
   
   (iter in weight '() '()))
 
 
 
 
+(display (calculate-layer (calculate-layer sensor weight-sa) weight-ar))
+(newline)
 
-(calculate-layer sensor weight-sa)
+
