@@ -68,10 +68,6 @@
 
 (define (calculate-layer in weight)
   (define (iter list-in weight-in tmp result-list)
-    (if (not (null? weight-in))
-	(begin (display (map + list-in (car weight-in))) ;; fixme (+) -> (*)
-	       (display (apply + (map + list-in (car weight-in))))
-	       (newline)))
     (if (null? weight-in)
 	result-list
 	(iter list-in
