@@ -72,11 +72,26 @@
 	(list 2.1 2.2 2.3 2.4)
 	(list 3.1 3.2 3.3 3.4)))
 
+
+
+
 ;;; Transfer function (activation function)
-(define (transfer-function signal)
+(define (transfer-function-step signal)
   (if (> signal *perceptron-threshold*) 1 0))
 
-(define (calculate-layer in weight)
+(define (transfer-function-linear signal)
+  signal)
+
+;;  (/ 1.0 (+ 1.0 (exp (* -t signal))))
+;; t = 0   : sigmoid equal to step function
+;; t = 0,5 : dx~(0,1)
+(define (transfer-function-sigmoid signal)
+  (/ 1.0 (+ 1.0 (exp (* -0.5 signal))))) ;; fixme: t=const
+
+
+
+
+(define (calculate-layer in weight transfer-function)
   (define (iter list-in weight-in result-list)
     (if (null? weight-in)
 	result-list
@@ -89,7 +104,7 @@
 
 
 
-(display (calculate-layer (calculate-layer sensor weight-sa) weight-ar))
+(display (calculate-layer (calculate-layer sensor weight-sa transfer-function-step) weight-ar transfer-function-sigmoid))
 (newline)
 
 
