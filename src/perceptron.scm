@@ -57,7 +57,7 @@
 ;;; Sensor (input units)
 (define sensor (list 100 200 300 400 500))
 
-;;; Association (hidden units)
+;;; weight: Sensor (input units) --- Association (hidden units)
 ;;; A.S
 (define weight-sa
   (list (list 1.1 1.2 1.3 1.4 1.5)
@@ -65,7 +65,7 @@
 	(list 3.1 3.2 3.3 3.4 3.5)
 	(list 4.1 4.2 4.3 4.4 4.5)))
 
-;;; Response (output units)
+;;; weight: Association (hidden units) --- Response (output units)
 ;;; R.A
 (define weight-ar
   (list (list 1.1 1.2 1.3 1.4)
