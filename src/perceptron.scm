@@ -80,7 +80,9 @@
   (if (> signal *perceptron-threshold*) 1 0))
 
 (define (transfer-function-linear signal)
-  signal)
+  (cond ((< signal 0.0) 0) ;; fixme: level=const
+	((> signal 1.0) 1) ;; fixme: level=const
+	(else signal)))
 
 ;;  (/ 1.0 (+ 1.0 (exp (* -t signal))))
 ;; t = 0   : sigmoid equal to step function
