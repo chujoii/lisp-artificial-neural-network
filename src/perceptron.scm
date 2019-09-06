@@ -49,6 +49,8 @@
 
 ;;; Code:
 
+(use-modules (ice-9 format))
+
 (set! *random-state* (random-state-from-platform))
 
 ;;; The "signal" is sent, i.e. the output is set to one, if the activation meets the threshold
@@ -72,14 +74,15 @@
 	(list 2.1 2.2 2.3 2.4)
 	(list 3.1 3.2 3.3 3.4)))
 
-
+;;; threshold: Association
+(define threshold-a (list 1.0 1.0 1.0 1.0))
 
 
 ;;; Transfer function (activation function)
-(define (transfer-function-step signal)
-  (if (> signal *perceptron-threshold*) 1 0))
+(define (transfer-function-step signal threshold)
+  (if (> signal threshold) 1 0))
 
-(define (transfer-function-linear signal)
+(define (transfer-function-linear signal threshold)
   (cond ((< signal 0.0) 0) ;; fixme: level=const
 	((> signal 1.0) 1) ;; fixme: level=const
 	(else signal)))
@@ -87,26 +90,29 @@
 ;;  (/ 1.0 (+ 1.0 (exp (* -t signal))))
 ;; t = 0   : sigmoid equal to step function
 ;; t = 0,5 : dx~(0,1)
-(define (transfer-function-sigmoid signal)
-  (/ 1.0 (+ 1.0 (exp (* -0.5 signal))))) ;; fixme: t=const
+(define (transfer-function-sigmoid signal threshold)
+  (/ 1.0 (+ 1.0 (exp (* -1 threshold signal)))))
 
 
 
-
-(define (calculate-layer in weight transfer-function)
-  (define (iter list-in weight-in result-list)
+(define (calculate-layer in weight transfer-function threshold)
+  (define (iter list-in weight-in threshold-in result-list)
     (if (null? weight-in)
 	result-list
 	(iter list-in
 	      (cdr weight-in)
-	      (append result-list (list (transfer-function (apply + (map * list-in (car weight-in)))))))))
+	      (cdr threshold-in)
+	      (append result-list (list (transfer-function (apply + (map * list-in (car weight-in)))
+							   (car threshold-in)))))))
   
-  (iter in weight '()))
+  (iter in weight threshold '()))
 
 
 
+;(define (machine-learning in real-result calculation-error)
+;  )
 
-(display (calculate-layer (calculate-layer sensor weight-sa transfer-function-step) weight-ar transfer-function-sigmoid))
+
+(display (calculate-layer (calculate-layer sensor weight-sa transfer-function-step threshold-a)
+			  weight-ar transfer-function-sigmoid threshold-a))
 (newline)
-
-
