@@ -1,5 +1,3 @@
-#!/usr/bin/guile -s
-!#
 ; coding: utf-8
 
 ;;;; perceptron.scm ---  simple perceptron
@@ -52,32 +50,6 @@
 (use-modules (ice-9 format))
 
 (set! *random-state* (random-state-from-platform))
-
-;;; The "signal" is sent, i.e. the output is set to one, if the activation meets the threshold
-(define *perceptron-threshold* 1.0)
-
-;;; Sensor (input units)
-(define example-sensor (list 100 200 300 400 500))
-
-;;; weight: Sensor (input units) --- Association (hidden units)
-;;; A.S
-(define example-weight-sa
-  (list (list 1.1 1.2 1.3 1.4 1.5)
-	(list 2.1 2.2 2.3 2.4 2.5)
-	(list 3.1 3.2 3.3 3.4 3.5)
-	(list 4.1 4.2 4.3 4.4 4.5)))
-
-;;; weight: Association (hidden units) --- Response (output units)
-;;; R.A
-(define example-weight-ar
-  (list (list 1.1 1.2 1.3 1.4)
-	(list 2.1 2.2 2.3 2.4)
-	(list 3.1 3.2 3.3 3.4)))
-
-;;; threshold: Association
-(define example-threshold-a (list 1.0 1.0 1.0 1.0))
-(define example-threshold-r (list 1.0 1.0 1.0))
-
 
 ;;; Transfer function (activation function)
 (define (transfer-function-step signal threshold)
@@ -144,8 +116,3 @@
 			      weight-ar transfer-function-r threshold-r)
   (calculate-neuron-layer (calculate-neuron-layer sensor weight-sa transfer-function-a threshold-a)
 			  weight-ar transfer-function-r threshold-r))
-
-(display (one-layer-perceptron example-sensor
-			       example-weight-sa transfer-function-step    example-threshold-a
-			       example-weight-ar transfer-function-sigmoid example-threshold-r))
-(newline)
