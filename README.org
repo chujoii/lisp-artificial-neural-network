@@ -42,5 +42,9 @@ read with emacs (3__3) org mode
 initial project version began about 2019.08(Aug).28
 
 * Dependences:
++ [[https://www.gnu.org/software/guile/][dev-scheme/guile]] GNU Ubiquitous Intelligent Language for Extensions
+  (GNU Guile) --- implementation of the programming language Scheme
+  (Lisp dialect).
+  LICENSE="LGPL-3+"
 
 * Code:
