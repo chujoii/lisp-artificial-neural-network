@@ -57,11 +57,11 @@
 (define *perceptron-threshold* 1.0)
 
 ;;; Sensor (input units)
-(define sensor (list 100 200 300 400 500))
+(define example-sensor (list 100 200 300 400 500))
 
 ;;; weight: Sensor (input units) --- Association (hidden units)
 ;;; A.S
-(define weight-sa
+(define example-weight-sa
   (list (list 1.1 1.2 1.3 1.4 1.5)
 	(list 2.1 2.2 2.3 2.4 2.5)
 	(list 3.1 3.2 3.3 3.4 3.5)
@@ -69,13 +69,14 @@
 
 ;;; weight: Association (hidden units) --- Response (output units)
 ;;; R.A
-(define weight-ar
+(define example-weight-ar
   (list (list 1.1 1.2 1.3 1.4)
 	(list 2.1 2.2 2.3 2.4)
 	(list 3.1 3.2 3.3 3.4)))
 
 ;;; threshold: Association
-(define threshold-a (list 1.0 1.0 1.0 1.0))
+(define example-threshold-a (list 1.0 1.0 1.0 1.0))
+(define example-threshold-r (list 1.0 1.0 1.0))
 
 
 ;;; Transfer function (activation function)
@@ -103,13 +104,18 @@
   (iter -3.0 3.0))
 
 ;; uncomment for test
-(unittest-transfer-function transfer-function-step 1.0)
-(unittest-transfer-function transfer-function-linear 1.0)
-(unittest-transfer-function transfer-function-sigmoid 1.0)
+;(unittest-transfer-function transfer-function-step 1.0)
+;(unittest-transfer-function transfer-function-linear 1.0)
+;(unittest-transfer-function transfer-function-sigmoid 1.0)
 
 
-
-(define (calculate-layer in weight transfer-function threshold)
+;; Sensor                    Association
+;;
+;; Sensor --- weight-sa --- [> sum --- transfer-function ---]
+;; Sensor --- weight-sa __/
+;;
+;; calculate artificial neuron layer
+(define (calculate-neuron-layer sensor weight transfer-function threshold)
   (define (iter list-in weight-in threshold-in result-list)
     (if (null? weight-in)
 	result-list
@@ -119,7 +125,7 @@
 	      (append result-list (list (transfer-function (apply + (map * list-in (car weight-in)))
 							   (car threshold-in)))))))
   
-  (iter in weight threshold '()))
+  (iter sensor weight threshold '()))
 
 
 
@@ -127,6 +133,19 @@
 ;  )
 
 
-(display (calculate-layer (calculate-layer sensor weight-sa transfer-function-step threshold-a)
-			  weight-ar transfer-function-sigmoid threshold-a))
+;;  Sensor                    Association                                    Response
+;;
+;;  Sensor --- weight-sa --- [> sum --- transfer-function ---] <--- weight-ar Response
+;;  Sensor --- weight-sa __/                                    \__ weight-ar Response
+;;  (first step                                               )
+;; (second step                                                                      )
+(define (one-layer-perceptron sensor
+			      weight-sa transfer-function-a threshold-a
+			      weight-ar transfer-function-r threshold-r)
+  (calculate-neuron-layer (calculate-neuron-layer sensor weight-sa transfer-function-a threshold-a)
+			  weight-ar transfer-function-r threshold-r))
+
+(display (one-layer-perceptron example-sensor
+			       example-weight-sa transfer-function-step    example-threshold-a
+			       example-weight-ar transfer-function-sigmoid example-threshold-r))
 (newline)
