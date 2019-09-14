@@ -70,7 +70,10 @@ beginfig(1);
     label(TEX("$\sum = " & decimal round(sum) & "$"), (x_association, i*y_association));
     draw a shifted (x_association, i*y_association);
   endfor
-
+  label(btex $>1 \Rightarrow 1$ etex, (x_association, 0*y_association - 10));
+  label(btex $<1000 \Rightarrow 0$ etex, (x_association, 1*y_association - 10));
+  label(btex $>1 \Rightarrow 1$ etex, (x_association, 2*y_association - 10));
+  label(btex $<1000 \Rightarrow 0$ etex, (x_association, 3*y_association - 10));
 
 
   x_response = 400;

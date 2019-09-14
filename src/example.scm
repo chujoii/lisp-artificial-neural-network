@@ -72,7 +72,7 @@
 	(list 33.11 33.22 33.33 33.44)))
 
 ;;; threshold: Association
-(define example-threshold-a (list 1.0 10000.0 1.0 10000.0))
+(define example-threshold-a (list 1.0 1000.0 1.0 1000.0))
 (define example-threshold-r (list 30.0 30.0 100.0))
 
 ;; simple calculate one layer perceptron
