@@ -1,5 +1,8 @@
 .*
 ~*
 *tmp*
+*.pdf
+fig.[0-9]*
+fig.mpx
 !.gitignore
 !*.example
