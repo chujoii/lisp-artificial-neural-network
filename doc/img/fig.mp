@@ -79,12 +79,18 @@ beginfig(1);
   x_response = 400;
   n_response = 3;
   y_response = ((n_sensor - 1) * y_sensor / (n_response - 1));
-  r_response = 20;
+  r_response = 30;
   label("Response", (x_response, -100));
   path a;
   a = fullcircle scaled (r_response * 2);
   for i = 0 upto (n_response - 1):
-    label("sum=" & decimal ((i+1)*y_response), (x_response, i*y_response));
+    sum := 0;
+    for j = 0 upto (n_association - 1):
+      w := (i+1)*10 + i+1 + (j+1)/10 + (j+1)/100;
+      sum := sum + w*(j+1)*step_sensor;
+      weightline (x_association, j*y_association, r_association, x_response, i*y_response, r_response, w);
+    endfor
+    label(TEX("$\sum = " & decimal round(sum) & "$"), (x_response, i*y_response));
     draw a shifted (x_response, i*y_response);
   endfor
   
