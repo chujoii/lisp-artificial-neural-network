@@ -1,5 +1,7 @@
 prologues := 1; % 3 = include font to PostScript
 
+input TEX;
+
 % parameters
 u = 1cm;
 dpi = 96;
@@ -65,7 +67,7 @@ beginfig(1);
       sum := sum + w*(j+1)*step_sensor;
       weightline (x_sensor, j*y_sensor, r_sensor, x_association, i*y_association, r_association, w);
     endfor
-    label("sum=" & decimal round(sum), (x_association, i*y_association));
+    label(TEX("$\sum = " & decimal round(sum) & "$"), (x_association, i*y_association));
     draw a shifted (x_association, i*y_association);
   endfor
 
