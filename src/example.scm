@@ -54,7 +54,7 @@
 (load "perceptron.scm")
 
 ;;; Sensor (input units)
-(define example-sensor (list 100 200 300 400 500))
+(define example-sensor (list 10 20 30 40 50))
 
 ;;; weight: Sensor (input units) --- Association (hidden units)
 ;;; A.S

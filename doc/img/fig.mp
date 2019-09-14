@@ -21,6 +21,8 @@ def weightline (expr xa, ya, ra, xd, yd, rd, weight) =
     yc := ((ya - yd) * rd / R) + yd;
 
     draw (xb,yb)--(xc,yc);
+
+    label.top (decimal weight, origin) rotated angle((xc,yc)-(xb,yb)) shifted 0.9[(xb,yb),(xc,yc)];
   endgroup;
 enddef;
 
@@ -39,11 +41,12 @@ beginfig(1);
   n_sensor = 5;
   y_sensor = 100.0;
   r_sensor = 15.0;
+  step_sensor = 10;
   label("Sensor", (x_sensor, -100));
   path a;
   a = fullcircle scaled (r_sensor * 2);
   for i = 0 upto (n_sensor - 1):
-    label(decimal ((i+1)*y_sensor), (x_sensor, i*y_sensor));
+    label(decimal ((i+1)*step_sensor), (x_sensor, i*y_sensor));
     draw a shifted (x_sensor, i*y_sensor);
   endfor
 
@@ -56,11 +59,14 @@ beginfig(1);
   path a;
   a = fullcircle scaled (r_association * 2);
   for i = 0 upto (n_association - 1):
-    label("sum=" & decimal ((i+1)*y_association), (x_association, i*y_association));
-    draw a shifted (x_association, i*y_association);
-    for j = 0 upto (n_sensor -1):
-      weightline (x_sensor, j*y_sensor, r_sensor, x_association, i*y_association, r_association, 123);
+    sum := 0;
+    for j = 0 upto (n_sensor - 1):
+      w := i+1 + (j+1)/10;
+      sum := sum + w*(j+1)*step_sensor;
+      weightline (x_sensor, j*y_sensor, r_sensor, x_association, i*y_association, r_association, w);
     endfor
+    label("sum=" & decimal round(sum), (x_association, i*y_association));
+    draw a shifted (x_association, i*y_association);
   endfor
 
 
