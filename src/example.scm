@@ -37,7 +37,9 @@
 
 ;;; Usage:
 
-;; use it
+;; guile example.scm
+;; or
+;; ./example.scm
 
 
 
@@ -65,16 +67,23 @@
 ;;; weight: Association (hidden units) --- Response (output units)
 ;;; R.A
 (define example-weight-ar
-  (list (list 1.1 1.2 1.3 1.4)
-	(list 2.1 2.2 2.3 2.4)
-	(list 3.1 3.2 3.3 3.4)))
+  (list (list 11.11 11.22 11.33 11.44)
+	(list 22.11 22.22 22.33 22.44)
+	(list 33.11 33.22 33.33 33.44)))
 
 ;;; threshold: Association
-(define example-threshold-a (list 1.0 1.0 1.0 1.0))
-(define example-threshold-r (list 1.0 1.0 1.0))
+(define example-threshold-a (list 1.0 10000.0 1.0 10000.0))
+(define example-threshold-r (list 30.0 30.0 100.0))
 
+;; simple calculate one layer perceptron
+(display (perceptron-sar example-sensor
+			 example-weight-sa transfer-function-step    example-threshold-a
+			 example-weight-ar transfer-function-step example-threshold-r))
+(newline)
 
-(display (one-layer-perceptron example-sensor
+;; simple update weight of one layer perceptron
+(display (calculate-weight-sar example-sensor
 			       example-weight-sa transfer-function-step    example-threshold-a
-			       example-weight-ar transfer-function-sigmoid example-threshold-r))
+			       example-weight-ar transfer-function-step example-threshold-r
+			       (list 0 1 0)))
 (newline)
