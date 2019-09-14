@@ -4,6 +4,27 @@ prologues := 1; % 3 = include font to PostScript
 u = 1cm;
 dpi = 96;
 
+
+%  ( a )b----------weight--c(   d   )
+%   r = radius of each circle
+%   ra radius of circle a (distance from a to b)
+%   rb radius of circle d (distance from d to c)
+def weightline (expr xa, ya, ra, xd, yd, rd, weight) =
+  begingroup
+    % /10 = fix overflow
+    R := sqrt(((xd/10 - xa/10)**2) + ((yd/10 - ya/10)**2)) * 10;
+
+    xb := ((xd - xa) * ra / R) + xa;
+    yb := ((yd - ya) * ra / R) + ya;
+
+    xc := ((xa - xd) * rd / R) + xd;
+    yc := ((ya - yd) * rd / R) + yd;
+
+    draw (xb,yb)--(xc,yc);
+  endgroup;
+enddef;
+
+
 beginfig(1);
   save w, h, xmin, xmax, ymin, ymax;
   
@@ -14,36 +35,43 @@ beginfig(1);
   ymax = h/dpi;
   xmin = ymin = 0.0;
 
-  x_sensor = 0;
+  x_sensor = 0.0;
   n_sensor = 5;
-  y_sensor = 100;
+  y_sensor = 100.0;
+  r_sensor = 15.0;
   label("Sensor", (x_sensor, -100));
   path a;
-  a = fullcircle scaled (1*u);
+  a = fullcircle scaled (r_sensor * 2);
   for i = 0 upto (n_sensor - 1):
     label(decimal ((i+1)*y_sensor), (x_sensor, i*y_sensor));
     draw a shifted (x_sensor, i*y_sensor);
   endfor
 
 
-  x_association = 200;
+  x_association = 200.0;
   n_association = 4;
   y_association = ((n_sensor - 1) * y_sensor / (n_association - 1));
+  r_association = 30.0;
   label("Association", (x_association, -100));
   path a;
-  a = fullcircle scaled (3*u);
+  a = fullcircle scaled (r_association * 2);
   for i = 0 upto (n_association - 1):
     label("sum=" & decimal ((i+1)*y_association), (x_association, i*y_association));
     draw a shifted (x_association, i*y_association);
+    for j = 0 upto (n_sensor -1):
+      weightline (x_sensor, j*y_sensor, r_sensor, x_association, i*y_association, r_association, 123);
+    endfor
   endfor
+
 
 
   x_response = 400;
   n_response = 3;
   y_response = ((n_sensor - 1) * y_sensor / (n_response - 1));
+  r_response = 20;
   label("Response", (x_response, -100));
   path a;
-  a = fullcircle scaled (2*u);
+  a = fullcircle scaled (r_response * 2);
   for i = 0 upto (n_response - 1):
     label("sum=" & decimal ((i+1)*y_response), (x_response, i*y_response));
     draw a shifted (x_response, i*y_response);
