@@ -133,16 +133,16 @@ beginfig(1);
     draw a shifted (x_machine_learning, i*y_machine_learning);
     label(decimal machine_learnings[i+1], (x_machine_learning, i*y_machine_learning));
   endfor
-  label(btex $=$ etex, ((x_response + x_machine_learning)/2, 0*y_response)) withcolor green;
-  label(btex $\ne$ etex, ((x_response + x_machine_learning)/2, 1*y_response)) withcolor red;
+  label(btex $=$ etex, ((x_response + x_machine_learning)/2, 0*y_response));
+  label(btex $\ne$ etex, ((x_response + x_machine_learning)/2, 1*y_response));
   weightline (x_association, 0*y_association, r_association, x_response, 1*y_response, r_response, 1.04)("+1");
   weightline (x_association, 2*y_association, r_association, x_response, 1*y_response, r_response, 1.05)("+1");
   weightline (x_association, 3*y_association, r_association, x_response, 1*y_response, r_response, 1.03)("+1");
-  label(btex $\ne$ etex, ((x_response + x_machine_learning)/2, 2*y_response)) withcolor red;
+  label(btex $\ne$ etex, ((x_response + x_machine_learning)/2, 2*y_response));
   weightline (x_association, 0*y_association, r_association, x_response, 2*y_response, r_response, 1.03)("-1");
   weightline (x_association, 2*y_association, r_association, x_response, 2*y_response, r_response, 1.06)("-1");
   weightline (x_association, 3*y_association, r_association, x_response, 2*y_response, r_response, 1.06)("-1");
-  label(btex $=$ etex, ((x_response + x_machine_learning)/2, 3*y_response)) withcolor green;
+  label(btex $=$ etex, ((x_response + x_machine_learning)/2, 3*y_response));
 
 endfig;
 
