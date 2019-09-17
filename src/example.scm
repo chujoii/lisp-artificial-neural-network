@@ -54,36 +54,39 @@
 (load "perceptron.scm")
 
 ;;; Sensor (input units)
-(define example-sensor (list 10 20 30 40 50))
+(define example-sensor (list 10 20 30 40 50 60))
 
 ;;; weight: Sensor (input units) --- Association (hidden units)
 ;;; A.S
 (define example-weight-sa
-  (list (list 1.1 1.2 1.3 1.4 1.5)
-	(list 2.1 2.2 2.3 2.4 2.5)
-	(list 3.1 3.2 3.3 3.4 3.5)
-	(list 4.1 4.2 4.3 4.4 4.5)))
+  (list (list 1.1 1.2 1.3 1.4 1.5 1.6)
+	(list 2.1 2.2 2.3 2.4 2.5 2.6)
+	(list 3.1 3.2 3.3 3.4 3.5 3.6)
+	(list 4.1 4.2 4.3 4.4 4.5 4.6)
+	(list 5.1 5.2 5.3 5.4 5.5 5.6)))
 
 ;;; weight: Association (hidden units) --- Response (output units)
 ;;; R.A
 (define example-weight-ar
-  (list (list 11.11 11.22 11.33 11.44)
-	(list 22.11 22.22 22.33 22.44)
-	(list 33.11 33.22 33.33 33.44)))
+  (list (list 11.11 11.22 11.33 11.44 11.55)
+	(list 22.11 22.22 22.33 22.44 22.55)
+	(list 33.11 33.22 33.33 33.44 33.55)
+	(list 44.11 44.22 44.33 44.44 44.55)))
 
 ;;; threshold: Association
-(define example-threshold-a (list 1.0 1000.0 1.0 1000.0))
-(define example-threshold-r (list 30.0 30.0 100.0))
+(define example-threshold-a (list 1.0 1000.0 1.0 1.0 9000.0))
+(define example-threshold-r (list 100.0 100.0 1.0 1.0))
 
-;; simple calculate one layer perceptron
+(display "simple calculate one layer perceptron")(newline)
 (display (perceptron-sar example-sensor
 			 example-weight-sa transfer-function-step    example-threshold-a
 			 example-weight-ar transfer-function-step example-threshold-r))
-(newline)
+(newline)(newline)(newline)
 
-;; simple update weight of one layer perceptron
+(display "repeat previous code for simple calculations,")(newline)
+(display "with update weight of one layer perceptron")(newline)
 (display (calculate-weight-sar example-sensor
 			       example-weight-sa transfer-function-step    example-threshold-a
 			       example-weight-ar transfer-function-step example-threshold-r
-			       (list 0 1 0)))
+			       (list 0 1 0 1)))
 (newline)
