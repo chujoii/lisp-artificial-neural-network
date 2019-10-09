@@ -2,7 +2,7 @@
 !#
 ; coding: utf-8
 
-;;;; example.scm ---  simple usage of perceptron
+;;;; perceptron-static-data.scm ---  simple usage of perceptron
 
 
 
@@ -37,9 +37,9 @@
 
 ;;; Usage:
 
-;; guile example.scm
+;; guile perceptron-static-data.scm
 ;; or
-;; ./example.scm
+;; ./perceptron-static-data.scm
 
 
 
@@ -51,7 +51,7 @@
 
 ;;; Code:
 
-(load "perceptron.scm")
+(load "../perceptron.scm")
 
 ;;; Sensor (input units)
 (define example-sensor (list 10 20 30 40 50 60))
@@ -89,4 +89,6 @@
 			       example-weight-sa transfer-function-step    example-threshold-a
 			       example-weight-ar transfer-function-step example-threshold-r
 			       (list 0 1 0 1)))
+(newline)
+(display "see ../../doc/img/fig-1.pdf")
 (newline)

@@ -39,7 +39,7 @@ simple perceptron (lisp scheme)
 read with emacs (3__3) org mode
 
 * History:
-initial project version began about 2019.08(Aug).28
+initial project version began about 2019-08(Aug)-28
 
 * Dependences:
 + [[https://www.gnu.org/software/guile/][dev-scheme/guile]] GNU Ubiquitous Intelligent Language for Extensions
