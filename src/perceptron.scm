@@ -49,8 +49,6 @@
 
 (use-modules (ice-9 format))
 
-(set! *random-state* (random-state-from-platform))
-
 ;;; Transfer function (activation function)
 (define (transfer-function-step signal threshold)
   (if (> signal threshold) 1 0))
