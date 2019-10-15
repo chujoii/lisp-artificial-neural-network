@@ -127,9 +127,9 @@
 			      weight-sa transfer-function-a threshold-a
 			      weight-ar transfer-function-r threshold-r
 			      real-result)
-  (define (iter-by-r association-in weight-in-row response-in response-real weight-out) ;; by response in weight list (row)
+  (define (iter-by-r association-in weight-in-row response-in response-real) ;; by response in weight list (row)
     (if (null? weight-in-row)
-	weight-out
+	'()
 	(begin
 	  (display "c: ")
 	  (display (car weight-in-row))
@@ -137,15 +137,15 @@
 	      (display " correct weight")
 	      (display " need update weight"))
 	  (newline)
-	  (iter-by-r association-in (cdr weight-in-row) (cdr response-in) (cdr response-real)
-		     (append weight-out (list
+	  (cons
 					 (if (= (car response-in) (car response-real))
 					     (car weight-in-row)
-					     (iter-by-a association-in (car weight-in-row) (car response-in) '()))))))))
+					     (iter-by-a association-in (car weight-in-row) (car response-in)))
+					 (iter-by-r association-in (cdr weight-in-row) (cdr response-in) (cdr response-real))))))
 
-  (define (iter-by-a a-in weight-in-column r-in w-out) ;; by association in weight list (column)
+  (define (iter-by-a a-in weight-in-column r-in) ;; by association in weight list (column)
     (if (null? weight-in-column)
-	w-out
+	'()
 	(begin
 	  (display " w:")
 	  (display (car weight-in-column))
@@ -160,16 +160,14 @@
 			     (display "w+1"))
 			 (display "w"))
 	  (newline)
-	  (iter-by-a (cdr a-in) (cdr weight-in-column) r-in
-		     (append
-		      w-out
-		       (list (+ (car weight-in-column)
+	  (cons
+	   (+ (car weight-in-column)
 			 (if (= (car a-in) 1)
 			     (if (= r-in 1)
 				 -1
 				 1)
-			     0)))
-		      )))))
+			     0))
+	  (iter-by-a (cdr a-in) (cdr weight-in-column) r-in)))))
 
 
   (let ((tmp-association (calculate-neuron-layer sensor weight-sa transfer-function-a threshold-a)))
@@ -179,7 +177,7 @@
 	     (display "tmp response layer")
 	     (display tmp-response) (newline)
 	     (newline)
-	     (iter-by-r tmp-association weight-ar tmp-response real-result '())))))
+	     (iter-by-r tmp-association weight-ar tmp-response real-result)))))
 
 
 
