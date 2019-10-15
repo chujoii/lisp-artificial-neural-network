@@ -86,23 +86,23 @@
 ;;
 ;; calculate artificial neuron layer
 (define (calculate-neuron-layer list-in weight transfer-function threshold)
-    (if (not (null? weight))                          ;; fixme debug print
-	(begin (display (map * list-in (car weight))) ;; fixme (+) -> (*)
-	       (display " sum=")
-	       (display (apply + (map * list-in (car weight))))
-	       (display " activated=")
-	       (display (transfer-function (apply + (map * list-in (car weight)))
-					   (car threshold)))
-	       (newline)))
+  (if (not (null? weight))                          ;; fixme debug print
+      (begin (display (map * list-in (car weight))) ;; fixme (+) -> (*)
+	     (display " sum=")
+	     (display (apply + (map * list-in (car weight))))
+	     (display " activated=")
+	     (display (transfer-function (apply + (map * list-in (car weight)))
+					 (car threshold)))
+	     (newline)))
 
-    (if (null? weight)
-	'()
-	(cons (transfer-function (apply + (map * list-in (car weight)))
-				 (car threshold))
-	      (calculate-neuron-layer list-in
-				      (cdr weight)
-				      transfer-function
-				      (cdr threshold)))))
+  (if (null? weight)
+      '()
+      (cons (transfer-function (apply + (map * list-in (car weight)))
+			       (car threshold))
+	    (calculate-neuron-layer list-in
+				    (cdr weight)
+				    transfer-function
+				    (cdr threshold)))))
 
 
 
@@ -137,11 +137,10 @@
 	      (display " correct weight")
 	      (display " need update weight"))
 	  (newline)
-	  (cons
-					 (if (= (car response-in) (car response-real))
-					     (car weight-in-row)
-					     (iter-by-a association-in (car weight-in-row) (car response-in)))
-					 (iter-by-r association-in (cdr weight-in-row) (cdr response-in) (cdr response-real))))))
+	  (cons (if (= (car response-in) (car response-real))
+		    (car weight-in-row)
+		    (iter-by-a association-in (car weight-in-row) (car response-in)))
+		(iter-by-r association-in (cdr weight-in-row) (cdr response-in) (cdr response-real))))))
 
   (define (iter-by-a a-in weight-in-column r-in) ;; by association in weight list (column)
     (if (null? weight-in-column)
@@ -154,20 +153,19 @@
 	  (display " r:")
 	  (display r-in)
 	  (display " ?:")
-		     (if (= (car a-in) 1)
-			 (if (= r-in 1)
-			     (display "w-1")
-			     (display "w+1"))
-			 (display "w"))
+	  (if (= (car a-in) 1)
+	      (if (= r-in 1)
+		  (display "w-1")
+		  (display "w+1"))
+	      (display "w"))
 	  (newline)
-	  (cons
-	   (+ (car weight-in-column)
-			 (if (= (car a-in) 1)
-			     (if (= r-in 1)
-				 -1
-				 1)
-			     0))
-	  (iter-by-a (cdr a-in) (cdr weight-in-column) r-in)))))
+	  (cons (+ (car weight-in-column)
+		   (if (= (car a-in) 1)
+		       (if (= r-in 1)
+			   -1
+			   1)
+		       0))
+		(iter-by-a (cdr a-in) (cdr weight-in-column) r-in)))))
 
 
   (let ((tmp-association (calculate-neuron-layer sensor weight-sa transfer-function-a threshold-a)))
@@ -178,6 +176,3 @@
 	     (display tmp-response) (newline)
 	     (newline)
 	     (iter-by-r tmp-association weight-ar tmp-response real-result)))))
-
-
-
