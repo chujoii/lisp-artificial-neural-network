@@ -85,26 +85,24 @@
 ;; Sensor --- weight-sa __/
 ;;
 ;; calculate artificial neuron layer
-(define (calculate-neuron-layer sensor weight transfer-function threshold)
-  (define (iter list-in weight-in threshold-in result-list)
-    (if (not (null? weight-in))                          ;; fixme debug print
-	(begin (display (map * list-in (car weight-in))) ;; fixme (+) -> (*)
+(define (calculate-neuron-layer list-in weight transfer-function threshold)
+    (if (not (null? weight))                          ;; fixme debug print
+	(begin (display (map * list-in (car weight))) ;; fixme (+) -> (*)
 	       (display " sum=")
-	       (display (apply + (map * list-in (car weight-in))))
+	       (display (apply + (map * list-in (car weight))))
 	       (display " activated=")
-	       (display (transfer-function (apply + (map * list-in (car weight-in)))
-					   (car threshold-in)))
+	       (display (transfer-function (apply + (map * list-in (car weight)))
+					   (car threshold)))
 	       (newline)))
 
-    (if (null? weight-in)
-	result-list
-	(iter list-in
-	      (cdr weight-in)
-	      (cdr threshold-in)
-	      (append result-list (list (transfer-function (apply + (map * list-in (car weight-in)))
-							   (car threshold-in)))))))
-
-  (iter sensor weight threshold '()))
+    (if (null? weight)
+	'()
+	(cons (transfer-function (apply + (map * list-in (car weight)))
+				 (car threshold))
+	      (calculate-neuron-layer list-in
+				      (cdr weight)
+				      transfer-function
+				      (cdr threshold)))))
 
 
 
