@@ -182,3 +182,10 @@
 	     (display tmp-response) (newline)
 	     (newline)
 	     (iter-by-r tmp-association weight-ar tmp-response real-result '())))))
+
+
+
+(define (fill-with-random size random-function)
+  (if (<= size 0)
+      '()
+      (cons (random-function) (fill-with-random (- size 1) random-function))))

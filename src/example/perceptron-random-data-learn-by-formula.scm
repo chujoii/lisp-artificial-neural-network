@@ -50,19 +50,29 @@
 ;;; Code:
 
 (load "../perceptron.scm")
+(load "../../../../util/battery-scheme/list.scm")
 
 (set! *random-state* (random-state-from-platform))
 
-;;; Dimensoin of sensor in format: (list mean standard-deviation)
-(define dim-sensor (list (list 230.0 23.0)   ;; 230 В ±10 %
+;;; Set dimensoin of sensor in format: (list mean standard-deviation)
+(define dimension-sensor (list (list 230.0 23.0)   ;; 230 В ±10 %
 			 (list 230.0 23.0)
 			 (list 230.0 23.0)
 			 (list  50.0  0.2))) ;; 50 ±0,2 Гц
+;;; Set number of output units
+(define number-response 3)
 
 
-;;; weight: Sensor (input units) --- Association (hidden units)
-;;; A.S
-;(define example-weight-sa
+
+
+
+
+
+
+
+;;; Calculate approximate value of number hidden
+;;; Nhidden = (2/3)Nin + Nout
+(define number-association (ceiling (+ (/ (* 2 (length dimension-sensor)) 3)  number-response)))
 
 ;;; weight: Association (hidden units) --- Response (output units)
 ;;; R.A
@@ -73,18 +83,38 @@
 ;(define example-threshold-a (list 1.0 1000.0 1.0 1.0 9000.0))
 ;(define example-threshold-r (list 100.0 100.0 1.0 1.0))
 
-(define (get-sensor-data dimension)
-  (define (iter dim data)
-    (if (null? dim)
-	data
-	(iter (cdr dim) (append data
-				(list (+ (caar dim) (* (cadar dim) (random:normal))))))))
-				;; (caar dim) mean of normal distribution
-				;; (cadar dim) standard-deviation
+(define (generate-random-sensor-data dimension)
+    (if (null? dimension)
+	'()
+	(cons (+ (caar dimension) (* (cadar dimension) (random:normal)))
+	      ;; (caar dimension) mean of normal distribution
+	      ;; (cadar dimension) standard-deviation
+	      (generate-random-sensor-data (cdr dimension)))))
 
-  (iter dimension '()))
-  
 
-(display (get-sensor-data dim-sensor))
+;;; weight: Sensor (input units) --- Association (hidden units)
+;;; A.S
+(define (set-random-weight-sa numin numhid)
+    (if (<= numhid 0)
+	'()
+	(cons (create-list-of-n-element-filled-by-evaluated-function numin random:uniform) (set-random-weight-sa numin (- numhid 1)))))
+
+(display "Sensor (input) layer size = ")
+(display (length dimension-sensor))
 (newline)
 
+(display "Association (hidden) layer size = ")
+(display number-association)
+(newline)
+
+(display "Response (output) layer size = ")
+(display number-response)
+(newline)
+
+(display "Weight Sensor-Response ")
+(display (set-random-weight-sa (length dimension-sensor) number-association))
+(newline)
+
+(display "Random generated Sensors value ")
+(display (generate-random-sensor-data dimension-sensor))
+(newline)
