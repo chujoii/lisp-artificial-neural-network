@@ -74,14 +74,7 @@
 ;;; Nhidden = (2/3)Nin + Nout
 (define number-association (ceiling (+ (/ (* 2 (length dimension-sensor)) 3)  number-response)))
 
-;;; weight: Association (hidden units) --- Response (output units)
-;;; R.A
-;(define example-weight-ar
 
-
-;;; threshold: Association
-;(define example-threshold-a (list 1.0 1000.0 1.0 1.0 9000.0))
-;(define example-threshold-r (list 100.0 100.0 1.0 1.0))
 
 (define (generate-random-sensor-data dimension)
     (if (null? dimension)
@@ -94,27 +87,58 @@
 
 ;;; weight: Sensor (input units) --- Association (hidden units)
 ;;; A.S
-(define (set-random-weight-sa numin numhid)
-    (if (<= numhid 0)
+(define (set-random-weight-sa numin numout)
+    (if (<= numout 0)
 	'()
-	(cons (create-list-of-n-element-filled-by-evaluated-function numin random:uniform) (set-random-weight-sa numin (- numhid 1)))))
+	(cons (create-list-of-n-element-filled-by-evaluated-function numin random:uniform) (set-random-weight-sa numin (- numout 1)))))
+
+;;; threshold: Association
+(define threshold-a (create-list-of-n-element-filled-by-evaluated-function number-association random:uniform))
+
+;;; weight: Association (hidden units) --- Response (output units)
+;;; R.A
+(define (set-random-weight-ar numin numout)
+    (if (<= numout 0)
+	'()
+	(cons (create-list-of-n-element-filled-by-evaluated-function numin random:uniform) (set-random-weight-sa numin (- numout 1)))))
+
+
+;;; threshold: Response
+(define threshold-r (create-list-of-n-element-filled-by-evaluated-function number-response random:uniform))
 
 (display "Sensor (input) layer size = ")
 (display (length dimension-sensor))
-(newline)
+(newline)(newline)
 
 (display "Association (hidden) layer size = ")
 (display number-association)
-(newline)
+(newline)(newline)
 
 (display "Response (output) layer size = ")
 (display number-response)
-(newline)
+(newline)(newline)
 
-(display "Weight Sensor-Response ")
+(display "Weight Sensor-Association ")
 (display (set-random-weight-sa (length dimension-sensor) number-association))
-(newline)
+(newline)(newline)
 
+(display "Threshold Association ")
+(display threshold-a)
+(newline)(newline)
+
+(display "Weight Association-Response ")
+(display (set-random-weight-ar number-association number-response))
+(newline)(newline)
+
+(display "Threshold Response ")
+(display threshold-r)
+(newline)(newline)
+
+
+
+
+
+(newline)(newline)
 (display "Random generated Sensors value ")
 (display (generate-random-sensor-data dimension-sensor))
-(newline)
+(newline)(newline)
