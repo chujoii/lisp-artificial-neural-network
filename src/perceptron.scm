@@ -64,19 +64,17 @@
 (define (transfer-function-sigmoid signal threshold)
   (/ 1.0 (+ 1.0 (exp (* -1 threshold signal)))))
 
-(define (unittest-transfer-function transfer-function threshold)
-  (define (iter a b)
-    (if (< a b)
-	(begin (format #t "~1,1f ~2,1f\n" a (transfer-function a threshold))
-	       (iter (+ a 0.2) b))
-	(newline)))
+(define (unittest-transfer-function transfer-function threshold   from step to)
+  (if (< from to)
+      (begin (format #t "~1,1f ~2,1f\n" from (transfer-function from threshold))
+	     (unittest-transfer-function transfer-function threshold (+ from step) step to))
+      (newline)))
 
-  (iter -3.0 3.0))
 
 ;; uncomment for test
-;(unittest-transfer-function transfer-function-step 1.0)
-;(unittest-transfer-function transfer-function-linear 1.0)
-;(unittest-transfer-function transfer-function-sigmoid 1.0)
+;(unittest-transfer-function transfer-function-step 1.0   -3.0 0.2 3.0)
+;(unittest-transfer-function transfer-function-linear 1.0   -3.0 0.2 3.0)
+;(unittest-transfer-function transfer-function-sigmoid 1.0   -3.0 0.2 3.0)
 
 
 ;; Sensor                    Association
