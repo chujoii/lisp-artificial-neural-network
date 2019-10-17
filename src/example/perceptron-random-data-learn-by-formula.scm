@@ -2,8 +2,8 @@
 !#
 ; coding: utf-8
 
-;;;; perceptron-random-data-learn-by-formula.scm ---  simple usage of perceptron for learn
-
+;;;; perceptron-random-data-learn-by-formula.scm ---  simple usage of perceptron for learn.
+;;;; Very strange situation: you have simple formula, but use intricate perceptron
 
 
 ;;; Copyright (C) 2019 Roman V. Prikhodchenko
@@ -106,6 +106,24 @@
 ;;; threshold: Response
 (define threshold-r (create-list-of-n-element-filled-by-evaluated-function number-response random:uniform))
 
+
+;;; formula for correct answer
+;;; Very strange situation: you have simple formula, but use intricate perceptron
+(define (formula_for_correct_answer dimension sensor-data)
+  (if (null? dimension)
+      '()
+      ;; caar dimension = value; cdar dimension = d_value; car sensor-data = real_value
+      (cons (and (>   (apply + (car dimension))   (car sensor-data))
+		 (<   (apply - (car dimension))   (car sensor-data)))
+	    (formula_for_correct_answer (cdr dimension) (cdr sensor-data)))))
+
+
+
+
+
+
+
+
 (display "Sensor (input) layer size = ")
 (display (length dimension-sensor))
 (newline)(newline)
@@ -119,7 +137,8 @@
 (newline)(newline)
 
 (display "Weight Sensor-Association ")
-(display (set-random-weight-sa (length dimension-sensor) number-association))
+(define weight-sa (set-random-weight-sa (length dimension-sensor) number-association))
+(display weight-sa)
 (newline)(newline)
 
 (display "Threshold Association ")
@@ -127,7 +146,8 @@
 (newline)(newline)
 
 (display "Weight Association-Response ")
-(display (set-random-weight-ar number-association number-response))
+(define weight-ar (set-random-weight-ar number-association number-response))
+(display weight-ar)
 (newline)(newline)
 
 (display "Threshold Response ")
@@ -140,5 +160,15 @@
 
 (newline)(newline)
 (display "Random generated Sensors value ")
-(display (generate-random-sensor-data dimension-sensor))
+(define data (generate-random-sensor-data dimension-sensor))
+(display data)
 (newline)(newline)
+
+
+(display "simple calculate one layer perceptron")(newline)
+(display "with update weight of one layer perceptron")(newline)
+(display (calculate-weight-sar data
+			       weight-sa transfer-function-step threshold-a
+			       weight-ar transfer-function-step threshold-r
+			       (list 0 1 1))) (newline) (display (formula_for_correct_answer dimension-sensor data)) ; set formula instead list
+(newline)
