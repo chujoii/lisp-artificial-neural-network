@@ -110,13 +110,19 @@
 ;;; formula for correct answer
 ;;; Very strange situation: you have simple formula, but use intricate perceptron
 (define (formula_for_correct_answer dimension sensor-data)
-  (if (null? dimension)
-      '()
-      ;; caar dimension = value; cdar dimension = d_value; car sensor-data = real_value
-      (cons (and (>   (apply + (car dimension))   (car sensor-data))
-		 (<   (apply - (car dimension))   (car sensor-data)))
-	    (formula_for_correct_answer (cdr dimension) (cdr sensor-data)))))
+  (define (iter dim sen)
+    (if (null? dim)
+	'()
+	;; caar dimension = value; cdar dimension = d_value; car sensor-data = real_value
+	(cons (if (and (>   (apply + (car dim))   (car sen))
+		       (<   (apply - (car dim))   (car sen)))
+		  0 1) ; 0 all ok; 1 error
+	      (iter (cdr dim) (cdr sen)))))
 
+  (let ((result (iter dimension sensor-data))) ; very strange
+    (list (if (> (apply + result) 0) 1 0)    ; 1 for breakage
+	  0                                  ; unknown: before breakage
+	  (if (= (apply + result) 0) 1 0)))) ; 1 for normal
 
 
 
@@ -170,5 +176,5 @@
 (display (calculate-weight-sar data
 			       weight-sa transfer-function-step threshold-a
 			       weight-ar transfer-function-step threshold-r
-			       (list 0 1 1))) (newline) (display (formula_for_correct_answer dimension-sensor data)) ; set formula instead list
+			       (formula_for_correct_answer dimension-sensor data)))
 (newline)
