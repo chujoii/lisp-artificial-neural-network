@@ -152,8 +152,8 @@
 (newline)(newline)
 
 (display "Weight Association-Response ")
-(define weight-ar (set-random-weight-ar number-association number-response))
-(display weight-ar)
+(define initial-weight-ar (set-random-weight-ar number-association number-response))
+(display initial-weight-ar)
 (newline)(newline)
 
 (display "Threshold Response ")
@@ -164,17 +164,25 @@
 
 
 
-(newline)(newline)
-(display "Random generated Sensors value ")
-(define data (generate-random-sensor-data dimension-sensor))
-(display data)
-(newline)(newline)
+
+
 
 
 (display "simple calculate one layer perceptron")(newline)
 (display "with update weight of one layer perceptron")(newline)
-(display (calculate-weight-sar data
-			       weight-sa transfer-function-step threshold-a
-			       weight-ar transfer-function-step threshold-r
-			       (formula_for_correct_answer dimension-sensor data)))
+(define (cycle-learn weight-ar limit)
+  (display "---------------------------=[ ") (display limit) (display " ]=---------------------------") (newline)
+  (let ((data (generate-random-sensor-data dimension-sensor)))
+    (display "Random generated Sensors value ")
+    (display data) (newline)
+    (if (<= limit 0)
+	'()
+	(cycle-learn (calculate-weight-sar data
+					   weight-sa transfer-function-step threshold-a
+					   weight-ar transfer-function-sigmoid threshold-r
+					   (formula_for_correct_answer dimension-sensor data))
+		     (- limit 1)))))
+
+
+(cycle-learn initial-weight-ar 2)
 (newline)
