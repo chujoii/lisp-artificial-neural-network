@@ -90,7 +90,7 @@
 (define (set-random-weight-sa numin numout)
     (if (<= numout 0)
 	'()
-	(cons (create-list-of-n-element-filled-by-evaluated-function numin random:uniform) (set-random-weight-sa numin (- numout 1)))))
+	(cons (create-list-of-n-element-filled-by-evaluated-function numin random:normal) (set-random-weight-sa numin (- numout 1)))))
 
 ;;; threshold: Association
 (define threshold-a (create-list-of-n-element-filled-by-evaluated-function number-association random:uniform))
@@ -176,7 +176,7 @@
     (display "Random generated Sensors value ")
     (display data) (newline)
     (if (<= limit 0)
-	'()
+	weight-ar
 	(cycle-learn (calculate-weight-sar data
 					   weight-sa transfer-function-step threshold-a
 					   weight-ar transfer-function-sigmoid threshold-r
@@ -184,5 +184,33 @@
 		     (- limit 1)))))
 
 
-(cycle-learn initial-weight-ar 2)
+(define learned-weight-ar (cycle-learn initial-weight-ar 200000))
+
 (newline)
+(display "Association (hidden) layer size = ")
+(display number-association)
+(newline)(newline)
+
+(display "Response (output) layer size = ")
+(display number-response)
+(newline)(newline)
+
+(display "Weight Sensor-Association ")
+(display weight-sa)
+(newline)(newline)
+
+(display "Threshold Association ")
+(display threshold-a)
+(newline)(newline)
+
+(display "Initial Weight Association-Response ")
+(display initial-weight-ar)
+(newline)(newline)
+
+(display "Learned Weight Association-Response ")
+(display learned-weight-ar)
+(newline)(newline)
+
+(display "Threshold Response ")
+(display threshold-r)
+(newline)(newline)
