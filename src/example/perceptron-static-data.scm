@@ -53,6 +53,9 @@
 
 (load "../perceptron.scm")
 
+;;; Use #t for debug print, or #f for silent
+(define *debug-print* #t)
+
 ;;; Sensor (input units)
 (define example-sensor (list 10 20 30 40 50 60))
 
@@ -77,18 +80,15 @@
 (define example-threshold-a (list 1.0 1000.0 1.0 1.0 9000.0))
 (define example-threshold-r (list 100.0 100.0 1.0 1.0))
 
-(display "simple calculate one layer perceptron")(newline)
-(display (perceptron-sar example-sensor
-			 example-weight-sa transfer-function-step    example-threshold-a
-			 example-weight-ar transfer-function-step example-threshold-r))
-(newline)(newline)(newline)
+(format #t "simple calculate one layer perceptron\n~a\n\n\n"
+	(perceptron-sar example-sensor
+			example-weight-sa transfer-function-step    example-threshold-a
+			example-weight-ar transfer-function-step example-threshold-r))
 
-(display "repeat previous code for simple calculations,")(newline)
-(display "with update weight of one layer perceptron")(newline)
-(display (calculate-weight-sar example-sensor
-			       example-weight-sa transfer-function-step    example-threshold-a
-			       example-weight-ar transfer-function-step example-threshold-r
-			       (list 0 1 0 1)))
-(newline)
-(display "see ../../doc/img/fig-1.pdf")
-(newline)
+(format #t "repeat previous code for simple calculations,\nwith update weight of one layer perceptron\n~a\n"
+	(calculate-weight-sar example-sensor
+			      example-weight-sa transfer-function-step    example-threshold-a
+			      example-weight-ar transfer-function-step example-threshold-r
+			      (list 0 1 0 1)))
+
+(format #t "see ../../doc/img/fig-1.pdf\n")

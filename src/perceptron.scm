@@ -84,14 +84,13 @@
 ;;
 ;; calculate artificial neuron layer
 (define (calculate-neuron-layer list-in weight transfer-function threshold)
-  (if (not (null? weight))                          ;; fixme debug print
-      (begin (display (map * list-in (car weight))) ;; fixme (+) -> (*)
-	     (display " sum=")
-	     (display (apply + (map * list-in (car weight))))
-	     (display " activated=")
-	     (display (transfer-function (apply + (map * list-in (car weight)))
-					 (car threshold)))
-	     (newline)))
+  (if *debug-print*
+      (if (not (null? weight))
+	  (format #t "~a sum=~1,2f activated=~1,2f\n"
+		  (map * list-in (car weight))
+		  (apply + (map * list-in (car weight)))
+		  (transfer-function (apply + (map * list-in (car weight)))
+				     (car threshold)))))
 
   (if (null? weight)
       '()
@@ -129,12 +128,13 @@
     (if (null? weight-in-row)
 	'()
 	(begin
-	  (display "c: ")
-	  (display (car weight-in-row))
-	  (if (= (car response-in) (car response-real))
-	      (display " correct weight")
-	      (display " need update weight"))
-	  (newline)
+	  (if *debug-print*
+	      (format #t "c: ~a ~a\n"
+		      (car weight-in-row)
+		      (if (= (car response-in) (car response-real))
+			  " correct weight"
+			  " need update weight")))
+
 	  (cons (if (= (car response-in) (car response-real))
 		    (car weight-in-row)
 		    (iter-by-a association-in (car weight-in-row) (car response-in)))
@@ -144,19 +144,16 @@
     (if (null? weight-in-column)
 	'()
 	(begin
-	  (display " w:")
-	  (display (car weight-in-column))
-	  (display " a:")
-	  (display (car a-in))
-	  (display " r:")
-	  (display r-in)
-	  (display " ?:")
-	  (if (= (car a-in) 1)
-	      (if (= r-in 1)
-		  (display "w-1")
-		  (display "w+1"))
-	      (display "w"))
-	  (newline)
+	  (format #t "\tw:~1,1f\ta:~d\tr:~1,1f\t?:~a\n"
+		  (car weight-in-column)
+		  (car a-in)
+		  r-in
+		  (if (= (car a-in) 1)
+		      (if (= r-in 1)
+			  "m"
+			  "p")
+		      "o"))
+
 	  (cons (+ (car weight-in-column)
 		   (if (= (car a-in) 1)
 		       (if (= r-in 1)
@@ -168,9 +165,7 @@
 
   (let ((tmp-association (calculate-neuron-layer sensor weight-sa transfer-function-a threshold-a)))
     (let ((tmp-response (calculate-neuron-layer tmp-association weight-ar transfer-function-r threshold-r)))
-      (begin (display "tmp association layer")
-	     (display tmp-association) (newline)
-	     (display "tmp response layer")
-	     (display tmp-response) (newline)
-	     (newline)
+      (begin
+	(format #t "Temporary: association layer ~a\tresponse layer ~a\n"
+		tmp-association tmp-response)
 	     (iter-by-r tmp-association weight-ar tmp-response real-result)))))

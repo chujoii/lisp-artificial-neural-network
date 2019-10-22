@@ -54,6 +54,9 @@
 
 (set! *random-state* (random-state-from-platform))
 
+;;; Use #t for debug print, or #f for silent
+(define *debug-print* #t)
+
 ;;; Set dimensoin of sensor in format: (list mean standard-deviation)
 (define dimension-sensor (list (list 230.0 23.0)   ;; 230 В ±10 %
 			 (list 230.0 23.0)
@@ -130,35 +133,15 @@
 
 
 
-(display "Sensor (input) layer size = ")
-(display (length dimension-sensor))
-(newline)(newline)
-
-(display "Association (hidden) layer size = ")
-(display number-association)
-(newline)(newline)
-
-(display "Response (output) layer size = ")
-(display number-response)
-(newline)(newline)
-
-(display "Weight Sensor-Association ")
+(format #t "Sensor (input) layer size = ~d\n\n" (length dimension-sensor))
+(format #t  "Association (hidden) layer size = ~d\n\n" number-association)
+(format #t "Response (output) layer size = ~d\n\n" number-response)
 (define weight-sa (set-random-weight-sa (length dimension-sensor) number-association))
-(display weight-sa)
-(newline)(newline)
-
-(display "Threshold Association ")
-(display threshold-a)
-(newline)(newline)
-
-(display "Weight Association-Response ")
+(format #t "Weight Sensor-Association ~a\n\n" weight-sa)
+(format #t "Threshold Association ~a\n\n" threshold-a)
 (define initial-weight-ar (set-random-weight-ar number-association number-response))
-(display initial-weight-ar)
-(newline)(newline)
-
-(display "Threshold Response ")
-(display threshold-r)
-(newline)(newline)
+(format #t "Weight Association-Response ~a\n\n" initial-weight-ar)
+(format #t "Threshold Response ~a\n\n" threshold-r)
 
 
 
@@ -168,13 +151,11 @@
 
 
 
-(display "simple calculate one layer perceptron")(newline)
-(display "with update weight of one layer perceptron")(newline)
+(format #t "simple calculate one layer perceptron\nwith update weight of one layer perceptron\n")
 (define (cycle-learn weight-ar limit)
-  (display "---------------------------=[ ") (display limit) (display " ]=---------------------------") (newline)
+  (format #t "---------------------------=[ ~d ]=---------------------------\n" limit)
   (let ((data (generate-random-sensor-data dimension-sensor)))
-    (display "Random generated Sensors value ")
-    (display data) (newline)
+    (if *debug-print* (format #t "Random generated Sensors value ~a\n" data))
     (if (<= limit 0)
 	weight-ar
 	(cycle-learn (calculate-weight-sar data
@@ -184,33 +165,14 @@
 		     (- limit 1)))))
 
 
-(define learned-weight-ar (cycle-learn initial-weight-ar 200000))
+(define learned-weight-ar (cycle-learn initial-weight-ar 20))
+
 
 (newline)
-(display "Association (hidden) layer size = ")
-(display number-association)
-(newline)(newline)
-
-(display "Response (output) layer size = ")
-(display number-response)
-(newline)(newline)
-
-(display "Weight Sensor-Association ")
-(display weight-sa)
-(newline)(newline)
-
-(display "Threshold Association ")
-(display threshold-a)
-(newline)(newline)
-
-(display "Initial Weight Association-Response ")
-(display initial-weight-ar)
-(newline)(newline)
-
-(display "Learned Weight Association-Response ")
-(display learned-weight-ar)
-(newline)(newline)
-
-(display "Threshold Response ")
-(display threshold-r)
-(newline)(newline)
+(format #t "Association (hidden) layer size = ~d\n\n" number-association)
+(format #t "Response (output) layer size = ~d\n\n" number-response)
+(format #t "Weight Sensor-Association ~a\n\n" weight-sa)
+(format #t "Threshold Association ~a\n\n" threshold-a)
+(format #t "Initial Weight Association-Response ~a\n\n" initial-weight-ar)
+(format #t "Learned Weight Association-Response ~a\n\n" learned-weight-ar)
+(format #t "Threshold Response ~a\n\n" threshold-r)
