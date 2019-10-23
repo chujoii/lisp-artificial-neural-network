@@ -123,7 +123,8 @@
 (define (calculate-weight-sar sensor
 			      weight-sa transfer-function-a threshold-a
 			      weight-ar transfer-function-r threshold-r
-			      real-result)
+			      real-result
+			      correction-epoch)
   (define (iter-by-r association-in weight-in-row response-in response-real) ;; by response in weight list (row)
     (if (null? weight-in-row)
 	'()
@@ -137,7 +138,12 @@
 
 	  (cons (if (= (car response-in) (car response-real))
 		    (car weight-in-row)
-		    (iter-by-a association-in (car weight-in-row) (car response-in) 1.0)) ; fixme: need change "correction=1.0", depend of response difference
+		    (iter-by-a association-in (car weight-in-row) (car response-in) correction-epoch))
+					; fixme: need change "correction-epoch" to value, that depend of response difference
+					; correction = (response_threshold - sum(Ai*Wj)) / Num_of_weight_lines(j)
+					; ?or?
+					; correction = f(Epoch_counter)
+
 		(iter-by-r association-in (cdr weight-in-row) (cdr response-in) (cdr response-real))))))
 
   (define (iter-by-a a-in weight-in-column r-in correction) ;; by association in weight list (column)

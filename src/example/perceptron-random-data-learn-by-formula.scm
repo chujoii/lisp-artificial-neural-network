@@ -152,8 +152,8 @@
 
 
 (format #t "simple calculate one layer perceptron\nwith update weight of one layer perceptron\n")
-(define (cycle-learn weight-ar limit)
-  (format #t "---------------------------=[ ~d ]=---------------------------\n" limit)
+(define (cycle-learn weight-ar limit correction-scale)
+  (format #t "---------------------------=[ ~d ~e]=---------------------------\n" limit (/ limit correction-scale))
   (let ((data (generate-random-sensor-data dimension-sensor)))
     (if *debug-print* (format #t "Random generated Sensors value ~a\n" data))
     (if (<= limit 0)
@@ -161,11 +161,12 @@
 	(cycle-learn (calculate-weight-sar data
 					   weight-sa transfer-function-step threshold-a
 					   weight-ar transfer-function-sigmoid threshold-r
-					   (formula_for_correct_answer dimension-sensor data))
-		     (- limit 1)))))
+					   (formula_for_correct_answer dimension-sensor data)
+					   (/ limit correction-scale))
+		     (- limit 1) correction-scale))))
 
 
-(define learned-weight-ar (cycle-learn initial-weight-ar 20))
+(define learned-weight-ar (cycle-learn initial-weight-ar 20 100.0))
 
 
 (newline)
