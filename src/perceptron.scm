@@ -137,35 +137,36 @@
 
 	  (cons (if (= (car response-in) (car response-real))
 		    (car weight-in-row)
-		    (iter-by-a association-in (car weight-in-row) (car response-in)))
+		    (iter-by-a association-in (car weight-in-row) (car response-in) 1.0)) ; fixme: need change "correction=1.0", depend of response difference
 		(iter-by-r association-in (cdr weight-in-row) (cdr response-in) (cdr response-real))))))
 
-  (define (iter-by-a a-in weight-in-column r-in) ;; by association in weight list (column)
+  (define (iter-by-a a-in weight-in-column r-in correction) ;; by association in weight list (column)
     (if (null? weight-in-column)
 	'()
 	(begin
-	  (format #t "\tw:~1,1f\ta:~d\tr:~1,1f\t?:~a\n"
-		  (car weight-in-column)
-		  (car a-in)
-		  r-in
-		  (if (= (car a-in) 1)
-		      (if (= r-in 1)
-			  "m"
-			  "p")
-		      "o"))
+	  (format #t (if *debug-print* "\tw:~1,1f\ta:~d\tr:~1,1f\t?:~a\n" "~3*~a")
+		      (car weight-in-column)
+		      (car a-in)
+		      r-in
+		      (if (= (car a-in) 1)
+			  (if (= r-in 1)
+			      "m"
+			      "p")
+			  "o"))
 
 	  (cons (+ (car weight-in-column)
 		   (if (= (car a-in) 1)
 		       (if (= r-in 1)
-			   -1
-			   1)
+			   (* correction -1)
+			   correction)
 		       0))
-		(iter-by-a (cdr a-in) (cdr weight-in-column) r-in)))))
+		(iter-by-a (cdr a-in) (cdr weight-in-column) r-in correction)))))
 
 
   (let ((tmp-association (calculate-neuron-layer sensor weight-sa transfer-function-a threshold-a)))
     (let ((tmp-response (calculate-neuron-layer tmp-association weight-ar transfer-function-r threshold-r)))
       (begin
-	(format #t "Temporary: association layer ~a\tresponse layer ~a\n"
-		tmp-association tmp-response)
+	(if *debug-print*
+	    (format #t "Temporary: association layer ~a\tresponse layer ~a\n"
+		    tmp-association tmp-response))
 	(iter-by-r tmp-association weight-ar tmp-response real-result)))))
