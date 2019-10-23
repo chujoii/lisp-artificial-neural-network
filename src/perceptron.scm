@@ -72,9 +72,9 @@
 
 
 ;; uncomment for test
-;(unittest-transfer-function transfer-function-step 1.0   -3.0 0.2 3.0)
-;(unittest-transfer-function transfer-function-linear 1.0   -3.0 0.2 3.0)
-;(unittest-transfer-function transfer-function-sigmoid 1.0   -3.0 0.2 3.0)
+					;(unittest-transfer-function transfer-function-step 1.0   -3.0 0.2 3.0)
+					;(unittest-transfer-function transfer-function-linear 1.0   -3.0 0.2 3.0)
+					;(unittest-transfer-function transfer-function-sigmoid 1.0   -3.0 0.2 3.0)
 
 
 ;; Sensor                    Association
@@ -168,4 +168,4 @@
       (begin
 	(format #t "Temporary: association layer ~a\tresponse layer ~a\n"
 		tmp-association tmp-response)
-	     (iter-by-r tmp-association weight-ar tmp-response real-result)))))
+	(iter-by-r tmp-association weight-ar tmp-response real-result)))))

@@ -59,9 +59,9 @@
 
 ;;; Set dimensoin of sensor in format: (list mean standard-deviation)
 (define dimension-sensor (list (list 230.0 23.0)   ;; 230 В ±10 %
-			 (list 230.0 23.0)
-			 (list 230.0 23.0)
-			 (list  50.0  0.2))) ;; 50 ±0,2 Гц
+			       (list 230.0 23.0)
+			       (list 230.0 23.0)
+			       (list  50.0  0.2))) ;; 50 ±0,2 Гц
 ;;; Set number of output units
 (define number-response 3)
 
@@ -80,20 +80,20 @@
 
 
 (define (generate-random-sensor-data dimension)
-    (if (null? dimension)
-	'()
-	(cons (+ (caar dimension) (* (cadar dimension) (random:normal)))
-	      ;; (caar dimension) mean of normal distribution
-	      ;; (cadar dimension) standard-deviation
-	      (generate-random-sensor-data (cdr dimension)))))
+  (if (null? dimension)
+      '()
+      (cons (+ (caar dimension) (* (cadar dimension) (random:normal)))
+	    ;; (caar dimension) mean of normal distribution
+	    ;; (cadar dimension) standard-deviation
+	    (generate-random-sensor-data (cdr dimension)))))
 
 
 ;;; weight: Sensor (input units) --- Association (hidden units)
 ;;; A.S
 (define (set-random-weight-sa numin numout)
-    (if (<= numout 0)
-	'()
-	(cons (create-list-of-n-element-filled-by-evaluated-function numin random:normal) (set-random-weight-sa numin (- numout 1)))))
+  (if (<= numout 0)
+      '()
+      (cons (create-list-of-n-element-filled-by-evaluated-function numin random:normal) (set-random-weight-sa numin (- numout 1)))))
 
 ;;; threshold: Association
 (define threshold-a (create-list-of-n-element-filled-by-evaluated-function number-association random:uniform))
@@ -101,9 +101,9 @@
 ;;; weight: Association (hidden units) --- Response (output units)
 ;;; R.A
 (define (set-random-weight-ar numin numout)
-    (if (<= numout 0)
-	'()
-	(cons (create-list-of-n-element-filled-by-evaluated-function numin random:uniform) (set-random-weight-sa numin (- numout 1)))))
+  (if (<= numout 0)
+      '()
+      (cons (create-list-of-n-element-filled-by-evaluated-function numin random:uniform) (set-random-weight-sa numin (- numout 1)))))
 
 
 ;;; threshold: Response
