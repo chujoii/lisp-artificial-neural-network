@@ -80,15 +80,19 @@
 (define example-threshold-a (list 1.0 1000.0 1.0 1.0 9000.0))
 (define example-threshold-r (list 100.0 100.0 1.0 1.0))
 
+;; step correction weight
+(define correction 1)
+
 (format #t "simple calculate one layer perceptron\n~a\n\n\n"
 	(perceptron-sar example-sensor
-			example-weight-sa transfer-function-step    example-threshold-a
+			example-weight-sa transfer-function-step example-threshold-a
 			example-weight-ar transfer-function-step example-threshold-r))
 
 (format #t "repeat previous code for simple calculations,\nwith update weight of one layer perceptron\n~a\n"
 	(calculate-weight-sar example-sensor
-			      example-weight-sa transfer-function-step    example-threshold-a
+			      example-weight-sa transfer-function-step example-threshold-a
 			      example-weight-ar transfer-function-step example-threshold-r
-			      (list 0 1 0 1)))
+			      (list 0 1 0 1)
+			      correction))
 
 (format #t "see ../../doc/img/fig-1.pdf\n")
