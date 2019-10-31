@@ -56,6 +56,9 @@
 ;;; Use #t for debug print, or #f for silent
 (define *debug-print* #t)
 
+;; error value
+(define *error-value* 0.1)
+
 ;;; Sensor (input units)
 (define example-sensor (list 10 20 30 40 50 60))
 
@@ -93,6 +96,7 @@
 			      example-weight-sa transfer-function-step example-threshold-a
 			      example-weight-ar transfer-function-step example-threshold-r
 			      (list 0 1 0 1)
-			      correction))
+			      correction
+			      *error-value*))
 
 (format #t "see ../../doc/img/fig-1.pdf\n")

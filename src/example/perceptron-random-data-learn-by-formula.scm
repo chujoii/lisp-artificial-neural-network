@@ -57,6 +57,10 @@
 ;;; Use #t for debug print, or #f for silent
 (define *debug-print* #t)
 
+
+;; error value
+(define *error-value* 0.4)
+
 ;;; Set dimensoin of sensor in format: (list mean standard-deviation)
 (define dimension-sensor (list (list 230.0 23.0)   ;; 230 В ±10 %
 			       (list 230.0 23.0)
@@ -123,9 +127,9 @@
 	      (iter (cdr dim) (cdr sen)))))
 
   (let ((result (iter dimension sensor-data))) ; very strange
-    (list (if (> (apply + result) 0) 1 0)    ; 1 for breakage
-	  0                                  ; unknown: before breakage
-	  (if (= (apply + result) 0) 1 0)))) ; 1 for normal
+    (list (if (>= (apply + result) *error-value*) 1 0)   ; 1 for breakage
+	  0                                              ; unknown: before breakage state
+	  (if (< (apply + result) *error-value*) 1 0)))) ; 1 for normal
 
 
 
@@ -162,7 +166,8 @@
 					   weight-sa transfer-function-step threshold-a
 					   weight-ar transfer-function-sigmoid threshold-r
 					   (formula_for_correct_answer dimension-sensor data)
-					   (/ limit correction-scale))
+					   (/ limit correction-scale)
+					    *error-value*)
 		     (- limit 1) correction-scale))))
 
 

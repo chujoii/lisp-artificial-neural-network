@@ -124,7 +124,8 @@
 			      weight-sa transfer-function-a threshold-a
 			      weight-ar transfer-function-r threshold-r
 			      real-result
-			      correction-epoch)
+			      correction-epoch
+			      error-value)
   (define (iter-by-r association-in weight-in-row response-in response-real) ;; by response in weight list (row)
     (if (null? weight-in-row)
 	'()
@@ -132,11 +133,11 @@
 	  (if *debug-print*
 	      (format #t "c: ~a ~a\n"
 		      (car weight-in-row)
-		      (if (= (car response-in) (car response-real))
-			  " correct weight"
+		      (if (< (abs (- (car response-in) (car response-real))) error-value)
+			  " good weight"
 			  " need update weight")))
 
-	  (cons (if (= (car response-in) (car response-real))
+	  (cons (if (< (abs (- (car response-in) (car response-real))) error-value)
 		    (car weight-in-row)
 		    (iter-by-a association-in (car weight-in-row) (car response-in) correction-epoch))
 					; fixme: need change "correction-epoch" to value, that depend of response difference
@@ -154,15 +155,15 @@
 		      (car weight-in-column)
 		      (car a-in)
 		      r-in
-		      (if (= (car a-in) 1)
-			  (if (= r-in 1)
+		      (if (> (car a-in) 0.5)
+			  (if (> r-in 0.5)
 			      "m"
 			      "p")
 			  "o"))
 
 	  (cons (+ (car weight-in-column)
-		   (if (= (car a-in) 1)
-		       (if (= r-in 1)
+		   (if (> (car a-in) 0.5) ;; check association: activated neuron or not?
+		       (if (> r-in 0.5)   ;; check response: activated neuron or not?
 			   (* correction -1)
 			   correction)
 		       0))
