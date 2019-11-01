@@ -49,8 +49,8 @@
 
 ;;; Code:
 
-(load "../perceptron.scm")
-(load "../../../../util/battery-scheme/list.scm")
+(load "../../../perceptron.scm")
+(load "../../../../../../util/battery-scheme/list.scm")
 
 (set! *random-state* (random-state-from-platform))
 

@@ -2,7 +2,7 @@
 !#
 ; coding: utf-8
 
-;;;; perceptron-by-formula.scm ---  simple usage already learned perceptron.
+;;;; example.scm ---  simple usage already learned perceptron.
 ;;;; Very strange situation: you have simple formula, but use intricate perceptron
 
 
@@ -36,18 +36,18 @@
 
 
 ;;; Usage:
-;; learn: ./perceptron-random-data-learn-by-formula.scm
-;; result write to file perceptron-knowledge-base-by-formula.scm (use format from original example)
-;; perceptron-by-formula.scm [Ua] [Ub] [Uc] [F]
+;; learn: ./machine-learning.scm.scm
+;; result write to file knowledge-base.scm (use format from original example)
+;; example.scm [Ua] [Ub] [Uc] [F]
 ;;
 ;; correct voltage from 207.0 to 253.0 (230 V ±10 %)
 ;; correct frequency from 49.8 to 50.2 (50 ±0,2 Hz)
 ;;
 ;; for example:
-;; ./perceptron-by-formula.scm 220.0 230.0 123.4 50.0
+;; ./example.scm 220.0 230.0 123.4 50.0
 ;; alert!
 ;;
-;; ./perceptron-by-formula.scm 220.0 230.0 240.0 50.0
+;; ./example.scm 220.0 230.0 240.0 50.0
 ;; all ok
 
 
@@ -61,12 +61,12 @@
 
 
 
-(load "../perceptron.scm")
+(load "../../../perceptron.scm")
 
 ;;; Use #t for debug print, or #f for silent
 (define *debug-print* #t)
 
-(load "perceptron-knowledge-base-by-formula.scm")
+(load "knowledge-base.scm")
 
 ;;; Sensor (input units)
 (define sensor (map string->number (cdr (command-line))))

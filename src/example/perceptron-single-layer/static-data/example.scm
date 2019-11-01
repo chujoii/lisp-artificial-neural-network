@@ -2,7 +2,7 @@
 !#
 ; coding: utf-8
 
-;;;; perceptron-static-data.scm ---  simple usage of perceptron
+;;;; example.scm ---  simple usage of perceptron
 
 
 
@@ -37,9 +37,9 @@
 
 ;;; Usage:
 
-;; guile perceptron-static-data.scm
+;; guile example.scm
 ;; or
-;; ./perceptron-static-data.scm
+;; ./example.scm
 
 
 
@@ -51,7 +51,7 @@
 
 ;;; Code:
 
-(load "../perceptron.scm")
+(load "../../../perceptron.scm")
 
 ;;; Use #t for debug print, or #f for silent
 (define *debug-print* #t)
@@ -99,4 +99,4 @@
 			      correction
 			      *error-value*))
 
-(format #t "see ../../doc/img/fig-1.pdf\n")
+(format #t "see ../../../../doc/img/fig-1.pdf\n")
