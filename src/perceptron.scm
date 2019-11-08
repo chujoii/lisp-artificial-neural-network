@@ -48,21 +48,24 @@
 ;;; Code:
 
 (use-modules (ice-9 format))
+(load "../../../util/battery-scheme/print-list.scm")
 
 ;;; Transfer function (activation function)
 (define (transfer-function-step signal threshold)
-  (if (> signal threshold) 1 0))
+  (- signal threshold))
 
 (define (transfer-function-linear signal threshold)
-  (cond ((< signal 0.0) 0) ;; fixme: level=const
+  (- (cond ((< signal 0.0) 0) ;; fixme: level=const
 	((> signal 1.0) 1) ;; fixme: level=const
-	(else signal)))
+	(else signal))
+  (/ threshold 2)))
 
 ;;  (/ 1.0 (+ 1.0 (exp (* -t signal))))
 ;; t = 0   : sigmoid equal to step function
 ;; t = 0,5 : dx~(0,1)
 (define (transfer-function-sigmoid signal threshold)
-  (/ 1.0 (+ 1.0 (exp (* -1 threshold signal)))))
+  (- (/ 1.0 (+ 1.0 (exp (* -1 threshold signal))))
+     (/ threshold 2)))
 
 (define (unittest-transfer-function transfer-function threshold   from step to)
   (if (< from to)
@@ -72,9 +75,9 @@
 
 
 ;; uncomment for test
-					;(unittest-transfer-function transfer-function-step 1.0   -3.0 0.2 3.0)
-					;(unittest-transfer-function transfer-function-linear 1.0   -3.0 0.2 3.0)
-					;(unittest-transfer-function transfer-function-sigmoid 1.0   -3.0 0.2 3.0)
+;(format #t "transfer-function-step\n") (unittest-transfer-function transfer-function-step 1.0   -3.0 0.2 3.0)
+;(format #t "transfer-function-linear\n") (unittest-transfer-function transfer-function-linear 1.0   -3.0 0.2 3.0)
+;(format #t "transfer-function-sigmoid\n") (unittest-transfer-function transfer-function-sigmoid 1.0   -3.0 0.2 3.0)
 
 
 ;; Sensor                    Association
