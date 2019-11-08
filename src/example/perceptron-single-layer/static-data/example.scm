@@ -86,12 +86,14 @@
 ;; step correction weight
 (define correction 1)
 
-(format #t "simple calculate one layer perceptron\n~a\n\n\n"
+(format #t "simple calculate one layer perceptron\n")
+(format #t "~a\n\n\n"
 	(perceptron-sar example-sensor
 			example-weight-sa transfer-function-step example-threshold-a
 			example-weight-ar transfer-function-step example-threshold-r))
 
-(format #t "repeat previous code for simple calculations,\nwith update weight of one layer perceptron\n~a\n"
+(format #t "repeat previous code for simple calculations,\nwith update weight of one layer perceptron\n")
+(format #t "~a\n"
 	(calculate-weight-sar example-sensor
 			      example-weight-sa transfer-function-step example-threshold-a
 			      example-weight-ar transfer-function-step example-threshold-r

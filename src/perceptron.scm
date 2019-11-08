@@ -79,6 +79,19 @@
 ;(format #t "transfer-function-linear\n") (unittest-transfer-function transfer-function-linear 1.0   -3.0 0.2 3.0)
 ;(format #t "transfer-function-sigmoid\n") (unittest-transfer-function transfer-function-sigmoid 1.0   -3.0 0.2 3.0)
 
+(define (normalize-element element)
+  (if (>= element 0.0) 1 0))
+
+(define (normalize-list list)
+  (if (null? list)
+      '()
+      (cons (normalize-element (car list))
+	    (normalize-list (cdr list)))))
+
+
+;; random value: -1 or 0 or +1
+(define (random:mop)
+  (- (random 3) 1))
 
 ;; Sensor                    Association
 ;;
@@ -89,9 +102,13 @@
 (define (calculate-neuron-layer list-in weight transfer-function threshold)
   (if *debug-print*
       (if (not (null? weight))
-	  (format #t "~a sum=~1,2f activated=~1,2f\n"
+	  (format #t "in=~a in*w=~a sum=~1,2f activated=~d (~1,2f)\n"
+		  list-in
 		  (map * list-in (car weight))
 		  (apply + (map * list-in (car weight)))
+		  (if (>= (transfer-function (apply + (map * list-in (car weight)))
+					     (car threshold)) 0.0)
+		      1 0)
 		  (transfer-function (apply + (map * list-in (car weight)))
 				     (car threshold)))))
 
@@ -117,8 +134,8 @@
 (define (perceptron-sar sensor
 			weight-sa transfer-function-a threshold-a
 			weight-ar transfer-function-r threshold-r)
-  (calculate-neuron-layer (calculate-neuron-layer sensor weight-sa transfer-function-a threshold-a)
-			  weight-ar transfer-function-r threshold-r))
+  (normalize-list (calculate-neuron-layer (normalize-list (calculate-neuron-layer sensor weight-sa transfer-function-a threshold-a))
+					  weight-ar transfer-function-r threshold-r)))
 
 
 ;; machine-learning max-calculation-error
@@ -126,7 +143,7 @@
 (define (calculate-weight-sar sensor
 			      weight-sa transfer-function-a threshold-a
 			      weight-ar transfer-function-r threshold-r
-			      real-result
+			      real-result ;; correct real result from teacher
 			      correction-epoch
 			      error-value)
   (define (iter-by-r association-in weight-in-row response-in response-real) ;; by response in weight list (row)
@@ -134,13 +151,13 @@
 	'()
 	(begin
 	  (if *debug-print*
-	      (format #t "c: ~a ~a\n"
+	      (format #t "weight: ~a ~a\n"
 		      (car weight-in-row)
-		      (if (< (abs (- (car response-in) (car response-real))) error-value)
+		      (if (< (abs (- (normalize-element (car response-in)) (car response-real))) error-value)
 			  " good weight"
 			  " need update weight")))
 
-	  (cons (if (< (abs (- (car response-in) (car response-real))) error-value)
+	  (cons (if (< (abs (- (normalize-element (car response-in)) (car response-real))) error-value)
 		    (car weight-in-row)
 		    (iter-by-a association-in (car weight-in-row) (car response-in) correction-epoch))
 					; fixme: need change "correction-epoch" to value, that depend of response difference
@@ -150,33 +167,35 @@
 
 		(iter-by-r association-in (cdr weight-in-row) (cdr response-in) (cdr response-real))))))
 
-  (define (iter-by-a a-in weight-in-column r-in correction) ;; by association in weight list (column)
+  (define (iter-by-a a-in weight-in-column r-in correction-speed) ;; by association in weight list (column)
     (if (null? weight-in-column)
 	'()
 	(begin
-	  (format #t (if *debug-print* "\tw:~1,1f\ta:~d\tr:~1,1f\t?:~a\n" "~3*~a")
+	  (format #t (if *debug-print* "\tw:~7,2f\ta:~d\tr:~7,2f\t(dw=~7,2f)\t?:~a\n" "~3*~a")
 		      (car weight-in-column)
 		      (car a-in)
 		      r-in
-		      (if (> (car a-in) 0.5)
-			  (if (> r-in 0.5)
+		      correction-speed ; fixme: const -> threshold
+		      (if (>= (car a-in) 0.0) ; fixme: const -> threshold
+			  (if (>= r-in 0.0) ; fixme: const -> threshold
 			      "m"
 			      "p")
 			  "o"))
 
 	  (cons (+ (car weight-in-column)
-		   (if (> (car a-in) 0.5) ;; check association: activated neuron or not?
-		       (if (> r-in 0.5)   ;; check response: activated neuron or not?
-			   (* correction -1)
-			   correction)
+		   (if (>= (car a-in) 0.0) ;; check association: activated neuron or not?
+		       (if (>= r-in 0.0)   ;; check response: activated neuron or not?
+			   (* correction-speed -1)
+			   correction-speed)
 		       0))
-		(iter-by-a (cdr a-in) (cdr weight-in-column) r-in correction)))))
+		(iter-by-a (cdr a-in) (cdr weight-in-column) r-in correction-speed)))))
 
 
   (let ((tmp-association (calculate-neuron-layer sensor weight-sa transfer-function-a threshold-a)))
-    (let ((tmp-response (calculate-neuron-layer tmp-association weight-ar transfer-function-r threshold-r)))
+    (let ((tmp-response (calculate-neuron-layer (normalize-list tmp-association) weight-ar transfer-function-r threshold-r)))
       (begin
 	(if *debug-print*
-	    (format #t "Temporary: association layer ~a\tresponse layer ~a\n"
-		    tmp-association tmp-response))
+	    (format #t "\nTemporary: association layer ~a\tresponse layer ~a\nnormalized: association layer ~a\tresponse layer ~a\n"
+		    tmp-association tmp-response
+		    (normalize-list tmp-association) (normalize-list tmp-response)))
 	(iter-by-r tmp-association weight-ar tmp-response real-result)))))
