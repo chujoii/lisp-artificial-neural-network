@@ -102,8 +102,7 @@
 (define (calculate-neuron-layer list-in weight transfer-function threshold)
   (if *debug-print*
       (if (not (null? weight))
-	  (format #t "in=~a in*w=~a sum=~1,2f activated=~d (~1,2f)\n"
-		  list-in
+	  (format #t "in*w=~a sum=~1,2f activated=~d (~1,2f)\n"
 		  (map * list-in (car weight))
 		  (apply + (map * list-in (car weight)))
 		  (if (>= (transfer-function (apply + (map * list-in (car weight)))
@@ -159,11 +158,8 @@
 
 	  (cons (if (< (abs (- (normalize-element (car response-in)) (car response-real))) error-value)
 		    (car weight-in-row)
-		    (iter-by-a association-in (car weight-in-row) (car response-in) correction-epoch))
-					; fixme: need change "correction-epoch" to value, that depend of response difference
-					; correction = (response_threshold - sum(Ai*Wj)) / Num_of_weight_lines(j)
-					; ?or?
-					; correction = f(Epoch_counter)
+		    (iter-by-a association-in (car weight-in-row) (car response-in)
+			       (* (car response-in) correction-epoch))) ; delta rule
 
 		(iter-by-r association-in (cdr weight-in-row) (cdr response-in) (cdr response-real))))))
 
@@ -171,23 +167,19 @@
     (if (null? weight-in-column)
 	'()
 	(begin
-	  (format #t (if *debug-print* "\tw:~7,2f\ta:~d\tr:~7,2f\t(dw=~7,2f)\t?:~a\n" "~3*~a")
+	  (format #t (if *debug-print* "\tw:~7,2f\ta:~7,2f\tr:~7,2f\t(dw=~7,2e)\t?:~a\n" "~4*~a")
 		      (car weight-in-column)
 		      (car a-in)
 		      r-in
-		      correction-speed ; fixme: const -> threshold
+		      (* (normalize-element (car a-in)) correction-speed) ; fixme: const -> threshold
 		      (if (>= (car a-in) 0.0) ; fixme: const -> threshold
 			  (if (>= r-in 0.0) ; fixme: const -> threshold
 			      "m"
 			      "p")
 			  "o"))
 
-	  (cons (+ (car weight-in-column)
-		   (if (>= (car a-in) 0.0) ;; check association: activated neuron or not?
-		       (if (>= r-in 0.0)   ;; check response: activated neuron or not?
-			   (* correction-speed -1)
-			   correction-speed)
-		       0))
+	  (cons (- (car weight-in-column)
+		   (* (normalize-element (car a-in)) correction-speed)) ; delta rule
 		(iter-by-a (cdr a-in) (cdr weight-in-column) r-in correction-speed)))))
 
 
