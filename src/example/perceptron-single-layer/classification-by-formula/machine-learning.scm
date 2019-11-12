@@ -51,15 +51,22 @@
 
 (load "../../../perceptron.scm")
 (load "../../../../../../util/battery-scheme/list.scm")
+(load "../../../../../../util/battery-scheme/print-list.scm")
 
 (set! *random-state* (random-state-from-platform))
+;(set! *random-state* (seed->random-state 1.2345))
+
+(define epoch-limit 2000)
+(define start-weight-step 1000.0)
 
 ;;; Use #t for debug print, or #f for silent
-(define *debug-print* #t)
+(define *debug-print* #f)
 
 
 ;; error value
-(define *error-value* 0.4)
+(define *error-value* 0.01)
+
+(define wide-deviation 3)
 
 ;;; Set dimensoin of sensor in format: (list mean standard-deviation)
 (define dimension-sensor (list (list 230.0 23.0)   ;; 230 В ±10 %
@@ -79,14 +86,14 @@
 
 ;;; Calculate approximate value of number hidden
 ;;; Nhidden = (2/3)Nin + Nout
-(define number-association (ceiling (+ (/ (* 2 (length dimension-sensor)) 3)  number-response)))
-
+;(define number-association (ceiling (+ (/ (* 2 (length dimension-sensor)) 3)  number-response)))
+(define number-association 32)
 
 
 (define (generate-random-sensor-data dimension)
   (if (null? dimension)
       '()
-      (cons (+ (caar dimension) (* (cadar dimension) (random:normal)))
+      (cons (+ (caar dimension) (* wide-deviation (cadar dimension) (random:normal))) ; increase standard-deviation of normal random distribution for best learn practics
 	    ;; (caar dimension) mean of normal distribution
 	    ;; (cadar dimension) standard-deviation
 	    (generate-random-sensor-data (cdr dimension)))))
