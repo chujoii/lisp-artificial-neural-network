@@ -76,7 +76,7 @@
 (format #t "simple calculate one layer perceptron\n~a\n\n\n"
 	(perceptron-sar sensor
 			weight-sa transfer-function-step threshold-a
-			learned-weight-ar transfer-function-sigmoid threshold-r))
+			learned-weight-ar transfer-function-step threshold-r))
 
 
 

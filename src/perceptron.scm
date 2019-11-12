@@ -167,7 +167,7 @@
     (if (null? weight-in-column)
 	'()
 	(begin
-	  (format #t (if *debug-print* "\tw:~7,2f\ta:~7,2f\tr:~7,2f\t(dw=~7,2e)\t?:~a\n" "~4*~a")
+	  (format #t (if *debug-print* "\tw:~7,2f\ta:~7,2f\tr:~7,2f\t(dw=~7,2e)\t?:~a\n" (if (>= (car a-in) 0.0) "~3*~6,1e ~a\t" "~4* ~a\t"))
 		      (car weight-in-column)
 		      (car a-in)
 		      r-in
