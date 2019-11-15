@@ -32,7 +32,7 @@
 
 
 
-;;; Keywords: algorithm perceptron neuron network machine learning growing neural gas
+;;; Keywords: algorithm neuron network machine learning growing neural gas
 
 
 
@@ -44,17 +44,51 @@
 
 ;;; History:
 
-;; Project started at 2019-08(Aug)-29
+;; Project started at 2019-11(Nov)-14
 
 
 
 ;;; Code:
 
-(use-modules (ice-9 format))
-
 ;;; neuron (node):
 ;;; ((weights) local-error (ages))
-;;; (weights) - list of weights
+;;; (weights) - list of weights for input vector from sensors
 ;;; local-error - number = old-local-error + (d(Weights, Sensors))^2
 ;;; (ages) - list of age between neurons
+;;;
+;;; gag = (abc   de   f)
+;;;
+;;;                  a b c d e f
+;;; (    ((1 2 3) 0 (0 1 3 0 0 0))         ; a   age of connections: a~b=1
+;;;      ((1 2 3) 0 (1 0 2 0 0 0))         ; b   age of connections: b~c=2
+;;;      ((1 2 3) 0 (3 2 0 0 0 0))         ; c   age of connections: c~a=3
+;;;      ((1 2 3) 0 (0 0 0 0 4 0))         ; d   age of connections: d~e=4
+;;;      ((1 2 3) 0 (0 0 0 4 0 0))         ; e
+;;;      ((1 2 3) 0 (0 0 0 0 0 0))    )    ; f   not connected
 
+
+
+(load "../../../util/battery-scheme/list.scm")
+
+
+
+(define (add-ages old-ages)
+  (cons 0 old-ages))
+
+
+
+(define (make-neuron dimension-sensor numbers-of-neurons ages)
+  (list
+   (create-list-of-n-element-filled-by-evaluated-function dimension-sensor random:normal) ; weights
+   0.0 ; local-error
+   (add-ages ages))) ; ages
+
+
+
+(define (add-neuron neuron gng)
+  (cons neuron gng))
+
+
+
+(define (growing-neural-gas gng)
+  gng)
