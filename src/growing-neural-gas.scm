@@ -58,7 +58,7 @@
 ;;;
 ;;; gag = (abc   de   f)
 ;;;
-;;;                  a b c d e f
+;;;                  a b c d e f           ; warning: duplication of age data => duplication of program code
 ;;; (    ((1 2 3) 0 (0 1 3 0 0 0))         ; a   age of connections: a~b=1
 ;;;      ((1 2 3) 0 (1 0 2 0 0 0))         ; b   age of connections: b~c=2
 ;;;      ((1 2 3) 0 (3 2 0 0 0 0))         ; c   age of connections: c~a=3
@@ -73,21 +73,28 @@
 
 
 (define (add-ages old-ages)
+  (format #t "ages:~a\n" old-ages)
   (append old-ages (list 0)))
 
 
 
-(define (make-neuron dimension-sensor numbers-of-neurons ages)
+(define (make-neuron dimension-sensor ages)
   (list
    (create-list-of-n-element-filled-by-evaluated-function dimension-sensor random:normal) ; weights
-   (add-ages ages) ; ages
+   (list 0) ; not connected, so ages = 0
    0.0)) ; local-error
-
+(define (get-neuron-weight neuron) (car neuron))
+(define (get-neuron-age neuron) (cadr neuron))
+(define (get-neuron-local-error neuron) (caddr neuron))
 
 (define (add-neuron neuron gng)
-  (cons neuron gng))
+  (define (iter igng size)
+    (if (null? igng)
+	'()
+	(cons (list (get-neuron-weight (car igng)) (make-list size 0) (get-neuron-local-error neuron))
+		    (iter (cdr igng) size))))
 
-
+  (iter (append gng (list neuron)) (+ (length gng) 1)))
 
 (define (growing-neural-gas gng)
   gng)
