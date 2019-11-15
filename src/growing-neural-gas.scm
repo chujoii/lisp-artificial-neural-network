@@ -129,5 +129,19 @@
 
 
 
+(define (find-index-of-two-minimal in-list)
+  (define (iter counter index-a val-a index-b val-b lst)
+    (if (null? lst)
+	(list index-a index-b)
+	(if (< (car lst) val-a)
+	    (iter (1+ counter) counter (car lst) index-a val-a (cdr lst)) ; B = A; set newA to min
+	    (if (and (< (car lst) val-b) (not (= index-a counter)))
+		(iter (1+ counter) index-a val-a counter (car lst) (cdr lst)) ; set B to min
+		(iter (1+ counter) index-a val-a index-b val-b (cdr lst)))))) ; else
+
+    (iter 0 0 (car in-list) 1 (cadr in-list) in-list))
+
+
+
 (define (growing-neural-gas gng)
   gng)

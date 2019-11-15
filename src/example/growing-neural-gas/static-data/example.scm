@@ -103,3 +103,22 @@
 	(euclidean-distance  (get-neuron-weight (caddr *example-gng*)) *example-sensor*)
 	(euclidean-distance  (get-neuron-weight (cadddr *example-gng*)) *example-sensor*))
 (format #t "~a\n" (calculate-distance-weight-sensor *example-sensor* *example-gng*))
+
+
+
+(format #t "\nFind indexes of two minimal elementt (first correct answer, then calculated answer)\n")
+;
+(format #t "(0 1) ~a\n" (find-index-of-two-minimal (list 1 1)))
+(format #t "(0 1) ~a\n" (find-index-of-two-minimal (list 1 2)))
+(format #t "(1 0) ~a\n" (find-index-of-two-minimal (list 2 1)))
+;
+(format #t "(0 1) ~a\n" (find-index-of-two-minimal (list 1 1 2)))
+(format #t "(0 2) ~a\n" (find-index-of-two-minimal (list 1 2 1)))
+(format #t "(1 2) ~a\n" (find-index-of-two-minimal (list 2 1 1)))
+;
+(format #t "(0 1) ~a\n" (find-index-of-two-minimal (list 1 2 3)))
+(format #t "(0 2) ~a\n" (find-index-of-two-minimal (list 1 3 2)))
+(format #t "(1 0) ~a\n" (find-index-of-two-minimal (list 2 1 3)))
+(format #t "(2 0) ~a\n" (find-index-of-two-minimal (list 2 3 1)))
+(format #t "(1 2) ~a\n" (find-index-of-two-minimal (list 3 1 2)))
+(format #t "(2 1) ~a\n" (find-index-of-two-minimal (list 3 2 1)))
