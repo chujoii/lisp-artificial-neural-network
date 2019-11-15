@@ -96,5 +96,18 @@
 
   (iter (append gng (list neuron)) (+ (length gng) 1)))
 
+
+
+;; (update-weight 2 3 + 1 *initial-gng*) == increase (+1) link between 2 and 3 elements
+;; (update-weight 2 3 * 0 *initial-gng*) == remove (*0) link between 2 and 3 elements
+(define (update-neuron-age a b function step gng)
+					;(list-set! (function (list-ref a) step))
+  (list-set! (get-neuron-age (list-ref gng a)) b
+	     (function step (list-ref (get-neuron-age (list-ref gng a)) b)))
+  (list-set! (get-neuron-age (list-ref gng b)) a
+	     (function step (list-ref (get-neuron-age (list-ref gng b)) a))))
+
+
+
 (define (growing-neural-gas gng)
   gng)
