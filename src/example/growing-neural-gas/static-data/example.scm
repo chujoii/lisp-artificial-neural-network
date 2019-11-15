@@ -90,3 +90,6 @@
 (update-neuron-age 2 0 + 3 *example-gng*)
 (update-neuron-age 3 4 + 4 *example-gng*)
 (if *debug-print* (print-list-without-bracket (map cadr *example-gng*)))
+
+(format #t "Euclidean distance between point (1.0 2.0) and (3.0 4.0): ~7,2f\n"
+	(euclidean-distance (list 1.0 2.0) (list 3.0 4.0)))

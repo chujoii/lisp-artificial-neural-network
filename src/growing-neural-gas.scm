@@ -109,5 +109,20 @@
 
 
 
+(define (square x) (* x x))
+
+
+
+(define (euclidean-distance a b)
+  (define (iter x y)
+    (if (or (null? x) (null? y))
+	0.0
+	(+ (square (- (car x) (car y)))
+	   (iter (cdr x) (cdr y)))))
+
+  (sqrt (iter a b)))
+
+
+
 (define (growing-neural-gas gng)
   gng)
