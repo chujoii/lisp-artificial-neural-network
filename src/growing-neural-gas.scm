@@ -51,10 +51,10 @@
 ;;; Code:
 
 ;;; neuron (node):
-;;; ((weights) local-error (ages))
-;;; (weights) - list of weights for input vector from sensors
-;;; local-error - number = old-local-error + (d(Weights, Sensors))^2
-;;; (ages) - list of age between neurons
+;;; ((weights) (ages) local-error),  where:
+;;;    (weights) - list of weights for input vector from sensors
+;;;    (ages) - list of age between neurons
+;;;    local-error - number = old-local-error + (d(Weights, Sensors))^2
 ;;;
 ;;; gag = (abc   de   f)
 ;;;
@@ -73,16 +73,15 @@
 
 
 (define (add-ages old-ages)
-  (cons 0 old-ages))
+  (append old-ages (list 0)))
 
 
 
 (define (make-neuron dimension-sensor numbers-of-neurons ages)
   (list
    (create-list-of-n-element-filled-by-evaluated-function dimension-sensor random:normal) ; weights
-   0.0 ; local-error
-   (add-ages ages))) ; ages
-
+   (add-ages ages) ; ages
+   0.0)) ; local-error
 
 
 (define (add-neuron neuron gng)
