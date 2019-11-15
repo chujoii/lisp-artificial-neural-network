@@ -124,5 +124,10 @@
 
 
 
+(define (calculate-distance-weight-sensor sensor gng)
+  (map (lambda (x) (euclidean-distance x sensor)) (map get-neuron-weight gng)))
+
+
+
 (define (growing-neural-gas gng)
   gng)

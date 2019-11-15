@@ -64,7 +64,7 @@
 (define *dimension-of-sensor* 4)
 
 ;;; Sensor (input units)
-(define example-sensor (list 10 20 30 40))
+(define *example-sensor* (list 10 20 30 40))
 
 
 (define *initial-gng* (add-neuron (make-neuron *dimension-of-sensor* (list 0))
@@ -83,13 +83,23 @@
 (update-neuron-age 0 1 + 1 *initial-gng*)
 (if *debug-print* (print-list-without-bracket *initial-gng*))
 
-(format #t "\nsimple 6 neurons (see ../../../growing-neural-gas.scm), displayed only age:\n")
-;(if *debug-print* (print-list-without-bracket *example-gng*))
+
+(format #t "\nsimple 6 neurons (see ../../../growing-neural-gas.scm):\n")
+(if *debug-print* (print-list-without-bracket *example-gng*))
+(format #t "\ndisplayed only age:\n")
 (update-neuron-age 0 1 + 1 *example-gng*)
 (update-neuron-age 1 2 + 2 *example-gng*)
 (update-neuron-age 2 0 + 3 *example-gng*)
 (update-neuron-age 3 4 + 4 *example-gng*)
 (if *debug-print* (print-list-without-bracket (map cadr *example-gng*)))
 
-(format #t "Euclidean distance between point (1.0 2.0) and (3.0 4.0): ~7,2f\n"
+(format #t "Euclidean distance between point (1.0 2.0) and (3.0 4.0): ~7,2f\n\n"
 	(euclidean-distance (list 1.0 2.0) (list 3.0 4.0)))
+
+
+(format #t "Calculate distance between Weight and Sensor:(~7,2f ~7,2f ~7,2f ~7,2f ...) compare with:\n"
+	(euclidean-distance  (get-neuron-weight (car *example-gng*)) *example-sensor*)
+	(euclidean-distance  (get-neuron-weight (cadr *example-gng*)) *example-sensor*)
+	(euclidean-distance  (get-neuron-weight (caddr *example-gng*)) *example-sensor*)
+	(euclidean-distance  (get-neuron-weight (cadddr *example-gng*)) *example-sensor*))
+(format #t "~a\n" (calculate-distance-weight-sensor *example-sensor* *example-gng*))
