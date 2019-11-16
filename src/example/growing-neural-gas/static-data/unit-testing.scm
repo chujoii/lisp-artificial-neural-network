@@ -86,14 +86,18 @@
 
 (format #t "\nsimple 6 neurons (see ../../../growing-neural-gas.scm):\n")
 (if *debug-print* (print-list-without-bracket *example-gng*))
-(format #t "\ndisplayed only age:\n")
+(format #t "\ndisplayed only updated age:\n")
 (update-neuron-age 0 1 + 1 *example-gng*)
 (update-neuron-age 1 2 + 2 *example-gng*)
 (update-neuron-age 2 0 + 3 *example-gng*)
 (update-neuron-age 3 4 + 4 *example-gng*)
-(if *debug-print* (print-list-without-bracket (map cadr *example-gng*)))
+(if *debug-print* (print-list-without-bracket (map get-neuron-age *example-gng*)))
 
-(format #t "Euclidean distance between point (1.0 2.0) and (3.0 4.0): ~7,2f\n\n"
+(update-neuron-local-error 3 + 0.1 *example-gng*)
+(format #t "\ndisplayed only updated local error (see neuron number 3, count from 0):\n")
+(if *debug-print* (print-list-without-bracket (map get-neuron-local-error *example-gng*)))
+
+(format #t "\nEuclidean distance between point (1.0 2.0) and (3.0 4.0): ~7,2f\n\n"
 	(euclidean-distance (list 1.0 2.0) (list 3.0 4.0)))
 
 
@@ -122,3 +126,4 @@
 (format #t "(2 0) ~a\n" (find-index-of-two-minimal (list 2 3 1)))
 (format #t "(1 2) ~a\n" (find-index-of-two-minimal (list 3 1 2)))
 (format #t "(2 1) ~a\n" (find-index-of-two-minimal (list 3 2 1)))
+

@@ -98,14 +98,18 @@
 
 
 
-;; (update-weight 2 3 + 1 *initial-gng*) == increase (+1) link between 2 and 3 elements
-;; (update-weight 2 3 * 0 *initial-gng*) == remove (*0) link between 2 and 3 elements
+;; (update-neuron-age 2 3 + 1 *initial-gng*) == increase (+1) link between 2 and 3 elements
+;; (update-neuron-age 2 3 * 0 *initial-gng*) == remove (*0) link between 2 and 3 elements
 (define (update-neuron-age a b function step gng)
-					;(list-set! (function (list-ref a) step))
   (list-set! (get-neuron-age (list-ref gng a)) b
 	     (function step (list-ref (get-neuron-age (list-ref gng a)) b)))
   (list-set! (get-neuron-age (list-ref gng b)) a
 	     (function step (list-ref (get-neuron-age (list-ref gng b)) a))))
+
+
+(define (update-neuron-local-error a function step gng)
+  (list-set! (list-ref gng a) 2 ; fixme magic number: 2=get-neuron-local-error
+	     (function step (get-neuron-local-error (list-ref gng a)))))
 
 
 
