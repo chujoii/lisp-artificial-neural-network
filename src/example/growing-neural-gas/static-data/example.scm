@@ -94,3 +94,6 @@
 (if *debug-print* (print-list-without-bracket (map cadr *example-gng*)))
 
 
+(format #t "result of one step working \"growing neural gas\":\n")
+(print-list-without-bracket (growing-neural-gas *example-sensor* *example-gng*))
+(newline)
