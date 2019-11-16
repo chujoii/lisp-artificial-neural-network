@@ -97,8 +97,6 @@
 (format #t "\ndisplayed only updated local error (see neuron number 3, count from 0):\n")
 (if *debug-print* (print-list-without-bracket (map get-neuron-local-error *example-gng*)))
 
-(format #t "\nEuclidean distance between point (1.0 2.0) and (3.0 4.0): ~7,2f\n\n"
-	(euclidean-distance (list 1.0 2.0) (list 3.0 4.0)))
 
 
 (format #t "Calculate distance between Weight and Sensor:(~7,2f ~7,2f ~7,2f ~7,2f ...) compare with:\n"
