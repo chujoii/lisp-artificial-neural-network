@@ -104,12 +104,14 @@
   (list-set! (get-neuron-age (list-ref gng a)) b
 	     (function step (list-ref (get-neuron-age (list-ref gng a)) b)))
   (list-set! (get-neuron-age (list-ref gng b)) a
-	     (function step (list-ref (get-neuron-age (list-ref gng b)) a))))
+	     (function step (list-ref (get-neuron-age (list-ref gng b)) a)))
+  gng)
 
 
 (define (update-neuron-local-error a function step gng)
   (list-set! (list-ref gng a) 2 ; fixme magic number: 2=get-neuron-local-error
-	     (function step (get-neuron-local-error (list-ref gng a)))))
+	     (function step (get-neuron-local-error (list-ref gng a))))
+  gng)
 
 
 
