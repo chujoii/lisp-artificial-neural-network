@@ -2,7 +2,7 @@
 !#
 ; coding: utf-8
 
-;;;; example.scm ---  simple usage of growing-neural-gas
+;;;; unit-testing.scm ---  Unit testing for growing-neural-gas code
 
 
 
@@ -37,9 +37,9 @@
 
 ;;; Usage:
 
-;; guile example.scm
+;; guile unit-testing.scm
 ;; or
-;; ./example.scm
+;; ./unit-testing.scm
 
 
 
@@ -93,4 +93,32 @@
 (update-neuron-age 3 4 + 4 *example-gng*)
 (if *debug-print* (print-list-without-bracket (map cadr *example-gng*)))
 
+(format #t "Euclidean distance between point (1.0 2.0) and (3.0 4.0): ~7,2f\n\n"
+	(euclidean-distance (list 1.0 2.0) (list 3.0 4.0)))
 
+
+(format #t "Calculate distance between Weight and Sensor:(~7,2f ~7,2f ~7,2f ~7,2f ...) compare with:\n"
+	(euclidean-distance  (get-neuron-weight (car *example-gng*)) *example-sensor*)
+	(euclidean-distance  (get-neuron-weight (cadr *example-gng*)) *example-sensor*)
+	(euclidean-distance  (get-neuron-weight (caddr *example-gng*)) *example-sensor*)
+	(euclidean-distance  (get-neuron-weight (cadddr *example-gng*)) *example-sensor*))
+(format #t "~a\n" (calculate-distance-weight-sensor *example-sensor* *example-gng*))
+
+
+
+(format #t "\nFind indexes of two minimal elementt (first correct answer, then calculated answer)\n")
+;
+(format #t "(0 1) ~a\n" (find-index-of-two-minimal (list 1 1)))
+(format #t "(0 1) ~a\n" (find-index-of-two-minimal (list 1 2)))
+(format #t "(1 0) ~a\n" (find-index-of-two-minimal (list 2 1)))
+;
+(format #t "(0 1) ~a\n" (find-index-of-two-minimal (list 1 1 2)))
+(format #t "(0 2) ~a\n" (find-index-of-two-minimal (list 1 2 1)))
+(format #t "(1 2) ~a\n" (find-index-of-two-minimal (list 2 1 1)))
+;
+(format #t "(0 1) ~a\n" (find-index-of-two-minimal (list 1 2 3)))
+(format #t "(0 2) ~a\n" (find-index-of-two-minimal (list 1 3 2)))
+(format #t "(1 0) ~a\n" (find-index-of-two-minimal (list 2 1 3)))
+(format #t "(2 0) ~a\n" (find-index-of-two-minimal (list 2 3 1)))
+(format #t "(1 2) ~a\n" (find-index-of-two-minimal (list 3 1 2)))
+(format #t "(2 1) ~a\n" (find-index-of-two-minimal (list 3 2 1)))
