@@ -85,8 +85,11 @@
    (list 0) ; not connected, so ages = 0
    0.0)) ; local-error
 (define (get-neuron-weight neuron) (car neuron))
+(define *index-neuron-weight* 0)
 (define (get-neuron-age neuron) (cadr neuron))
+(define *index-neuron-age* 1)
 (define (get-neuron-local-error neuron) (caddr neuron))
+(define *index-neuron-local-error* 2)
 
 (define (add-neuron neuron gng)
   (define (iter igng size)
@@ -96,6 +99,15 @@
 		    (iter (cdr igng) size))))
 
   (iter (append gng (list neuron)) (+ (length gng) 1)))
+
+
+;; usage for update neuron weight: neuron number a=3 function=add(+) step=10 to each weight
+;; (update-neuron-weight 3 (lambda (step weights) (map (lambda (y) (+ y step)) weights)) 10 *example-gng*)
+;; more simple example          (format #t "~a\n" (map (lambda (y) (+ y    1)) (list 1 2 3 4 5)))
+(define (update-neuron-weight a function step gng)
+  (list-set! (list-ref gng a) *index-neuron-weight*
+	     (function step (get-neuron-weight (list-ref gng a))))
+  gng)
 
 
 
@@ -108,9 +120,10 @@
 	     (function step (list-ref (get-neuron-age (list-ref gng b)) a)))
   gng)
 
-
+;; usage for update neuron local-error: number a=3: function=add(+) step=10 to local-error
+;; (update-neuron-local-error 3 + 10 *example-gng*)
 (define (update-neuron-local-error a function step gng)
-  (list-set! (list-ref gng a) 2 ; fixme magic number: 2=get-neuron-local-error
+  (list-set! (list-ref gng a) *index-neuron-local-error*
 	     (function step (get-neuron-local-error (list-ref gng a))))
   gng)
 

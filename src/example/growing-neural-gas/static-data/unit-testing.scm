@@ -83,9 +83,13 @@
 (update-neuron-age 0 1 + 1 *initial-gng*)
 (if *debug-print* (print-list-without-bracket *initial-gng*))
 
-
 (format #t "\nsimple 6 neurons (see ../../../growing-neural-gas.scm):\n")
 (if *debug-print* (print-list-without-bracket *example-gng*))
+
+(format #t "update weight neuron number 3 (all weight +10):\n")
+(update-neuron-weight 3 (lambda (step weights) (map (lambda (y) (+ y step)) weights)) 10 *example-gng*)
+(if *debug-print* (print-list-without-bracket *example-gng*))
+
 (format #t "\ndisplayed only updated age:\n")
 (update-neuron-age 0 1 + 1 *example-gng*)
 (update-neuron-age 1 2 + 2 *example-gng*)
