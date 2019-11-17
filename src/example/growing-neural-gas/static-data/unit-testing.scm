@@ -61,6 +61,10 @@
 ;;; Use #t for debug print, or #f for silent
 (define *debug-print* #t)
 
+;;; adaptation coefficients for weight
+(define *eps-winner*    0.01)
+(define *eps-neighbour* 0.0001)
+
 (define *dimension-of-sensor* 4)
 
 ;;; Sensor (input units)
@@ -82,6 +86,11 @@
 ;(if *debug-print* (print-list-without-bracket *initial-gng*))
 (update-neuron-age 0 1 + 1 *initial-gng*)
 (if *debug-print* (print-list-without-bracket *initial-gng*))
+
+
+
+
+
 
 (format #t "\nsimple 6 neurons (see ../../../growing-neural-gas.scm):\n")
 (if *debug-print* (print-list-without-bracket *example-gng*))

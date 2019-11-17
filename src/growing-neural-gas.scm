@@ -151,8 +151,12 @@
 (define (growing-neural-gas sensor gng)
   (let ((distances-w-s (calculate-distance-weight-sensor sensor gng)))
     (format #t "distances-w-s: ~a\n" distances-w-s)
-    (let ((winners (find-index-of-two-minimal distances-w-s)))
+    (let ((winners (find-index-of-two-minimal distances-w-s))) ; algorithm:04
       (format #t "winners: ~a\n" winners)
-      (update-neuron-local-error (car winners)
-				 + (square (list-ref distances-w-s (car winners)))
-				 gng))))
+
+      ;; algorithm:07 for winner
+      (update-neuron-weight (car winners) (lambda (step weights) (map (lambda (y) (+ y step)) weights)) *eps-winner*
+
+			    ;; algorithm:05
+			    (update-neuron-local-error (car winners) + (square (list-ref distances-w-s (car winners)))
+						       gng)))))
