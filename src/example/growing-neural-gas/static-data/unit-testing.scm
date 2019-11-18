@@ -62,8 +62,8 @@
 (define *debug-print* #t)
 
 ;;; adaptation coefficients for weight
-(define *eps-winner*    0.01)
-(define *eps-neighbour* 0.0001)
+(define *eps-winner*   10.0)
+(define *eps-neighbour* 1.0)
 
 (define *dimension-of-sensor* 4)
 
@@ -95,8 +95,17 @@
 (format #t "\nsimple 6 neurons (see ../../../growing-neural-gas.scm):\n")
 (if *debug-print* (print-list-without-bracket *example-gng*))
 
+(format #t "\nmanual change weight (random:normal too hard for human readable):\n")
+(list-set! (list-ref *example-gng* 0) *index-neuron-weight* (list 0.1 0.2 0.3 0.4))
+(list-set! (list-ref *example-gng* 1) *index-neuron-weight* (list 1.1 1.2 1.3 1.4))
+(list-set! (list-ref *example-gng* 2) *index-neuron-weight* (list 2.1 2.2 2.3 2.4))
+(list-set! (list-ref *example-gng* 3) *index-neuron-weight* (list 3.1 3.2 3.3 3.4))
+(list-set! (list-ref *example-gng* 4) *index-neuron-weight* (list 4.1 4.2 4.3 4.4))
+(list-set! (list-ref *example-gng* 5) *index-neuron-weight* (list 5.1 5.2 5.3 5.4))
+(if *debug-print* (print-list-without-bracket *example-gng*))
+
 (format #t "update weight neuron number 3 (all weight +10):\n")
-(update-neuron-weight 3 (lambda (step weights) (map (lambda (y) (+ y step)) weights)) 10 *example-gng*)
+(update-neuron-weight 3 (lambda (step weights) (map (lambda (y) (+ y step)) weights)) *eps-winner* *example-gng*)
 (if *debug-print* (print-list-without-bracket *example-gng*))
 
 (format #t "\ndisplayed only updated age:\n")
