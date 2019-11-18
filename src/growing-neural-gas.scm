@@ -3,7 +3,12 @@
 ;;;; growing-neural-gas.scm ---  simple growing neural gas based on algorithm from
 ;;;; "https://ru.wikipedia.org/wiki/Нейронный_газ"
 ;;;; "https://en.wikipedia.org/wiki/Neural_gas"
-;;;; "http://www.ks.uiuc.edu/Publications/Papers/PDF/MART91B/MART91B.pdf" Thomas Martinetz and Klaus Schulten (1991). "A "neural gas" network learns topologies" (PDF). Artificial Neural Networks. Elsevier. pp. 397–402.
+;;;;
+;;;; based on main article:
+;;;; "http://www.ks.uiuc.edu/Publications/Papers/PDF/MART91B/MART91B.pdf"
+;;;; Thomas Martinetz and Klaus Schulten (1991).
+;;;; "A "neural gas" network learns topologies".
+;;;; Artificial Neural Networks. Elsevier. pp. 397–402.
 
 
 
