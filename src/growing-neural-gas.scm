@@ -211,6 +211,9 @@
       (format #t "winners: ~a\n" winners)
       ;; danger! following code with small indent:
 
+      ;; algorithm:09: set connection to 0 (*initial-connection-age*) between two winners
+      (update-neuron-conn-age (car winners) (cadr winners) * *initial-connection-age*
+
       ;; algorithm:08
       (inc-neighbours-conn-age (car winners)
 
@@ -226,4 +229,4 @@
 
 	;; algorithm:05
 	(update-neuron-local-error (car winners) + (square (list-ref distances-w-s (car winners)))
-									     gng)))))))
+									     gng))))))))

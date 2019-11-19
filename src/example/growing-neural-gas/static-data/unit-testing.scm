@@ -164,9 +164,13 @@
 (map print-neuron *example-gng*)
 
 (format #t "\nincrease by 1 all connections form neuron print neighbour for winner (for example neuron number 0 (use different neuron only for example)):\n")
-(inc-neighbours-conn-age 0 *example-gng*)(newline)
+(inc-neighbours-conn-age 0 *example-gng*)
 (map print-neuron *example-gng*)
 
 (format #t "\nincrease by 1 all connections form neuron print neighbour (for example neuron number 3 (use different neuron only for example)):\n")
-(inc-neighbours-conn-age 3 *example-gng*)(newline)
+(inc-neighbours-conn-age 3 *example-gng*)
+(map print-neuron *example-gng*)
+
+(format #t "\nset connection to 0 (*initial-connection-age*) between two winners (1 2):\n")
+(update-neuron-conn-age 1 2 * *initial-connection-age* *example-gng*)
 (map print-neuron *example-gng*)
