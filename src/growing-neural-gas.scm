@@ -56,20 +56,24 @@
 ;;; Code:
 
 ;;; neuron (node):
-;;; ((weights) (ages) local-error),  where:
+;;; ((weights) (conn-ages) local-error),  where:
 ;;;    (weights) - list of weights for input vector from sensors
-;;;    (ages) - list of age between neurons
+;;;    (conn-ages) - list of connection-age between neurons
 ;;;    local-error - number = old-local-error + (d(Weights, Sensors))^2
 ;;;
 ;;; gag = (abc   de   f)
 ;;;
-;;;                  a b c d e f           ; warning: duplication of age data => duplication of program code
-;;; (    ((1 2 3) 0 (0 1 3 0 0 0))         ; a   age of connections: a~b=1
-;;;      ((1 2 3) 0 (1 0 2 0 0 0))         ; b   age of connections: b~c=2
-;;;      ((1 2 3) 0 (3 2 0 0 0 0))         ; c   age of connections: c~a=3
-;;;      ((1 2 3) 0 (0 0 0 0 4 0))         ; d   age of connections: d~e=4
-;;;      ((1 2 3) 0 (0 0 0 4 0 0))         ; e
-;;;      ((1 2 3) 0 (0 0 0 0 0 0))    )    ; f   not connected
+;;;  connection-age == -1 not connected ("nc" or "-" in next table)
+;;;  connection-age >= 0 connected
+;;;
+;;;      ((wieght) ( conn-age ) local-error)
+;;;                a b c d e f            ; warning: duplication of conn-age data => duplication of program code
+;;; (    ((1 2 3) (- 1 3 - - -) 0)         ; a   age of connections: a~b=1
+;;;      ((1 2 3) (1 - 2 - - -) 0)         ; b   age of connections: b~c=2
+;;;      ((1 2 3) (3 2 - - - -) 0)         ; c   age of connections: c~a=3
+;;;      ((1 2 3) (- - - - 4 -) 0)         ; d   age of connections: d~e=4
+;;;      ((1 2 3) (- - - 4 - -) 0)         ; e
+;;;      ((1 2 3) (- - - - - -) 0)    )    ; f   not connected
 
 
 
@@ -77,22 +81,26 @@
 (load "../../../util/battery-scheme/vector.scm")
 
 
-
-(define (add-ages old-ages)
-  (format #t "ages:~a\n" old-ages)
-  (append old-ages (list 0)))
+(define *not-connected* -1)
+(define *initial-connection-age* 0)
 
 
 
-(define (make-neuron dimension-sensor ages)
+(define (add-conn-ages old-conn-ages)
+  (format #t "conn-ages:~a\n" old-conn-ages)
+  (append old-conn-ages (list *not-connected*)))
+
+
+
+(define (make-neuron dimension-sensor)
   (list
    (create-list-of-n-element-filled-by-evaluated-function dimension-sensor random:normal) ; weights
-   (list 0) ; not connected, so ages = 0
+   (list *not-connected*) ; not connected, so conn-ages = -1
    0.0)) ; local-error
 (define (get-neuron-weight neuron) (car neuron))
 (define *index-neuron-weight* 0)
-(define (get-neuron-age neuron) (cadr neuron))
-(define *index-neuron-age* 1)
+(define (get-neuron-conn-age neuron) (cadr neuron))
+(define *index-neuron-conn-age* 1)
 (define (get-neuron-local-error neuron) (caddr neuron))
 (define *index-neuron-local-error* 2)
 
@@ -100,7 +108,7 @@
   (define (iter igng size)
     (if (null? igng)
 	'()
-	(cons (list (get-neuron-weight (car igng)) (make-list size 0) (get-neuron-local-error neuron))
+	(cons (list (get-neuron-weight (car igng)) (make-list size *not-connected*) (get-neuron-local-error neuron))
 		    (iter (cdr igng) size))))
 
   (iter (append gng (list neuron)) (+ (length gng) 1)))
@@ -124,7 +132,7 @@
     (if (null? neighbours)
 	igng
 	(iter (cdr neighbours) (1+ counter)
-	      (if (> (car neighbours) 0)
+	      (if (>= (car neighbours) *initial-connection-age*)
 		  (update-neuron-weight-vector counter function eps-step igng)
 		  igng))))
 
@@ -132,13 +140,13 @@
 
 
 
-;; (update-neuron-age 2 3 + 1 *initial-gng*) == increase (+1) link between 2 and 3 elements
-;; (update-neuron-age 2 3 * 0 *initial-gng*) == remove (*0) link between 2 and 3 elements
-(define (update-neuron-age a b function step gng)
-  (list-set! (get-neuron-age (list-ref gng a)) b
-	     (function step (list-ref (get-neuron-age (list-ref gng a)) b)))
-  (list-set! (get-neuron-age (list-ref gng b)) a
-	     (function step (list-ref (get-neuron-age (list-ref gng b)) a)))
+;; (update-neuron-conn-age 2 3 + 1 *initial-gng*) == increase (+1) link between 2 and 3 elements
+;; (update-neuron-conn-age 2 3 * 0 *initial-gng*) == remove (*0) link between 2 and 3 elements
+(define (update-neuron-conn-age a b function step gng)
+  (list-set! (get-neuron-conn-age (list-ref gng a)) b
+	     (function step (list-ref (get-neuron-conn-age (list-ref gng a)) b)))
+  (list-set! (get-neuron-conn-age (list-ref gng b)) a
+	     (function step (list-ref (get-neuron-conn-age (list-ref gng b)) a)))
   gng)
 
 ;; usage for update neuron local-error: number a=3: function=add(+) step=10 to local-error
@@ -183,7 +191,7 @@
 
        ;; algorithm:07 for neighbours ; wrong formula: W=Wold*eps ; correct formula: W = Wold + eps*(Wols - Eold)
        (update-neighbours-weights (lambda (step weights) (sum-sub-vectors + weights (mul-div-vector-const * (sum-sub-vectors - weights sensor) step)))
-				  (get-neuron-age (list-ref gng (car winners)))
+				  (get-neuron-conn-age (list-ref gng (car winners)))
 				  *eps-neighbour*
 
 	;; algorithm:05
