@@ -146,6 +146,7 @@
   (iter list-neighbour 0 gng))
 
 
+
 ;; increase (+1) link between 2 and 3 elements
 ;; (update-neuron-conn-age 2 3 + 1 *initial-gng*)
 ;;
@@ -158,6 +159,22 @@
   (list-set! (get-neuron-conn-age (list-ref gng b)) a
 	     (function step (list-ref (get-neuron-conn-age (list-ref gng b)) a)))
   gng)
+
+
+
+;; increase by 1 neighbours connection age
+(define (inc-neighbours-conn-age a gng)
+  (define (iter neighbours counter igng)
+    (if (null? neighbours)
+	igng
+	(iter (cdr neighbours) (1+ counter)
+	      (if (>= (car neighbours) *initial-connection-age*)
+		  (update-neuron-conn-age a counter + 1 igng)
+		  igng))))
+
+  (iter (get-neuron-conn-age (list-ref gng a)) 0 gng))
+
+
 
 ;; usage for update neuron local-error: number a=3: function=add(+) step=10 to local-error
 ;; (update-neuron-local-error 3 + 10 *example-gng*)
@@ -186,13 +203,16 @@
     (iter 0 0 (car in-list) 1 (cadr in-list) in-list))
 
 
-
+;; fixme: algorithm numbers based on ../../../../doc/Neural_gas(ru).pdf
 (define (growing-neural-gas sensor gng)
   (let ((distances-w-s (calculate-distance-weight-sensor sensor gng)))
     (format #t "distances-weight-sensor:\n~a\n\n" distances-w-s)
     (let ((winners (find-index-of-two-minimal distances-w-s))) ; algorithm:04
       (format #t "winners: ~a\n" winners)
       ;; danger! following code with small indent:
+
+      ;; algorithm:08
+      (inc-neighbours-conn-age (car winners)
 
       ;; algorithm:07 for winner
       (update-neuron-weight-vector (car winners)
@@ -206,4 +226,4 @@
 
 	;; algorithm:05
 	(update-neuron-local-error (car winners) + (square (list-ref distances-w-s (car winners)))
-									     gng))))))
+									     gng)))))))

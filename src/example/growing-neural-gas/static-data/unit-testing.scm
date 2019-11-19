@@ -162,3 +162,11 @@
 (format #t "\nupdate weight for this neuron (4):\n")
 (update-neighbours-weights (lambda (step weights) (sum-sub-vectors + weights (mul-div-vector-const * (sum-sub-vectors - weights *example-sensor*) step))) (list -1 -1 -1 -1 3 -1) *eps-neighbour* *example-gng*)
 (map print-neuron *example-gng*)
+
+(format #t "\nincrease by 1 all connections form neuron print neighbour for winner (for example neuron number 0 (use different neuron only for example)):\n")
+(inc-neighbours-conn-age 0 *example-gng*)(newline)
+(map print-neuron *example-gng*)
+
+(format #t "\nincrease by 1 all connections form neuron print neighbour (for example neuron number 3 (use different neuron only for example)):\n")
+(inc-neighbours-conn-age 3 *example-gng*)(newline)
+(map print-neuron *example-gng*)
