@@ -155,10 +155,10 @@
 (map print-neuron *example-gng*)
 (format #t "\nprint neighbour for neuron number 2:\n(number 0 (conn-age=2), number 1 (conn-age = 1), nc, nc, nc, nc):\n~a\n" (get-neuron-conn-age (list-ref *example-gng* 2)))
 (format #t "\nupdate weight for this neurons (0 and 1):\n")
-(update-neighbours-weights (lambda (step weights) (sum-sub-vectors + weights (mul-div-vector-const * (sum-sub-vectors - weights *example-sensor*) step))) (list 2 1 0 0 0 0) *eps-neighbour* *example-gng*)
+(update-neighbours-weights (lambda (step weights) (sum-sub-vectors + weights (mul-div-vector-const * (sum-sub-vectors - weights *example-sensor*) step))) (list 2 1 -1 -1 -1 -1) *eps-neighbour* *example-gng*)
 (map print-neuron *example-gng*)
 
 (format #t "\nprint neighbour for neuron number 3:\n(nc, nc, nc, nc, number 4 (conn-age = 3), nc):\n~a\n" (get-neuron-conn-age (list-ref *example-gng* 3)))
 (format #t "\nupdate weight for this neuron (4):\n")
-(update-neighbours-weights (lambda (step weights) (sum-sub-vectors + weights (mul-div-vector-const * (sum-sub-vectors - weights *example-sensor*) step))) (list 0 0 0 0 3 0) *eps-neighbour* *example-gng*)
+(update-neighbours-weights (lambda (step weights) (sum-sub-vectors + weights (mul-div-vector-const * (sum-sub-vectors - weights *example-sensor*) step))) (list -1 -1 -1 -1 3 -1) *eps-neighbour* *example-gng*)
 (map print-neuron *example-gng*)
