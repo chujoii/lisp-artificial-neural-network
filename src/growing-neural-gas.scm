@@ -68,11 +68,11 @@
 ;;;
 ;;;      ((wieght) ( conn-age ) local-error)
 ;;;                a b c d e f            ; warning: duplication of conn-age data => duplication of program code
-;;; (    ((1 2 3) (- 1 3 - - -) 0)         ; a   age of connections: a~b=1
-;;;      ((1 2 3) (1 - 2 - - -) 0)         ; b   age of connections: b~c=2
-;;;      ((1 2 3) (3 2 - - - -) 0)         ; c   age of connections: c~a=3
-;;;      ((1 2 3) (- - - - 4 -) 0)         ; d   age of connections: d~e=4
-;;;      ((1 2 3) (- - - 4 - -) 0)         ; e
+;;; (    ((1 2 3) (- 0 2 - - -) 0)         ; a   age of connections: a~b=0
+;;;      ((1 2 3) (0 - 1 - - -) 0)         ; b   age of connections: b~c=1
+;;;      ((1 2 3) (2 1 - - - -) 0)         ; c   age of connections: c~a=2
+;;;      ((1 2 3) (- - - - 3 -) 0)         ; d   age of connections: d~e=3
+;;;      ((1 2 3) (- - - 3 - -) 0)         ; e
 ;;;      ((1 2 3) (- - - - - -) 0)    )    ; f   not connected
 
 
@@ -83,6 +83,13 @@
 
 (define *not-connected* -1)
 (define *initial-connection-age* 0)
+
+
+
+(define (print-neuron neuron)
+  (format #t "w: ~a\t" (map (lambda (x) (format #f "~7,1f" x)) (get-neuron-weight neuron)))
+  (format #t "a: ~a\t" (map (lambda (x) (if (< x *initial-connection-age*) "-" (format #f "~d" x))) (get-neuron-conn-age neuron)))
+  (format #t "e: ~5,1f\n" (get-neuron-local-error neuron)))
 
 
 
@@ -139,9 +146,12 @@
   (iter list-neighbour 0 gng))
 
 
-
-;; (update-neuron-conn-age 2 3 + 1 *initial-gng*) == increase (+1) link between 2 and 3 elements
-;; (update-neuron-conn-age 2 3 * 0 *initial-gng*) == remove (*0) link between 2 and 3 elements
+;; increase (+1) link between 2 and 3 elements
+;; (update-neuron-conn-age 2 3 + 1 *initial-gng*)
+;;
+;; remove (*0, -1) link between 2 and 3 elements
+;; (update-neuron-conn-age 2 3 * 0 *initial-gng*)
+;; (update-neuron-conn-age 2 3 - 1 *initial-gng*)
 (define (update-neuron-conn-age a b function step gng)
   (list-set! (get-neuron-conn-age (list-ref gng a)) b
 	     (function step (list-ref (get-neuron-conn-age (list-ref gng a)) b)))

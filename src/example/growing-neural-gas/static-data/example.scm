@@ -54,7 +54,8 @@
 (use-modules (ice-9 format))
 
 (load "../../../growing-neural-gas.scm")
-(load "../../../../../../util/battery-scheme/print-list.scm")
+
+
 
 (set! *random-state* (seed->random-state 0.12345))
 
@@ -83,21 +84,21 @@
 										  (add-neuron (make-neuron *dimension-of-sensor*)
 											      '())))))))
 (format #t "simple 2 initial neurons:\n\tweight\n\tconn-age\n\tlocal-error\n")
-;(if *debug-print* (print-list-without-bracket *initial-gng*))
+(if *debug-print* (map print-neuron *initial-gng*))
 (update-neuron-conn-age 0 1 + 1 *initial-gng*)
-(if *debug-print* (print-list-without-bracket *initial-gng*))
+(if *debug-print* (map print-neuron *initial-gng*))
 
 
 (format #t "\nsimple 6 neurons (see ../../../growing-neural-gas.scm):\n")
-(if *debug-print* (print-list-without-bracket *example-gng*))
+(if *debug-print* (map print-neuron *example-gng*))
 (format #t "\ndisplayed only conn-age:\n")
 (update-neuron-conn-age 0 1 + 1 *example-gng*)
 (update-neuron-conn-age 1 2 + 2 *example-gng*)
 (update-neuron-conn-age 2 0 + 3 *example-gng*)
 (update-neuron-conn-age 3 4 + 4 *example-gng*)
-(if *debug-print* (print-list-without-bracket (map cadr *example-gng*)))
+(if *debug-print* (map print-neuron *example-gng*))
 
 
 (format #t "result of one step working \"growing neural gas\":\n")
-(print-list-without-bracket (growing-neural-gas *example-sensor* *example-gng*))
+(map print-neuron (growing-neural-gas *example-sensor* *example-gng*))
 (newline)

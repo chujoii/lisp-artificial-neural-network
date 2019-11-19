@@ -54,7 +54,8 @@
 (use-modules (ice-9 format))
 
 (load "../../../growing-neural-gas.scm")
-(load "../../../../../../util/battery-scheme/print-list.scm")
+
+
 
 (set! *random-state* (seed->random-state 0.12345))
 
@@ -82,10 +83,11 @@
 								      (add-neuron (make-neuron *dimension-of-sensor*)
 										  (add-neuron (make-neuron *dimension-of-sensor*)
 											      '())))))))
-(format #t "simple 2 initial neurons:\n\tweight\n\tconn-age\n\tlocal-error\n")
-;(if *debug-print* (print-list-without-bracket *initial-gng*))
+(format #t "simple 2 initial neurons:\n\tweight\t\t\t\tconn-age\tlocal-error\n")
+(map print-neuron *initial-gng*) (newline)
+(format #t "\nupdate neuron connection age for 0 1n")
 (update-neuron-conn-age 0 1 + 1 *initial-gng*)
-(if *debug-print* (print-list-without-bracket *initial-gng*))
+(map print-neuron *initial-gng*)
 
 
 
@@ -93,7 +95,7 @@
 
 
 (format #t "\nsimple 6 neurons (see ../../../growing-neural-gas.scm):\n")
-(if *debug-print* (print-list-without-bracket *example-gng*))
+(map print-neuron *example-gng*)
 
 (format #t "\nmanual change weight (random:normal too hard for human readable):\n")
 (list-set! (list-ref *example-gng* 0) *index-neuron-weight* (list 0.1 0.2 0.3 0.4))
@@ -102,26 +104,27 @@
 (list-set! (list-ref *example-gng* 3) *index-neuron-weight* (list 3.1 3.2 3.3 3.4))
 (list-set! (list-ref *example-gng* 4) *index-neuron-weight* (list 4.1 4.2 4.3 4.4))
 (list-set! (list-ref *example-gng* 5) *index-neuron-weight* (list 5.1 5.2 5.3 5.4))
-(if *debug-print* (print-list-without-bracket *example-gng*))
+(map print-neuron *example-gng*)
 
-(format #t "update weight neuron number 3 (new_weight_vector = weight_vector + eps*(veight_vector - sensor_vector)):\n")
+(format #t "\nupdate weight neuron number 3 (new_weight_vector = weight_vector + eps*(veight_vector - sensor_vector)):\n")
 (update-neuron-weight-vector 3 (lambda (step weights) (sum-sub-vectors + weights (mul-div-vector-const * (sum-sub-vectors - weights *example-sensor*) step))) *eps-winner* *example-gng*)
-(if *debug-print* (print-list-without-bracket *example-gng*))
+(map print-neuron *example-gng*)
 
-(format #t "\ndisplayed only updated conn-age:\n")
+(format #t "\nupdate connection age:\n")
 (update-neuron-conn-age 0 1 + 1 *example-gng*)
 (update-neuron-conn-age 1 2 + 2 *example-gng*)
 (update-neuron-conn-age 2 0 + 3 *example-gng*)
 (update-neuron-conn-age 3 4 + 4 *example-gng*)
-(if *debug-print* (print-list-without-bracket (map get-neuron-conn-age *example-gng*)))
+(map print-neuron *example-gng*)
 
 (update-neuron-local-error 3 + 0.1 *example-gng*)
-(format #t "\ndisplayed only updated local error (see neuron number 3, count from 0):\n")
-(if *debug-print* (print-list-without-bracket (map get-neuron-local-error *example-gng*)))
+(format #t "\nupdate local error (see neuron number 3, count from 0):\n")
+(map print-neuron *example-gng*)
 
 
 
-(format #t "Calculate distance between Weight and Sensor:(~7,2f ~7,2f ~7,2f ~7,2f ...) compare with:\n"
+(format #t "\nCalculate distance between Weight (neuron number 3) and Sensor ~a:\n(~7,2f ~7,2f ~7,2f ~7,2f ...) compare with:\n"
+	*example-sensor*
 	(euclidean-distance  (get-neuron-weight (car *example-gng*)) *example-sensor*)
 	(euclidean-distance  (get-neuron-weight (cadr *example-gng*)) *example-sensor*)
 	(euclidean-distance  (get-neuron-weight (caddr *example-gng*)) *example-sensor*)
@@ -148,15 +151,14 @@
 (format #t "(2 1) ~a\n" (find-index-of-two-minimal (list 3 2 1)))
 
 
-(format #t "\nsimple 6 neurons (see ../../../growing-neural-gas.scm):\n")
-(print-list-without-bracket *example-gng*)
-(format #t "print neighbour for neuron number 2:\n(number 0 (conn-age=3), number 1 (conn-age = 2), nc, nc, nc, nc):\n~a\n" (get-neuron-conn-age (list-ref *example-gng* 2)))
-(format #t "update weight for this neurons (0 and 1):\n")
-(update-neighbours-weights (lambda (step weights) (sum-sub-vectors + weights (mul-div-vector-const * (sum-sub-vectors - weights *example-sensor*) step))) (list 3 2 0 0 0 0) *eps-neighbour* *example-gng*)
-(print-list-without-bracket *example-gng*)
+(format #t "\nsimple 6 neurons (repeat):\n")
+(map print-neuron *example-gng*)
+(format #t "\nprint neighbour for neuron number 2:\n(number 0 (conn-age=2), number 1 (conn-age = 1), nc, nc, nc, nc):\n~a\n" (get-neuron-conn-age (list-ref *example-gng* 2)))
+(format #t "\nupdate weight for this neurons (0 and 1):\n")
+(update-neighbours-weights (lambda (step weights) (sum-sub-vectors + weights (mul-div-vector-const * (sum-sub-vectors - weights *example-sensor*) step))) (list 2 1 0 0 0 0) *eps-neighbour* *example-gng*)
+(map print-neuron *example-gng*)
 
-(format #t "print neighbour for neuron number 3:\n(nc, nc, nc, nc, number 4 (conn-age = 4), nc):\n~a\n" (get-neuron-conn-age (list-ref *example-gng* 3)))
-(format #t "update weight for this neuron (4):\n")
-(update-neighbours-weights (lambda (step weights) (sum-sub-vectors + weights (mul-div-vector-const * (sum-sub-vectors - weights *example-sensor*) step))) (list 0 0 0 0 4 0) *eps-neighbour* *example-gng*)
-(print-list-without-bracket *example-gng*)
-
+(format #t "\nprint neighbour for neuron number 3:\n(nc, nc, nc, nc, number 4 (conn-age = 3), nc):\n~a\n" (get-neuron-conn-age (list-ref *example-gng* 3)))
+(format #t "\nupdate weight for this neuron (4):\n")
+(update-neighbours-weights (lambda (step weights) (sum-sub-vectors + weights (mul-div-vector-const * (sum-sub-vectors - weights *example-sensor*) step))) (list 0 0 0 0 3 0) *eps-neighbour* *example-gng*)
+(map print-neuron *example-gng*)
