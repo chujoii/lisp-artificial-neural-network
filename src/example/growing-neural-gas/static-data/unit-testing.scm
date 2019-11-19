@@ -85,7 +85,7 @@
 											      '())))))))
 (format #t "simple 2 initial neurons:\n\tweight\t\t\t\tconn-age\tlocal-error\n")
 (map print-neuron *initial-gng*) (newline)
-(format #t "\nupdate neuron connection age for 0 1n")
+(format #t "\nupdate neuron connection age for 0 1\n")
 (update-neuron-conn-age 0 1 + 1 *initial-gng*)
 (map print-neuron *initial-gng*)
 

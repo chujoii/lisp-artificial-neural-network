@@ -83,15 +83,16 @@
 								      (add-neuron (make-neuron *dimension-of-sensor*)
 										  (add-neuron (make-neuron *dimension-of-sensor*)
 											      '())))))))
-(format #t "simple 2 initial neurons:\n\tweight\n\tconn-age\n\tlocal-error\n")
+(format #t "simple 2 initial neurons:\n\tweight\t\t\t\tconn-age\tlocal-error\n")
 (if *debug-print* (map print-neuron *initial-gng*))
+(format #t "\nupdate neuron connection age for 0 1\n")
 (update-neuron-conn-age 0 1 + 1 *initial-gng*)
 (if *debug-print* (map print-neuron *initial-gng*))
 
 
 (format #t "\nsimple 6 neurons (see ../../../growing-neural-gas.scm):\n")
 (if *debug-print* (map print-neuron *example-gng*))
-(format #t "\ndisplayed only conn-age:\n")
+(format #t "\nupdate connection-age:\n")
 (update-neuron-conn-age 0 1 + 1 *example-gng*)
 (update-neuron-conn-age 1 2 + 2 *example-gng*)
 (update-neuron-conn-age 2 0 + 3 *example-gng*)
@@ -99,6 +100,8 @@
 (if *debug-print* (map print-neuron *example-gng*))
 
 
-(format #t "result of one step working \"growing neural gas\":\n")
+(format #t "\n\n\nResult of one step working \"growing neural gas\":\n\n")
+(format #t "Sensor ~a:\n\n" *example-sensor*)
+
 (map print-neuron (growing-neural-gas *example-sensor* *example-gng*))
 (newline)

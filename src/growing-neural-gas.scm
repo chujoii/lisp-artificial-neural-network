@@ -189,7 +189,7 @@
 
 (define (growing-neural-gas sensor gng)
   (let ((distances-w-s (calculate-distance-weight-sensor sensor gng)))
-    (format #t "distances-w-s: ~a\n" distances-w-s)
+    (format #t "distances-weight-sensor:\n~a\n\n" distances-w-s)
     (let ((winners (find-index-of-two-minimal distances-w-s))) ; algorithm:04
       (format #t "winners: ~a\n" winners)
       ;; danger! following code with small indent:
