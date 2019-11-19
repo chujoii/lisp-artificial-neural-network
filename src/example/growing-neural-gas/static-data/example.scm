@@ -66,6 +66,8 @@
 (define *eps-winner*    0.01)
 (define *eps-neighbour* 0.0001)
 
+(define *limit-conn-age* 3)
+
 (define *dimension-of-sensor* 4)
 
 ;;; Sensor (input units)

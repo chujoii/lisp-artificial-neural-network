@@ -66,6 +66,8 @@
 (define *eps-winner*   10.0)
 (define *eps-neighbour* 1.0)
 
+(define *limit-conn-age* 3)
+
 (define *dimension-of-sensor* 4)
 
 ;;; Sensor (input units)
@@ -173,4 +175,8 @@
 
 (format #t "\nset connection to 0 (*initial-connection-age*) between two winners (1 2):\n")
 (update-neuron-conn-age 1 2 * *initial-connection-age* *example-gng*)
+(map print-neuron *example-gng*)
+
+(format #t "\nif age > limit (~d), then remove connection:\n" *limit-conn-age*)
+(set! *example-gng* (remove-old-conn-age *limit-conn-age* *example-gng*))
 (map print-neuron *example-gng*)

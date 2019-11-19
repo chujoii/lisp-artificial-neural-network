@@ -175,6 +175,15 @@
   (iter (get-neuron-conn-age (list-ref gng a)) 0 gng))
 
 
+(define (remove-old-conn-age limit-conn-age gng)
+  (if (null? gng)
+      '()
+      (cons (list (get-neuron-weight (car gng))
+		  (map (lambda (x) (if (> x limit-conn-age) *not-connected* x)) (get-neuron-conn-age (car gng)))
+		  (get-neuron-local-error (car gng)))
+	    (remove-old-conn-age limit-conn-age (cdr gng)))))
+      
+
 
 ;; usage for update neuron local-error: number a=3: function=add(+) step=10 to local-error
 ;; (update-neuron-local-error 3 + 10 *example-gng*)
@@ -211,6 +220,9 @@
       (format #t "winners: ~a\n" winners)
       ;; danger! following code with small indent:
 
+      ;; algorithm:10.a
+      (remove-old-conn-age *limit-conn-age*
+      
       ;; algorithm:09: set connection to 0 (*initial-connection-age*) between two winners
       (update-neuron-conn-age (car winners) (cadr winners) * *initial-connection-age*
 
@@ -229,4 +241,4 @@
 
 	;; algorithm:05
 	(update-neuron-local-error (car winners) + (square (list-ref distances-w-s (car winners)))
-									     gng))))))))
+									     gng)))))))))
