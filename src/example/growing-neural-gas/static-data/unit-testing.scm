@@ -182,4 +182,5 @@
 (map print-neuron *example-gng*)
 
 (format #t "\nremove unconnected neurons:\n")
-(format #t "~a\n" (find-and-del-unconnected-neuron *example-gng*))
+(set! *example-gng* (find-and-del-unconnected-neuron *example-gng*))
+(map print-neuron *example-gng*)

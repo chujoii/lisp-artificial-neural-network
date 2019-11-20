@@ -127,15 +127,27 @@
 (define (find-and-del-unconnected-neuron gng)
   ;; delete-unconnected return: (growing neural gas with-last-element-deleted-list)
   ;; nonconsistent --- because need clean conn-age list in rest neuron
-  (define (delete-unconnected counter deleted igng)
-    (format #t "c:~d\td:~a\t\n" counter deleted)
+  (define (delete-unconnected counter deleted-list igng)
     (if (null? igng)
-	(list deleted)
+	(list deleted-list) ; significant: list reversed!
 	(if (apply = (cons *not-connected* (get-neuron-conn-age (car igng))))
-	    (delete-unconnected (1+ counter) (cons counter deleted) (cdr igng)) ; delete unconnected
-	    (cons (car igng) (delete-unconnected (1+ counter) deleted (cdr igng)))))) ; connected
+	    (delete-unconnected (1+ counter) (cons counter deleted-list) (cdr igng)) ; delete unconnected
+	    (cons (car igng) (delete-unconnected (1+ counter) deleted-list (cdr igng)))))) ; connected
 
-  (delete-unconnected 0 '() gng))
+  (define (make-consistent-gng del-list igng)
+    (if (null? igng)
+	'()
+	(cons (list (get-neuron-weight (car igng)) (remove-unexisted-conn-age del-list (get-neuron-conn-age (car igng))) (get-neuron-local-error (car igng)))
+	      (make-consistent-gng del-list (cdr igng)))))
+
+  (define (remove-unexisted-conn-age del-list conn-age)
+    (if (null? del-list)
+	conn-age
+	(remove-unexisted-conn-age (cdr del-list) (append (list-head conn-age (car del-list)) (list-tail conn-age (1+ (car del-list)))))))
+
+  (let ((gng-del (delete-unconnected 0 '() gng)))
+    (let ((lengng (1- (length gng-del))))
+      (make-consistent-gng (car (list-tail gng-del lengng)) (list-head gng-del lengng)))))
 
 
 ;; usage for update neuron weight vector: neuron number a=3 function=(+) step=10
@@ -236,9 +248,12 @@
       (format #t "winners: ~a\n" winners)
       ;; danger! following code with small indent:
 
+      ;; algorithm:10.b
+      (find-and-del-unconnected-neuron
+
       ;; algorithm:10.a
       (remove-old-conn-age *limit-conn-age*
-      
+
       ;; algorithm:09: set connection to 0 (*initial-connection-age*) between two winners
       (update-neuron-conn-age (car winners) (cadr winners) * *initial-connection-age*
 
@@ -257,4 +272,4 @@
 
 	;; algorithm:05
 	(update-neuron-local-error (car winners) + (square (list-ref distances-w-s (car winners)))
-									     gng)))))))))
+									     gng))))))))))
