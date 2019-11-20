@@ -68,6 +68,9 @@
 
 (define *limit-conn-age* 3)
 
+;; adaptation step (add neuron in each *lambda-step* to network)
+(define *lambda-step* 1)
+
 (define *dimension-of-sensor* 4)
 
 ;;; Sensor (input units)
@@ -119,8 +122,13 @@
 (update-neuron-conn-age 3 4 + 4 *example-gng*)
 (map print-neuron *example-gng*)
 
-(update-neuron-local-error 3 + 0.1 *example-gng*)
-(format #t "\nupdate local error (see neuron number 3, count from 0):\n")
+(update-neuron-local-error 0 + 0.9 *example-gng*)
+(update-neuron-local-error 1 + 0.5 *example-gng*)
+(update-neuron-local-error 2 + 1.1 *example-gng*)
+(update-neuron-local-error 3 + 0.2 *example-gng*)
+(update-neuron-local-error 4 + 0.3 *example-gng*)
+(update-neuron-local-error 5 + 0.7 *example-gng*)
+(format #t "\nupdate local error (last column):\n")
 (map print-neuron *example-gng*)
 
 
@@ -177,10 +185,16 @@
 (update-neuron-conn-age 1 2 * *initial-connection-age* *example-gng*)
 (map print-neuron *example-gng*)
 
+(format #t "\ncopy artificial neural network (because next two manipulation decrease size of net):\n")
 (format #t "\nif age > limit (~d), then remove connection:\n" *limit-conn-age*)
-(set! *example-gng* (remove-old-conn-age *limit-conn-age* *example-gng*))
-(map print-neuron *example-gng*)
+(define *example2-gng* (remove-old-conn-age *limit-conn-age* *example-gng*))
+(map print-neuron *example2-gng*)
 
 (format #t "\nremove unconnected neurons:\n")
-(set! *example-gng* (find-and-del-unconnected-neuron *example-gng*))
+(set! *example2-gng* (find-and-del-unconnected-neuron *example2-gng*))
+(map print-neuron *example2-gng*)
+
+
+(format #t "\nrestore big artificial neural network\n")
 (map print-neuron *example-gng*)
+(format #t "\nindex of neuron with max local error: ~d\n" (find-index-with-max-local-error *example-gng*))

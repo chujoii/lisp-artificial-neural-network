@@ -79,7 +79,7 @@
 
 (load "../../../util/battery-scheme/list.scm")
 (load "../../../util/battery-scheme/vector.scm")
-
+(load "../../../util/battery-scheme/minimax.scm")
 
 (define *not-connected* -1)
 (define *initial-connection-age* 0)
@@ -240,6 +240,17 @@
     (iter 0 0 (car in-list) 1 (cadr in-list) in-list))
 
 
+;; algorithm:12
+(define (find-index-with-max-local-error gng)
+  (index-of-max (map get-neuron-local-error gng)))
+
+
+
+(define (adaptate-step-create-new-neuron gng)
+  gng)
+
+
+
 ;; fixme: algorithm numbers based on ../../../../doc/Neural_gas(ru).pdf
 (define (growing-neural-gas sensor gng)
   (let ((distances-w-s (calculate-distance-weight-sensor sensor gng)))
@@ -272,4 +283,8 @@
 
 	;; algorithm:05
 	(update-neuron-local-error (car winners) + (square (list-ref distances-w-s (car winners)))
-									     gng))))))))))
+
+	 ;; algorithm:11
+	 (if (= 0 (remainder epoch *lambda-step*)) ; adaptation step: create new neuron
+	     (adaptation-step-create-new-neuron gng)
+	     gng)))))))))))

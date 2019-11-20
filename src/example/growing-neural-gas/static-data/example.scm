@@ -68,6 +68,9 @@
 
 (define *limit-conn-age* 3)
 
+;; adaptation step (add neuron in each *lambda-step* to network)
+(define *lambda-step* 1)
+
 (define *dimension-of-sensor* 4)
 
 ;;; Sensor (input units)
