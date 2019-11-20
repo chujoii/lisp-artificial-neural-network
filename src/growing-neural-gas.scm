@@ -205,7 +205,7 @@
 ;; (update-neuron-local-error 3 + 10 *example-gng*)
 (define (update-neuron-local-error a function step gng)
   (list-set! (list-ref gng a) *index-neuron-local-error*
-	     (function step (get-neuron-local-error (list-ref gng a))))
+	     (function (get-neuron-local-error (list-ref gng a)) step))
   gng)
 
 
