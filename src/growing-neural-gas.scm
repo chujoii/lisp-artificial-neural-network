@@ -223,6 +223,7 @@
 
 
 (define (calculate-distance-weight-sensor sensor gng)
+  ;; fixme: euclidean-distance not good for cyclic data (angles, ...)
   (map (lambda (x) (euclidean-distance x sensor)) (map get-neuron-weight gng)))
 
 
