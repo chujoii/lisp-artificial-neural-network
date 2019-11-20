@@ -171,9 +171,9 @@
 ;; (update-neuron-conn-age 2 3 - 1 *initial-gng*)
 (define (update-neuron-conn-age a b function step gng)
   (list-set! (get-neuron-conn-age (list-ref gng a)) b
-	     (function step (list-ref (get-neuron-conn-age (list-ref gng a)) b)))
+	     (function (list-ref (get-neuron-conn-age (list-ref gng a)) b) step))
   (list-set! (get-neuron-conn-age (list-ref gng b)) a
-	     (function step (list-ref (get-neuron-conn-age (list-ref gng b)) a)))
+	     (function (list-ref (get-neuron-conn-age (list-ref gng b)) a) step))
   gng)
 
 
