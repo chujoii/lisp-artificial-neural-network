@@ -111,6 +111,8 @@
 (define (get-neuron-local-error neuron) (caddr neuron))
 (define *index-neuron-local-error* 2)
 
+
+
 (define (add-neuron neuron gng)
   (define (iter igng size)
     (if (null? igng)
@@ -120,6 +122,20 @@
 
   (iter (append gng (list neuron)) (+ (length gng) 1)))
 
+
+
+(define (find-and-del-unconnected-neuron gng)
+  ;; delete-unconnected return: (growing neural gas with-last-element-deleted-list)
+  ;; nonconsistent --- because need clean conn-age list in rest neuron
+  (define (delete-unconnected counter deleted igng)
+    (format #t "c:~d\td:~a\t\n" counter deleted)
+    (if (null? igng)
+	(list deleted)
+	(if (apply = (cons *not-connected* (get-neuron-conn-age (car igng))))
+	    (delete-unconnected (1+ counter) (cons counter deleted) (cdr igng)) ; delete unconnected
+	    (cons (car igng) (delete-unconnected (1+ counter) deleted (cdr igng)))))) ; connected
+
+  (delete-unconnected 0 '() gng))
 
 
 ;; usage for update neuron weight vector: neuron number a=3 function=(+) step=10

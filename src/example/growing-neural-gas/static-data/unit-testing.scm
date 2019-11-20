@@ -180,3 +180,6 @@
 (format #t "\nif age > limit (~d), then remove connection:\n" *limit-conn-age*)
 (set! *example-gng* (remove-old-conn-age *limit-conn-age* *example-gng*))
 (map print-neuron *example-gng*)
+
+(format #t "\nremove unconnected neurons:\n")
+(format #t "~a\n" (find-and-del-unconnected-neuron *example-gng*))
