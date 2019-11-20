@@ -242,8 +242,23 @@
 
 
 ;; algorithm:12
-(define (find-index-with-max-local-error gng)
+(define (find-neuron-index-with-max-local-error gng)
   (index-of-max (map get-neuron-local-error gng)))
+
+
+
+;; algorithm:13
+;; Find (for selected neuron) neighbours index with max local-error
+(define (find-neighbours-index-with-max-local-error index-max-local-error gng)
+  (define (iter counter index-a val-a neighbours)
+    (if (null? neighbours)
+	index-a
+	(if (and (>= (car neighbours) *initial-connection-age*)
+		 (or (< index-a 0)           (> (get-neuron-local-error (list-ref gng counter)) val-a)))
+	    (iter (1+ counter) counter (get-neuron-local-error (list-ref gng counter)) (cdr neighbours))
+	    (iter (1+ counter) index-a val-a (cdr neighbours)))))
+
+  (iter 0 -1 0.0 (get-neuron-conn-age (list-ref gng index-max-local-error))))
 
 
 
