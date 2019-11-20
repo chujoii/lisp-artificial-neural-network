@@ -145,7 +145,7 @@
 ;; more simple example                         (format #t "~a\n" (map (lambda (y) (+ y    1)) (list 1 2 3 4 5)))
 (define (update-neuron-weight-vector a function step gng)
   (list-set! (list-ref gng a) *index-neuron-weight*
-	     (function step (get-neuron-weight (list-ref gng a))))
+	     (function (get-neuron-weight (list-ref gng a)) step))
   gng)
 
 
@@ -247,11 +247,11 @@
 
       ;; algorithm:07 for winner
       (update-neuron-weight-vector (car winners)
-				   (lambda (step weights) (sum-sub-vectors + weights (mul-div-vector-const * (sum-sub-vectors - weights sensor) step)))
+				   (lambda (weights step) (sum-sub-vectors + weights (mul-div-vector-const * (sum-sub-vectors - weights sensor) step)))
 				   *eps-winner*
 
        ;; algorithm:07 for neighbours ; wrong formula: W=Wold*eps ; correct formula: W = Wold + eps*(Wols - Eold)
-       (update-neighbours-weights (lambda (step weights) (sum-sub-vectors + weights (mul-div-vector-const * (sum-sub-vectors - weights sensor) step)))
+       (update-neighbours-weights (lambda (weights step) (sum-sub-vectors + weights (mul-div-vector-const * (sum-sub-vectors - weights sensor) step)))
 				  (get-neuron-conn-age (list-ref gng (car winners)))
 				  *eps-neighbour*
 
