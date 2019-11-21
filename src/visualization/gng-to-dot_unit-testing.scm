@@ -69,6 +69,17 @@
 (define *gng-conn-list* (convert-gng-conn-ages-to-simple-list *example-gng*))
 (format #t "\nconvert gng-conn-ages to simple list: ~a\n" *gng-conn-list*)
 
-(define *string-dot* (list-to-string-dot-format  *gng-conn-list*))
-(format #t "\nready for print:\n~a\n" *string-dot*)
+(define *string-body-dot* (list-to-string-dot-format  *gng-conn-list*))
+(format #t "\nlist of connection ready for print:\n~a\n" *string-body-dot*)
 
+(define *string-dot* (add-head-tail *winner* *string-body-dot*))
+(format #t "\nDOT ready for print:\n
+# Graphviz example:
+#
+# dot  -Tpng test.gv > thisfile.png
+# instead dot:
+# neato (nodes < 100)
+# fdp
+# sfdp (nodes < 100 K)
+
+~a\n" *string-dot*)

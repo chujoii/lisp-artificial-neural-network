@@ -2,7 +2,7 @@
 !#
 ; coding: utf-8
 
-;;;; gng-to-dot.scm ---  Convert network generating from growing-neural-gas to dot for graphviz
+;;;; gng-to-dot.scm ---  Convert network generating from growing-neural-gas to DOT for graphviz
 
 
 
@@ -31,7 +31,7 @@
 
 
 
-;;; Keywords: algorithm neuron network machine learning growing neural gas dot graphviz
+;;; Keywords: algorithm neuron network machine learning growing neural gas DOT graphviz
 
 
 
@@ -72,10 +72,17 @@
   (iter-x 0 (map get-neuron-conn-age gng)))
 
 
-;; dot format for using graphviz
+;; DOT format for using graphviz
 (define (list-to-string-dot-format conn-list)
   (if (null? conn-list)
       ""
       (string-append (string-join (map number->string (car conn-list)) " -- ")
 		     ";\n"
 		     (list-to-string-dot-format (cdr conn-list)))))
+
+
+
+(define (add-head-tail winner body)
+  (string-append "graph ai {\n"
+		 (number->string winner) "[label=\"curr\", shape=box, color=blue];\n"
+		 body "}\n"))
