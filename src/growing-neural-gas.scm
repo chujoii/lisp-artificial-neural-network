@@ -146,9 +146,9 @@
 
 
 ;; usage for update neuron weight vector: neuron number a=3 function=(+) step=10
-;; (update-neuron-weight-vector 3 (lambda (step weights) (sum-sub-vectors + weights (mul-div-vector-const * (sum-sub-vectors - weights *example-sensor*) step))) 10 *example-gng*)
+;; (update-neuron-weight-vector 3 (lambda (weights step) (sum-sub-vectors + weights (mul-div-vector-const * (sum-sub-vectors - weights *example-sensor*) step))) 10 *example-gng*)
 ;; usage for update neuron weight: neuron number a=3 function=add(+) step=10 to each weight
-;; simple example (update-neuron-weight 3 (lambda (step weights) (map (lambda (y) (+ y step)) weights)) 10 *example-gng*)
+;; simple example (update-neuron-weight 3 (lambda (weights step) (map (lambda (y) (+ y step)) weights)) 10 *example-gng*)
 ;; more simple example                         (format #t "~a\n" (map (lambda (y) (+ y    1)) (list 1 2 3 4 5)))
 (define (update-neuron-weight-vector a function step gng)
   (list-set! (list-ref gng a) *index-neuron-weight*
@@ -258,12 +258,25 @@
 
 
 (define (adaptate-step-create-new-neuron gng)
-  gng)
+  (let ((index-neuron-max-local-error (find-neuron-index-with-max-local-error gng)))
+    (let ((index-neighbour-for-max-local-error (find-neighbours-index-with-max-local-error index-neuron-max-local-error gng))
+	  (index-of-new-neuron (length gng)) ; count from 0
+	  (igng (add-neuron (make-neuron *dimension-of-sensor* (length gng)) gng)))  ; algorithm:14.a
+
+      ;; algorithm:14.b
+      (update-neuron-weight-vector index-of-new-neuron
+				   (lambda (weights step)
+				     (mul-div-vector-const
+				      /
+				      (sum-sub-vectors + (get-neuron-weight (list-ref igng index-neuron-max-local-error)) (get-neuron-weight (list-ref igng index-neighbour-for-max-local-error)))
+				      2))
+				   0 ; use "0" and ignored "weights" and "step" --- because previous value are worthless (random)
+				   igng))))
 
 
 
 ;; fixme: algorithm numbers based on ../../../../doc/Neural_gas(ru).pdf
-(define (growing-neural-gas sensor gng)
+(define (growing-neural-gas epoch sensor gng)
   (let ((distances-w-s (calculate-distance-weight-sensor sensor gng)))
     (format #t "distances-weight-sensor:\n~a\n\n" distances-w-s)
     (let ((winners (find-index-of-two-minimal distances-w-s))) ; algorithm:04
@@ -296,6 +309,7 @@
 	(update-neuron-local-error (car winners) + (square (list-ref distances-w-s (car winners)))
 
 	 ;; algorithm:11
-	 (if (= 0 (remainder epoch *lambda-step*)) ; adaptation step: create new neuron
-	     (adaptation-step-create-new-neuron gng)
+	 (if (and (= 0 (remainder epoch *lambda-step*)) ; adaptation step: create new neuron each lambda-step
+		  (> *limit-network-size* (length gng)))
+	     (adaptate-step-create-new-neuron gng)
 	     gng)))))))))))

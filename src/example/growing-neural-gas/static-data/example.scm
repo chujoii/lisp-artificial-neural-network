@@ -71,6 +71,11 @@
 ;; adaptation step (add neuron in each *lambda-step* to network)
 (define *lambda-step* 1)
 
+;; epoch counter
+(define *epoch* 1)
+
+(define *limit-network-size* 100)
+
 (define *dimension-of-sensor* 4)
 
 ;;; Sensor (input units)
@@ -108,5 +113,5 @@
 (format #t "\n\n\nResult of one step working \"growing neural gas\":\n\n")
 (format #t "Sensor ~a:\n\n" *example-sensor*)
 
-(map print-neuron (growing-neural-gas *example-sensor* *example-gng*))
+(map print-neuron (growing-neural-gas *epoch* *example-sensor* *example-gng*))
 (newline)

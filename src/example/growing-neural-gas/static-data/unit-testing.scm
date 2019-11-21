@@ -71,6 +71,8 @@
 ;; adaptation step (add neuron in each *lambda-step* to network)
 (define *lambda-step* 1)
 
+(define *limit-network-size* 100)
+
 (define *dimension-of-sensor* 4)
 
 ;;; Sensor (input units)
@@ -119,7 +121,7 @@
 
 (update-neuron-local-error 0 + 0.9 *example-gng*)
 (update-neuron-local-error 1 + 0.5 *example-gng*)
-(update-neuron-local-error 2 + 0.1 *example-gng*)
+(update-neuron-local-error 2 + 0.8 *example-gng*)
 (update-neuron-local-error 3 + 0.2 *example-gng*)
 (update-neuron-local-error 4 + 0.3 *example-gng*)
 (update-neuron-local-error 5 + 0.7 *example-gng*)
@@ -196,3 +198,7 @@
 (format #t "\nindex of neuron with max local error: ~d\n" index-max-local-error)
 (format #t "neighbour (for neuron number ~d) index of neuron with max local error: ~a\n"
 	index-max-local-error (find-neighbours-index-with-max-local-error index-max-local-error *example-gng*))
+
+(format #t "\nadaptive step: create new neuron:\n")
+(set! *example-gng* (adaptate-step-create-new-neuron *example-gng*))
+(map print-neuron *example-gng*)
