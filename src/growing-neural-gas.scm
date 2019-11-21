@@ -93,16 +93,11 @@
 
 
 
-(define (add-conn-ages old-conn-ages)
-  (format #t "conn-ages:~a\n" old-conn-ages)
-  (append old-conn-ages (list *not-connected*)))
-
-
-
-(define (make-neuron dimension-sensor)
+;; dimension-gng == current size of growing neural gas
+(define (make-neuron dimension-sensor dimension-gng)
   (list
    (create-list-of-n-element-filled-by-evaluated-function dimension-sensor random:normal) ; weights
-   (list *not-connected*) ; not connected, so conn-ages = -1
+   (make-list dimension-gng *not-connected*) ; not connected, so conn-ages = -1
    0.0)) ; local-error
 (define (get-neuron-weight neuron) (car neuron))
 (define *index-neuron-weight* 0)
@@ -114,13 +109,13 @@
 
 
 (define (add-neuron neuron gng)
-  (define (iter igng size)
+  (define (add-column-with-conn-age igng)
     (if (null? igng)
 	'()
-	(cons (list (get-neuron-weight (car igng)) (make-list size *not-connected*) (get-neuron-local-error neuron))
-		    (iter (cdr igng) size))))
+	(cons (list (get-neuron-weight (car igng)) (append (get-neuron-conn-age (car igng)) (list *not-connected*)) (get-neuron-local-error (car igng)))
+	      (add-column-with-conn-age (cdr igng)))))
 
-  (iter (append gng (list neuron)) (+ (length gng) 1)))
+  (add-column-with-conn-age (append gng (list neuron))))
 
 
 

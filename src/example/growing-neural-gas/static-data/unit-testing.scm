@@ -77,29 +77,24 @@
 (define *example-sensor* (list 10 20 30 40))
 
 
-(define *initial-gng* (add-neuron (make-neuron *dimension-of-sensor*)
-				  (add-neuron (make-neuron *dimension-of-sensor*)
-					      '())))
-
-(define *example-gng* (add-neuron (make-neuron *dimension-of-sensor*)
-				  (add-neuron (make-neuron *dimension-of-sensor*)
-					      (add-neuron (make-neuron *dimension-of-sensor*)
-							  (add-neuron (make-neuron *dimension-of-sensor*)
-								      (add-neuron (make-neuron *dimension-of-sensor*)
-										  (add-neuron (make-neuron *dimension-of-sensor*)
-											      '())))))))
 (format #t "simple 2 initial neurons:\n\tweight\t\t\t\tconn-age\tlocal-error\n")
+(define *initial-gng* (add-neuron (make-neuron *dimension-of-sensor* 1)
+				  (add-neuron (make-neuron *dimension-of-sensor* 0)
+					      '())))
 (map print-neuron *initial-gng*) (newline)
+
 (format #t "\nupdate neuron connection age for 0 1\n")
 (update-neuron-conn-age 0 1 + 1 *initial-gng*)
 (map print-neuron *initial-gng*)
 
-
-
-
-
-
 (format #t "\nsimple 6 neurons (see ../../../growing-neural-gas.scm):\n")
+(define *example-gng* (add-neuron (make-neuron *dimension-of-sensor* 5)
+				  (add-neuron (make-neuron *dimension-of-sensor* 4)
+					      (add-neuron (make-neuron *dimension-of-sensor* 3)
+							  (add-neuron (make-neuron *dimension-of-sensor* 2)
+								      (add-neuron (make-neuron *dimension-of-sensor* 1)
+										  (add-neuron (make-neuron *dimension-of-sensor* 0)
+											      '())))))))
 (map print-neuron *example-gng*)
 
 (format #t "\nmanual change weight (random:normal too hard for human readable):\n")
