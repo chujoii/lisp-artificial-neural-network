@@ -267,7 +267,15 @@
 	  (index-of-new-neuron (length gng)) ; count from 0
 	  (igng (add-neuron (make-neuron *dimension-of-sensor* (length gng)) gng)))  ; algorithm:14.a
 
-      (let ((conn-age-uv (list-ref (get-neuron-conn-age (list-ref gng index-neuron-max-local-error)) index-neighbour-for-max-local-error)))
+      (let ((conn-age-uv (list-ref (get-neuron-conn-age (list-ref gng index-neuron-max-local-error)) index-neighbour-for-max-local-error))
+	    (local-error-u (get-neuron-local-error (list-ref gng index-neuron-max-local-error)))
+	    (local-error-v (get-neuron-local-error (list-ref gng index-neighbour-for-max-local-error))))
+
+	;; algorithm:16
+	(update-neuron-local-error index-of-new-neuron (lambda (ignored-value val) val) (* (get-neuron-local-error (list-ref gng index-neuron-max-local-error)) *eps-local-error*)
+	(update-neuron-local-error index-neighbour-for-max-local-error * *eps-local-error*
+	(update-neuron-local-error index-neuron-max-local-error * *eps-local-error*
+
 
 	;; algorithm:15      instead of "lambda" maybe more correct:      ... + (+ conn-age-uv *initial-connection-age*)
 	(update-neuron-conn-age index-neuron-max-local-error index-of-new-neuron                 (lambda (ignored-value val) val) conn-age-uv
@@ -282,7 +290,7 @@
 				      (sum-sub-vectors + (get-neuron-weight (list-ref igng index-neuron-max-local-error)) (get-neuron-weight (list-ref igng index-neighbour-for-max-local-error)))
 				      2))
 				   0 ; use "0" and ignored "weights" and "step" --- because previous value are worthless (random)
-				   igng))))))))
+				   igng)))))))))))
 
 
 
