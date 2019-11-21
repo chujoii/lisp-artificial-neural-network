@@ -2,7 +2,7 @@
 !#
 ; coding: utf-8
 
-;;;; gng-to-dot_unit-testing.scm ---  Unit testing for growing-neural-gas visualization with graphviz
+;;;; gng-to-dot.scm ---  Convert network generating from growing-neural-gas to dot for graphviz
 
 
 
@@ -31,15 +31,15 @@
 
 
 
-;;; Keywords: algorithm neuron network machine learning growing neural gas visualization graphviz
+;;; Keywords: algorithm neuron network machine learning growing neural gas dot graphviz
 
 
 
 ;;; Usage:
 
-;; guile gng-to-dot_unit-testing.scm
+;; guile gng-to-dot.scm
 ;; or
-;; ./gng-to-dot_unit-testing.scm
+;; ./gng-to-dot.scm
 
 
 
@@ -53,16 +53,20 @@
 
 (use-modules (ice-9 format))
 
-(load "gng-to-dot.scm")
+(load "../growing-neural-gas.scm")
 
-(define *example-gng* (list (list (list -9.8 -19.6 -29.4 -39.2) (list -1 1 -1 -1 -1 -1 3) 0.45)
-			    (list (list -7.800000000000001 -17.6 -27.4 -37.2) (list 1 -1 0 -1 -1 -1 -1) 0.5)
-			    (list (list 2.1 2.2 2.3 2.4) (list -1 0 -1 -1 -1 -1 3) 0.4)
-			    (list (list -65.9 -164.8 -263.7 -362.6) (list -1 -1 -1 -1 4 -1 -1) 0.2)
-			    (list (list -1.8000000000000007 -11.600000000000001 -21.4 -31.200000000000003) (list -1 -1 -1 4 -1 -1 -1) 0.3)
-			    (list (list 5.1 5.2 5.3 5.4) (list -1 -1 -1 -1 -1 -1 -1) 0.7)
-			    (list (list -3.8500000000000005 -8.700000000000001 -13.549999999999999 -18.400000000000002) (list 3 -1 3 -1 -1 -1 -1) 0.45)))
 
-(map print-neuron *example-gng*)
-(format #t "~a\n" (convert-gng-conn-ages-to-simple-list *example-gng*))
+(define (convert-gng-conn-ages-to-simple-list gng)
+  (define (iter-x x conn-ages)
+    (if (null? conn-ages)
+	'()
+	(append (iter-y x 0 (car conn-ages)) (iter-x (1+ x) (cdr conn-ages)))))
 
+  (define (iter-y x y line)
+    (if (null? line)
+	'()
+	(if (or (> x y) (< (car line) *initial-connection-age*))
+	    (iter-y x (1+ y) (cdr line))
+	    (cons (list x y) (iter-y x (1+ y) (cdr line))))))
+
+  (iter-x 0 (map get-neuron-conn-age gng)))
