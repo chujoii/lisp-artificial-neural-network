@@ -55,7 +55,8 @@
 
 (load "../growing-neural-gas.scm")
 
-
+;; Convert gng-conn-ages to simple list
+;; unconnected node doesn't show
 (define (convert-gng-conn-ages-to-simple-list gng)
   (define (iter-x x conn-ages)
     (if (null? conn-ages)
