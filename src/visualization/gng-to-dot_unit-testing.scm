@@ -63,6 +63,12 @@
 			    (list (list 5.1 5.2 5.3 5.4) (list -1 -1 -1 -1 -1 -1 -1) 0.7)
 			    (list (list -3.8500000000000005 -8.700000000000001 -13.549999999999999 -18.400000000000002) (list 3 -1 3 -1 -1 -1 -1) 0.45)))
 
+(format #t "\nsimple 7 neurons:\n")
 (map print-neuron *example-gng*)
-(format #t "~a\n" (convert-gng-conn-ages-to-simple-list *example-gng*))
+
+(define *gng-conn-list* (convert-gng-conn-ages-to-simple-list *example-gng*))
+(format #t "\nconvert gng-conn-ages to simple list: ~a\n" *gng-conn-list*)
+
+(define *string-dot* (list-to-string-dot-format  *gng-conn-list*))
+(format #t "\nready for print:\n~a\n" *string-dot*)
 

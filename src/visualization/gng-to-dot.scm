@@ -70,3 +70,12 @@
 	    (cons (list x y) (iter-y x (1+ y) (cdr line))))))
 
   (iter-x 0 (map get-neuron-conn-age gng)))
+
+
+;; dot format for using graphviz
+(define (list-to-string-dot-format conn-list)
+  (if (null? conn-list)
+      ""
+      (string-append (string-join (map number->string (car conn-list)) " -- ")
+		     ";\n"
+		     (list-to-string-dot-format (cdr conn-list)))))
