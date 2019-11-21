@@ -180,6 +180,7 @@
 
 (format #t "\nset connection to 0 (*initial-connection-age*) between two winners (1 2):\n")
 (update-neuron-conn-age 1 2 * *initial-connection-age* *example-gng*)
+;; or: (update-neuron-conn-age 1 2 (lambda (ignored-value val) val) *initial-connection-age* *example-gng*)
 (map print-neuron *example-gng*)
 
 (format #t "\ncopy artificial neural network (because next two manipulation decrease size of net):\n")

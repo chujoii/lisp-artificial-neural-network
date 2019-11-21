@@ -176,6 +176,9 @@
 ;; remove (*0, -1) link between 2 and 3 elements
 ;; (update-neuron-conn-age 2 3 * 0 *initial-gng*)
 ;; (update-neuron-conn-age 2 3 - 1 *initial-gng*)
+;;
+;; set link between 2 and 3 elements to number (for example 7)
+;; (update-neuron-conn-age 2 3 (lambda (ignored-value val) val) 7 *initial-gng*)
 (define (update-neuron-conn-age a b function step gng)
   (list-set! (get-neuron-conn-age (list-ref gng a)) b
 	     (function (list-ref (get-neuron-conn-age (list-ref gng a)) b) step))
@@ -259,9 +262,17 @@
 
 (define (adaptate-step-create-new-neuron gng)
   (let ((index-neuron-max-local-error (find-neuron-index-with-max-local-error gng)))
+
     (let ((index-neighbour-for-max-local-error (find-neighbours-index-with-max-local-error index-neuron-max-local-error gng))
 	  (index-of-new-neuron (length gng)) ; count from 0
 	  (igng (add-neuron (make-neuron *dimension-of-sensor* (length gng)) gng)))  ; algorithm:14.a
+
+      (let ((conn-age-uv (list-ref (get-neuron-conn-age (list-ref gng index-neuron-max-local-error)) index-neighbour-for-max-local-error)))
+
+	;; algorithm:15      instead of "lambda" maybe more correct:      ... + (+ conn-age-uv *initial-connection-age*)
+	(update-neuron-conn-age index-neuron-max-local-error index-of-new-neuron                 (lambda (ignored-value val) val) conn-age-uv
+	(update-neuron-conn-age index-of-new-neuron          index-neighbour-for-max-local-error (lambda (ignored-value val) val) conn-age-uv
+	(update-neuron-conn-age index-neuron-max-local-error index-neighbour-for-max-local-error (lambda (ignored-value val) val) *not-connected*
 
       ;; algorithm:14.b
       (update-neuron-weight-vector index-of-new-neuron
@@ -271,7 +282,7 @@
 				      (sum-sub-vectors + (get-neuron-weight (list-ref igng index-neuron-max-local-error)) (get-neuron-weight (list-ref igng index-neighbour-for-max-local-error)))
 				      2))
 				   0 ; use "0" and ignored "weights" and "step" --- because previous value are worthless (random)
-				   igng))))
+				   igng))))))))
 
 
 
