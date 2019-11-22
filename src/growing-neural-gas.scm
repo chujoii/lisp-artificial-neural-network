@@ -84,7 +84,7 @@
 (define *not-connected* -1)
 (define *initial-connection-age* 0)
 
-(define *winner* 0) ; fixme: global variable
+(define *winners* (list 0 1)) ; fixme: global variable
 
 (define (print-neuron neuron)
   (format #t "w: ~a\t" (map (lambda (x) (format #f "~7,1f" x)) (get-neuron-weight neuron)))
@@ -300,7 +300,7 @@
     (format #t "distances-weight-sensor:\n~a\n\n" distances-w-s)
     (let ((winners (find-index-of-two-minimal distances-w-s))) ; algorithm:04
       (format #t "winners: ~a\n" winners)
-      (set! *winner* (car winners))
+      (set! *winners* winners)
       ;; danger! following code with small indent:
 
       ;; algorithm:10.b

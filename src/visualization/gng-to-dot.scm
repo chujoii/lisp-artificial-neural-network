@@ -83,7 +83,9 @@
 
 
 
-(define (add-head-tail winner body)
+(define (add-head-tail winners body)
   (string-append "graph ai {\n"
-		 (number->string winner) "[label=\"curr\", shape=box, color=blue];\n"
+		 "c [label=\"c\", shape=box, color=blue];\n"
+		 "c -- " (number->string (car winners)) ";\n"
+		 "c -- " (number->string (cadr winners)) ";\n"
 		 body "}\n"))

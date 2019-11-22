@@ -72,7 +72,7 @@
 (define *string-body-dot* (list-to-string-dot-format  *gng-conn-list*))
 (format #t "\nlist of connection ready for print:\n~a\n" *string-body-dot*)
 
-(define *string-dot* (add-head-tail *winner* *string-body-dot*))
+(define *string-dot* (add-head-tail *winners* *string-body-dot*))
 (format #t "\nDOT ready for print:\n
 # Graphviz example:
 #
