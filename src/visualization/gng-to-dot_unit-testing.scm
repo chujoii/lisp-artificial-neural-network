@@ -55,6 +55,10 @@
 
 (load "gng-to-dot.scm")
 
+;; from sensor you get: (a b c d);
+;; for view in tooltip only "a" and "c" set list to *list-for-print-tooltip*==(0 2)
+(define *list-for-print-tooltip* (list 0 2))
+
 (define *example-gng* (list (list (list -9.8 -19.6 -29.4 -39.2) (list -1 1 -1 -1 -1 -1 3) 0.45)
 			    (list (list -7.800000000000001 -17.6 -27.4 -37.2) (list 1 -1 0 -1 -1 -1 -1) 0.5)
 			    (list (list 2.1 2.2 2.3 2.4) (list -1 0 -1 -1 -1 -1 3) 0.4)
@@ -69,14 +73,19 @@
 (define *gng-conn-list* (convert-gng-conn-ages-to-simple-list *example-gng*))
 (format #t "\nconvert gng-conn-ages to simple list: ~a\n" *gng-conn-list*)
 
-(define *string-body-dot* (list-to-string-dot-format  *gng-conn-list*))
+(define *string-body-dot* (list-to-string-dot-format *gng-conn-list*))
 (format #t "\nlist of connection ready for print:\n~a\n" *string-body-dot*)
 
-(define *string-dot* (add-head-tail *winners* *string-body-dot*))
+(define *tooltip* (convert-gng-to-string-tooltip *list-for-print-tooltip* (map get-neuron-weight *example-gng*)))
+(format #t "\ntooltip (weight):\n~a\n" *tooltip*)
+
+(define *string-dot* (add-head-tail *winners* *string-body-dot* *tooltip*))
 (format #t "\nDOT ready for print:\n
 # Graphviz example:
 #
-# dot  -Tpng test.gv > thisfile.png
+# dot -Tpng test.gv >! test.png
+# dot -Tcmapx test.gv >! test.cmapx
+#
 # instead dot:
 # neato (nodes < 100)
 # fdp

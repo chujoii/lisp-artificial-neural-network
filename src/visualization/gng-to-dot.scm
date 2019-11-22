@@ -82,10 +82,32 @@
 		     (list-to-string-dot-format (cdr conn-list)))))
 
 
+;; from list: (0 2) ((1 2 3 4) (5 6 7 8) (9 10 11 10))
+;; generate string:
+;; 0 [tooltip="1 3"]
+;; 1 [tooltip="5 7"]
+;; 2 [tooltip="9 11"]
+(define (convert-gng-to-string-tooltip index-column-list weights)
+  (define (inc counter w)
+    (if (null? w)
+	""
+	(string-append (number->string counter)
+			     " [tooltip=\""
+			     (string-join (map (lambda (x) (format #f "~,2f" x)) (car w)) " ")
+			     "\"]\n"
+			     (inc (1+ counter) (cdr w)))))
 
-(define (add-head-tail winners body)
+  (inc 0 (map (lambda (x) (list-from-index-list index-column-list x)) weights)))
+
+
+
+(define (add-head-tail winners body tooltip)
   (string-append "graph ai {\n"
+		 "node [shape=circle];\n"
+		 "\n"
 		 "c [label=\"c\", shape=box, color=blue];\n"
 		 "c -- " (number->string (car winners)) ";\n"
 		 "c -- " (number->string (cadr winners)) ";\n"
+		 tooltip
+		 "\n\n"
 		 body "}\n"))
