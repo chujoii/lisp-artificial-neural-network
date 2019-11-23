@@ -47,7 +47,7 @@
 ;; wait some time for collect data (~10 seconds)
 ;; press Ctrl-c (for step generating numbers)
 ;; view doted graph (press Ctrl-c or Enter for exit from gnuplot):
-;; ./datagen.scm >! test.dat; gnuplot -e "plot 'test.dat' ; pause -1 'press enter'"
+;; echo wait 10sec and press Ctrl-c; ./datagen.scm >! test.dat; gnuplot -e "plot 'test.dat' ; pause -1 'press enter'"
 
 
 
@@ -115,7 +115,8 @@
     (cond (                   (< shape 66) (rim-shape 2.0 5.0 0.0 20.0))
 	  ((and (>= shape 66) (< shape 81)) (rectangle-shape 5.0 5.0 10 -2.5))
 	  ((and (>= shape 81) (< shape 82)) (rectangle-shape 10.0 0.1 0.0 -0.5))
-	  (     (>= shape 82) (format #t "~,2f ~,2f\n" (random:normal) (random:normal)))))) ; nebula
+	  ((and (>= shape 82) (< shape 99)) (format #t "~,2f ~,2f\n" (random:normal) (random:normal))) ; nebula
+	  (else        (format #t "~,2f ~,2f\n" (+ 12.5 (random:normal)) (+ 20.0 (random:normal))))))) ; nebula
 
 
 
