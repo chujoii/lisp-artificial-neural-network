@@ -37,8 +37,10 @@
 
 ;;; Usage:
 
+;; mkdir tmp
 ;; ./datagen.scm | ./imagen.scm
-
+;; cd tmp
+;; ../forall.sh neato -Tpng -O
 
 
 ;;; History:
