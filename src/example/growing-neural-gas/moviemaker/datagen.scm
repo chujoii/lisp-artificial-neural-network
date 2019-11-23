@@ -92,31 +92,32 @@
 ;;
 ;;		        _____    
 ;; 	              ---------
-;; 	            /-/       \-\
-;; 	 .         //           \\
-;; 	       	  ( | .         | )
-;; 	           \\           //                .               .
+;; 	            /-/       \-\                               .
+;; 	 .         //           \\                        .   ... .
+;; 	       	  ( | .  rim    | )             rare nebula-> .*.
+;; 	           \\           //                .            .  .
 ;; 	            \-\       /-/
 ;; 	              ---------
 ;; 		.        ---       
 ;; 
 ;;		      ..    .  .    .        .
 ;;	.	   . --.m-+++... .
-;;		   --m###+#%+ #---		      +--------------+
-;;		 .*+m#.#####*-+%+-	.	      |            . |
-;;	       ...+-#########m%#m-------------------+ |      .       |_____________________\
-;;		 -.%###########m%#++----------------+ |              |                     / x
-;;	.	. -mm--######++%#+		      |         .    |         .
-;;		   - -%##%#%m-+-.	 ..	 .    +--------------+
+;;		   --m###+#%+ #---		      #####.#########
+;;		 .*+m#.#####*-+%+-	.	       ##.#########.##
+;;	       ...+-# nebula m%#m-------------------+ ## rectangle ###_____________________\
+;;		 -.%###########m%#++----------------+ ###############                      / x
+;;	.	. -mm--######++%#+   long rectangle   ##########.#####         .
+;;		   - -%##%#%m-+-.	 ..	 .    ##.###########.#
 ;;		  .  ..+.-   . -  -.
 ;;
-(define (random-shape)
-  (let ((shape (random 100)))
-    (cond (                   (< shape 66) (rim-shape 2.0 5.0 0.0 20.0))
-	  ((and (>= shape 66) (< shape 81)) (rectangle-shape 5.0 5.0 10 -2.5))
-	  ((and (>= shape 81) (< shape 82)) (rectangle-shape 10.0 0.1 0.0 -0.5))
-	  ((and (>= shape 82) (< shape 99)) (format #t "~,2f ~,2f\n" (random:normal) (random:normal))) ; nebula
-	  (else        (format #t "~,2f ~,2f\n" (+ 12.5 (random:normal)) (+ 20.0 (random:normal))))))) ; nebula
+(define (print-shape old-shape)
+  (let ((shape (if (< old-shape 0) (random 1000) old-shape)))
+    (cond (                   (< shape 660) (rim-shape 2.0 5.0 0.0 20.0))
+	  ((and (>= shape 660) (< shape 810)) (rectangle-shape 5.0 5.0 10 -2.5))
+	  ((and (>= shape 810) (< shape 820)) (rectangle-shape 10.0 0.1 0.0 -0.5))
+	  ((and (>= shape 820) (< shape 999)) (format #t "~,2f ~,2f\n" (random:normal) (random:normal))) ; nebula
+	  (else        (format #t "~,2f ~,2f\n" (+ 12.5 (random:normal)) (+ 20.0 (random:normal))))) ; rare nebula
+    shape))
 
 
 
@@ -130,4 +131,15 @@
 
 
 
-(while (not *stop*) (random-shape))
+(define (main sequence-counter shape)
+  (if (not *stop*)
+
+      ;; random signal not jump from one figure to other,
+      ;; but select one and many times set random point in this figure,
+      ;; then choise other figure and some time set random points in this new figure,
+      ;; ...
+      (if (< sequence-counter 0)
+	  (main (random 100) (print-shape -1)) ;; counter<0 select new shape; counter = random
+	  (main (1- sequence-counter) (print-shape shape))))) ;; counter>=0 repeat old shape; (dec counter)
+
+(main 0 0)
