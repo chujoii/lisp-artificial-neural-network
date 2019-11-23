@@ -56,7 +56,7 @@
 (set! *random-state* (random-state-from-platform))
 ;(set! *random-state* (seed->random-state 0.12345))
 
-
+(define *stop* #f)
 
 
 
@@ -69,4 +69,14 @@
 
 
 
-(random-shape)
+(define (sig-handler sig)
+  (set! *stop* #t))
+
+
+
+;; use Ctrl-c to correct quit
+(sigaction SIGINT sig-handler)
+
+
+
+(while (not *stop*) (random-shape))
