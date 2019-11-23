@@ -37,9 +37,17 @@
 
 ;;; Usage:
 
+;; for view (press Ctrl-c for stop generating numbers):
 ;; guile datagen.scm
 ;; or
 ;; ./datagen.scm
+;;
+;; test sapes:
+;; run
+;; wait some time for collect data (~10 seconds)
+;; press Ctrl-c (for step generating numbers)
+;; view doted graph (press Ctrl-c or Enter for exit from gnuplot):
+;; ./datagen.scm >! test.dat; gnuplot -e "plot 'test.dat' ; pause -1 'press enter'"
 
 
 
@@ -53,19 +61,61 @@
 
 (use-modules (ice-9 format))
 
+(load "../../../../../../util/battery-scheme/vector.scm")
+
+
 (set! *random-state* (random-state-from-platform))
 ;(set! *random-state* (seed->random-state 0.12345))
 
 (define *stop* #f)
 
 
+(define (rectangle-shape side-a side-b dx dy)
+  (format #t "~,2f ~,2f\n"
+	  (+ (* (random:uniform) side-a) dx)
+	  (+ (* (random:uniform) side-b) dy)))
 
 
 
+(define (rim-shape radius-in radius-out dx dy)
+  (let ((x (- (* (random:uniform) radius-out 2.0) radius-out))
+	(y (- (* (random:uniform) radius-out 2.0) radius-out)))
+    (if (and (< (+ (square x) (square y)) (square radius-out))
+	     (> (+ (square x) (square y)) (square radius-in)))
+	(format #t "~,2f ~,2f\n"
+		(+ x dx)
+		(+ y dy))
+	(rim-shape radius-in radius-out dx dy))))
+
+;;                     y /\
+;;                       |
+;;
+;;		        _____    
+;; 	              ---------
+;; 	            /-/       \-\
+;; 	 .         //           \\
+;; 	       	  ( | .         | )
+;; 	           \\           //                .               .
+;; 	            \-\       /-/
+;; 	              ---------
+;; 		.        ---       
+;; 
+;;		      ..    .  .    .        .
+;;	.	   . --.m-+++... .
+;;		   --m###+#%+ #---		      +--------------+
+;;		 .*+m#.#####*-+%+-	.	      |            . |
+;;	       ...+-#########m%#m-------------------+ |      .       |_____________________\
+;;		 -.%###########m%#++----------------+ |              |                     / x
+;;	.	. -mm--######++%#+		      |         .    |         .
+;;		   - -%##%#%m-+-.	 ..	 .    +--------------+
+;;		  .  ..+.-   . -  -.
+;;
 (define (random-shape)
-  (let ((shape (random 2)))
-    (cond ((= shape 0) (format #t "circle (center 0, 0) ~,2f ~,2f\n" (random:normal) (random:normal)))
-	  ((= shape 1) (format #t "cube (center 10, 10) ~,2f ~,2f\n" (+ (* (random:uniform) 5.0) 7.5) (+ (* (random:uniform) 5.0) 7.5))))))
+  (let ((shape (random 100)))
+    (cond (                   (< shape 66) (rim-shape 2.0 5.0 0.0 20.0))
+	  ((and (>= shape 66) (< shape 81)) (rectangle-shape 5.0 5.0 10 -2.5))
+	  ((and (>= shape 81) (< shape 82)) (rectangle-shape 10.0 0.1 0.0 -0.5))
+	  (     (>= shape 82) (format #t "~,2f ~,2f\n" (random:normal) (random:normal)))))) ; nebula
 
 
 
