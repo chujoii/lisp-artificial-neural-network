@@ -87,7 +87,7 @@
 (map print-neuron *initial-gng*) (newline)
 
 (format #t "\nupdate neuron connection age for 0 1\n")
-(update-neuron-conn-age 0 1 + 1 *initial-gng*)
+(update-neuron-conn-age 0 1 + 1 *initial-gng*) ;; need create link beetwin first neuron!
 (map print-neuron *initial-gng*)
 
 (format #t "\nsimple 6 neurons (see ../../../growing-neural-gas.scm):\n")
@@ -114,7 +114,7 @@
 (map print-neuron *example-gng*)
 
 (format #t "\nupdate connection age:\n")
-(update-neuron-conn-age 0 1 + 1 *example-gng*)
+(update-neuron-conn-age 0 1 + 1 *example-gng*) ;; need create link beetwin first neuron!
 (update-neuron-conn-age 1 2 + 2 *example-gng*)
 (update-neuron-conn-age 2 0 + 3 *example-gng*)
 (update-neuron-conn-age 3 4 + 4 *example-gng*)
