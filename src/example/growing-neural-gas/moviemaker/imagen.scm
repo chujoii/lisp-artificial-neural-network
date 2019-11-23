@@ -80,7 +80,18 @@
 					      '())))
 (update-neuron-conn-age 0 1 + 1 *initial-gng*) ;; need create link beetwin first neuron!
 
-(map print-neuron *initial-gng*)
+(gng-to-dot-file '() *winners* *initial-gng* (string-append "tmp/" (number->string *epoch*) ".gv"))
 
-(let ((data (map string->number (string-split (read-line) #\space)))) ; fixme: need check input data
-  (map print-neuron (growing-neural-gas *epoch* data *initial-gng*)))
+(define (main epoch-counter gng)
+  (format #t "~d\n" epoch-counter)
+  (let ((new-gng (growing-neural-gas
+		  epoch-counter
+		  (map string->number (string-split (read-line) #\space)) ; fixme: need check input data
+		  gng)))
+    (gng-to-dot-file '() *winners*
+			   new-gng
+			   (string-append "tmp/" (number->string epoch-counter) ".gv"))
+    (main (1+ epoch-counter)
+	  new-gng)))
+
+(main (1+ *epoch*) *initial-gng*)
