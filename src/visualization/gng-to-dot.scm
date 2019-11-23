@@ -119,4 +119,5 @@
   (display-to-file filename
 		 (add-head-tail winners
 				(list-to-string-dot-format (convert-gng-conn-ages-to-simple-list gng))
-				(convert-gng-to-string-tooltip list-for-print-tooltip (map get-neuron-weight gng)))))
+				(if (null? list-for-print-tooltip) ""
+				    (convert-gng-to-string-tooltip list-for-print-tooltip (map get-neuron-weight gng))))))
