@@ -54,6 +54,7 @@
 (use-modules (ice-9 format))
 
 (load "../growing-neural-gas.scm")
+(load "../../../../util/battery-scheme/dir-and-file.scm")
 
 ;; Convert gng-conn-ages to simple list
 ;; unconnected node doesn't show
@@ -111,3 +112,11 @@
 		 tooltip
 		 "\n\n"
 		 body "}\n"))
+
+
+
+(define (gng-to-dot-file list-for-print-tooltip winners gng filename)
+  (display-to-file filename
+		 (add-head-tail winners
+				(list-to-string-dot-format (convert-gng-conn-ages-to-simple-list gng))
+				(convert-gng-to-string-tooltip list-for-print-tooltip (map get-neuron-weight gng)))))

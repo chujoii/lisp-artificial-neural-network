@@ -92,3 +92,7 @@
 # sfdp (nodes < 100 K)
 
 ~a\n" *string-dot*)
+
+
+
+(gng-to-dot-file *list-for-print-tooltip* *winners* *example-gng* "test2.gv")

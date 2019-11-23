@@ -297,9 +297,9 @@
 ;; fixme: algorithm numbers based on ../../../../doc/Neural_gas(ru).pdf
 (define (growing-neural-gas epoch sensor gng)
   (let ((distances-w-s (calculate-distance-weight-sensor sensor gng)))
-    (format #t "distances-weight-sensor:\n~a\n\n" distances-w-s)
+    (if *debug-print* (format #t "distances-weight-sensor:\n~a\n\n" distances-w-s))
     (let ((winners (find-index-of-two-minimal distances-w-s))) ; algorithm:04
-      (format #t "winners: ~a\n" winners)
+      (if *debug-print* (format #t "winners: ~a\n" winners))
       (set! *winners* winners)
       ;; danger! following code with small indent:
 
