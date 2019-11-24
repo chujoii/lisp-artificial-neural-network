@@ -77,12 +77,14 @@
 
 (define *dimension-of-sensor* 2)
 
+(define *image-log-file-step* 100)
+
 (define *initial-gng* (add-neuron (make-neuron *dimension-of-sensor* 1)
 				  (add-neuron (make-neuron *dimension-of-sensor* 0)
 					      '())))
 (update-neuron-conn-age 0 1 + 1 *initial-gng*) ;; need create link beetwin first neuron!
 
-(gng-to-dot-file '() *winners* *initial-gng* (string-append "tmp/" (number->string *epoch*) ".gv"))
+(gng-to-dot-file '() *winners* *initial-gng* (format #f "tmp/~8,'0d.gv" *epoch*))
 
 (define (main epoch-counter gng)
   (format #t "~d\n" epoch-counter)
@@ -90,9 +92,12 @@
 		  epoch-counter
 		  (map string->number (string-split (read-line) #\space)) ; fixme: need check input data
 		  gng)))
-    (gng-to-dot-file '() *winners*
+    (if (= 0 (remainder epoch-counter *image-log-file-step*))
+	(begin
+	  (gng-to-dot-file '() *winners*
 			   new-gng
-			   (string-append "tmp/" (number->string epoch-counter) ".gv"))
+			   (format #f "tmp/~8,'0d.gv" epoch-counter))
+	  (display-to-file (format #f "w/~8,'0d.dat" epoch-counter) (weights-to-string (map get-neuron-weight new-gng)))))
     (main (1+ epoch-counter)
 	  new-gng)))
 

@@ -101,6 +101,15 @@
   (inc 0 (map (lambda (x) (list-from-index-list index-column-list x)) weights)))
 
 
+;; copy of convert-gng-to-string-tooltip
+(define (weights-to-string weights)
+  (if (null? weights)
+      ""
+      (string-append (string-join (map (lambda (x) (format #f "~,2f" x)) (car weights)) " ")
+		     "\n"
+		     (weights-to-string (cdr weights)))))
+
+
 
 (define (add-head-tail winners body tooltip)
   (string-append "graph ai {\n"

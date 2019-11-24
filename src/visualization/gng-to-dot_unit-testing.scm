@@ -96,3 +96,5 @@
 
 
 (gng-to-dot-file *list-for-print-tooltip* *winners* *example-gng* "test2.gv")
+
+(format #t "weights:\n~a\n" (weights-to-string (map get-neuron-weight *example-gng*)))
