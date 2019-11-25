@@ -317,11 +317,11 @@
 
       ;; algorithm:07 for winner
       (update-neuron-weight-vector (car winners)
-				   (lambda (weights step) (sum-sub-vectors + weights (mul-div-vector-const * (sum-sub-vectors - weights sensor) step)))
+				   (lambda (weights step) (sum-sub-vectors + weights (mul-div-vector-const * (sum-sub-vectors - sensor weights) step)))
 				   *eps-winner*
 
        ;; algorithm:07 for neighbours ; wrong formula: W=Wold*eps ; correct formula: W = Wold + eps*(Wols - Eold)
-       (update-neighbours-weights (lambda (weights step) (sum-sub-vectors + weights (mul-div-vector-const * (sum-sub-vectors - weights sensor) step)))
+       (update-neighbours-weights (lambda (weights step) (sum-sub-vectors + weights (mul-div-vector-const * (sum-sub-vectors - sensor weights) step)))
 				  (get-neuron-conn-age (list-ref gng (car winners)))
 				  *eps-neighbour*
 
