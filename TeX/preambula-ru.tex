@@ -1,0 +1,121 @@
+
+\usepackage{ifxetex}                      %% Для сборки документа и pdflatex'ом, и xelatex'ом
+\ifxetex
+    %% xelatex
+    \usepackage{polyglossia}                       %% загружает пакет многоязыковой вёрстки
+    \setdefaultlanguage[spelling=modern]{russian}  %% устанавливает главный язык документа
+    \setotherlanguage{english}                     %% объявляет второй язык документа
+    \defaultfontfeatures{Ligatures={TeX}}          %% свойства шрифтов по умолчанию
+    \setmainfont[Ligatures={TeX}]{Old Standard}    %% задаёт основной шрифт документа
+    \setsansfont{Old Standard}                     %% задаёт шрифт без засечек (но Old Standard с засечками заменить на DejaVu Sans?)
+    \setmonofont{DejaVu Sans Mono}                  %% задаёт моноширинный шрифт
+\else
+    %% pdflatex
+    \usepackage{cmap}                     %% Поиск русских  слов в pdf
+    \usepackage[T2A]{fontenc}             %% Внутренняя кодировка шрифта
+    \usepackage[utf8]{inputenc}           %% Кодировка исходного текста;
+    %                                      % new: [utf8] (for XeLaTeX);
+    %                                      % unmaintained: [ucs];
+    %                                      % old, but work: [utf8x] (load ucs)
+    %                                      % koi8-r
+    %                                      % можно указать cp866 (Alt-кодировка DOS)
+    \usepackage[english,russian]{babel}   %% Поддержка русского текста:
+    %                                      % включение русификации, русских и
+    %                                      % английских стилей и переносов
+\fi  
+
+
+
+% \hyphenpenalty=50   % переносы разрешены (значение по умолчанию)
+% \hyphenpenalty=10000 % запретить переносы
+%\hyphenpenalty=9999
+
+% badness - мера разрежённости строки (badness=0 всё хорошо).
+% При разбиении абзаца на строки Latex не может создать такие строки,
+% badness которых больше, чем значение параметра \tolerance
+%\tolerance=10
+
+% к пределу растяжимости каждой из строк в процессе разбиения абзаца
+% на строки и вычислений соответствующих значений badness прибавляется
+% значение \emergencystretch. Чем больше значение параметра
+% \emergencystretch, тем более разреженные строки появятся на печати.
+% например: \emergencystretch=10pt конфигурирует TeX для использования
+% не более 10pt дополнительного пробела для каждой строки
+%\emergencystretch=10pt
+
+% запрет заездов на правое поле документа и переносы. it tells
+% TeX to not even look for hyphenation positions
+%\pretolerance=9999
+
+% Only words containing at least 16 characters will now be hyphenated.
+%\lefthyphenmin=4  % least 4 characters before the hyphen
+%\righthyphenmin=4 % least 4 characters after the hyphen
+
+
+% запрещение вдов ("widow" - короткая строка или слово в конце абзаца)
+\widowpenalty=10000
+% запрещение сирот ("orphan" - одиночная строка вылетевшая на следующую страницу или колонку)
+\clubpenalty=10000
+%
+% unknown:
+%\brokenpenalty=4991
+%\predisplaypenalty=10000
+%\postdisplaypenalty=1549
+%\displaywidowpenalty=1602
+
+\usepackage{graphics}
+\usepackage{wrapfig}
+\usepackage{multicol}
+\usepackage{multirow}
+%\usepackage{fullpage}
+\usepackage{textcomp} % типографские значки
+\usepackage{mathtext} % если нужны русские буквы в формулах
+\usepackage{gensymb}  % для спец знаков
+\usepackage{amsmath} % для спец знаков в формулах
+\usepackage{amssymb} % для спец знаков в формулах
+\usepackage{topcapt} % подписи к таблицам
+\usepackage{dcolumn} % выравнивание чисел
+\usepackage{ulem} % подчёркивание
+
+\usepackage{makeidx} % индекс
+
+\usepackage{import} % for converted svg to pdf
+
+% вращение 
+\usepackage{lscape}     % for %\begin{landscape} ...   %\end{landscape}
+\usepackage{rotating}   % for sideways and \rotatebox{-90}{}
+
+% водяные знаки
+\usepackage[firstpage]{draftwatermark}
+\SetWatermarkScale{0.7}
+\SetWatermarkLightness{0.9}
+\SetWatermarkText{\textbf{Рабочая версия}}
+
+\usepackage[iso,english]{isodate}
+\usepackage{datetime2} % print datetime in GOST ISO 8601-2001
+
+\frenchspacing
+
+\usepackage{fancyvrb} % for verbatim text
+
+\usepackage{listings} % for source code
+%\lstloadlanguages{lisp}
+\lstset{
+  language=C,
+  %basicstyle=\tiny, %or \small or \footnotesize etc.
+  extendedchars=\true, % for russian characters in comments
+  %texcl,  % for spaces in russian characters in comments
+  keepspaces = true, % for spaces in russian characters in comments. it's work!
+  escapechar=|,
+  frame=single,
+  commentstyle=\itshape,
+  inputencoding=utf8,
+  stringstyle=\bfseries
+}
+
+\usepackage{csvsimple}
+
+% fixme: remove before release
+\usepackage[colorinlistoftodos,prependcaption,textsize=tiny]{todonotes}
+\setlength{\marginparwidth}{3cm}
+

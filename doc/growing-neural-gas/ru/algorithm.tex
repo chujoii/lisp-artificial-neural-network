@@ -1,0 +1,45 @@
+\documentclass[unicode, 12pt, a4paper,oneside,fleqn]{article}
+
+\input{../../../TeX/preambula-ru.tex}
+\usepackage[colorlinks=true]{hyperref} % url hyperlink (beamer already include it, so move here for prevent conflict)
+
+\author{Роман В. Приходченко}
+
+\title{Алгоритм растущего нейронного газа}
+
+
+\makeindex
+
+
+
+\begin{document}
+
+% меняем английские термины на русские
+\renewcommand\bibname{СПИСОК ЛИТЕРАТУРЫ}
+\renewcommand\refname{\centering Список литературы}
+\renewcommand\contentsname{\centering Содержание}
+
+
+% образцы переноса сложных слов - не работает?
+% \hyphenation{веб=-ин-тер-фей-се веб-ин-тер-фей-с}
+% or use in text: веб"=интерфейс (require: \usepackage[russian]{babel})
+
+% печатаем титульный лист
+\makeatletter % generate \@title, \@date, ...
+\maketitle
+
+\newpage
+% печатаем оглавление
+\tableofcontents
+
+\newpage
+Описание алгоритма основан на статьях \cite[A "Neural-Gas" Network Learns Topologies]{neural-gas-T.Martinetz-K.Schulten}, \cite[Нейронный газ]{ru.wikipedia.org}, \cite[Растущий нейронный газ - реализация на языке программирования MQL5]{gng-subbotin} приведённых в списке литературы.
+\section{}
+
+
+
+\newpage
+\bibliographystyle{plain}
+\bibliography{algorithm}
+
+\end{document}
