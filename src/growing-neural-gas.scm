@@ -150,13 +150,15 @@
 ;; usage for update neuron weight: neuron number a=3 function=add(+) step=10 to each weight
 ;; simple example (update-neuron-weight 3 (lambda (weights step) (map (lambda (y) (+ y step)) weights)) 10 *example-gng*)
 ;; more simple example                         (format #t "~a\n" (map (lambda (y) (+ y    1)) (list 1 2 3 4 5)))
+;;
+;; "function" get two argumets: list-of-weight and step
 (define (update-neuron-weight-vector a function step gng)
   (list-set! (list-ref gng a) *index-neuron-weight*
 	     (function (get-neuron-weight (list-ref gng a)) step))
   gng)
 
 
-
+;; "function" get two argumets: list-of-weight and step
 (define (update-neighbours-weights function list-neighbour eps-step gng)
   (define (iter neighbours counter igng)
     (if (null? neighbours)
@@ -179,6 +181,8 @@
 ;;
 ;; set link between 2 and 3 elements to number (for example 7)
 ;; (update-neuron-conn-age 2 3 (lambda (ignored-value val) val) 7 *initial-gng*)
+;;
+;; "function" get two argumets: number-conn-age and step
 (define (update-neuron-conn-age a b function step gng)
   (list-set! (get-neuron-conn-age (list-ref gng a)) b
 	     (function (list-ref (get-neuron-conn-age (list-ref gng a)) b) step))
@@ -213,6 +217,8 @@
 
 ;; usage for update neuron local-error: number a=3: function=add(+) step=10 to local-error
 ;; (update-neuron-local-error 3 + 10 *example-gng*)
+;;
+;; "function" get two argumets: number-locat-error and step
 (define (update-neuron-local-error a function step gng)
   (list-set! (list-ref gng a) *index-neuron-local-error*
 	     (function (get-neuron-local-error (list-ref gng a)) step))
