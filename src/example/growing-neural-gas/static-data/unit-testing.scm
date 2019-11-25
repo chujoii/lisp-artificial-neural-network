@@ -63,8 +63,8 @@
 (define *debug-print* #t)
 
 ;;; adaptation coefficients for weight and local-error
-(define *eps-winner*   10.0)
-(define *eps-neighbour* 1.0)
+(define *eps-winner*   0.1)
+(define *eps-neighbour* 0.01)
 (define *eps-local-error* 0.5)
 
 (define *limit-conn-age* 3)
