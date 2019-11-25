@@ -2,6 +2,14 @@
 ~*
 *tmp*
 *.pdf
+*.aux
+*.aux
+*.bbl
+*.blg
+*.idx
+*.out
+*.toc             
+revision.txt                             
 fig.[0-9]*
 fig.mpx
 !.gitignore
