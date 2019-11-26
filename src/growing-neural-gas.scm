@@ -42,8 +42,11 @@
 
 
 ;;; Usage:
-
-;; use it
+;;
+;; algorithm numbers based on ../doc/growing-neural-gas/ru/algorithm.pdf
+;;
+;; see unit-testing and examples in
+;; example/growing-neural-gas
 
 
 
@@ -77,9 +80,9 @@
 
 
 
-(load "../../../util/battery-scheme/list.scm")
-(load "../../../util/battery-scheme/vector.scm")
-(load "../../../util/battery-scheme/minimax.scm")
+(load "../../battery-scheme/list.scm")
+(load "../../battery-scheme/vector.scm")
+(load "../../battery-scheme/minimax.scm")
 
 (define *not-connected* -1)
 (define *initial-connection-age* 0)
@@ -300,7 +303,6 @@
 
 
 
-;; fixme: algorithm numbers based on ../../../../doc/Neural_gas(ru).pdf
 (define (growing-neural-gas epoch sensor gng)
   (let ((distances-w-s (calculate-distance-weight-sensor sensor gng)))
     (if *debug-print* (format #t "distances-weight-sensor:\n~a\n\n" distances-w-s))

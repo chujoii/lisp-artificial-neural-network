@@ -48,7 +48,7 @@
 ;;; Code:
 
 (use-modules (ice-9 format))
-(load "../../../util/battery-scheme/print-list.scm")
+(load "../../battery-scheme/print-list.scm")
 
 ;;; Transfer function (activation function)
 (define (transfer-function-step signal threshold)

@@ -61,7 +61,7 @@
 
 (use-modules (ice-9 format))
 
-(load "../../../../../../util/battery-scheme/vector.scm")
+(load "../../../../../battery-scheme/vector.scm")
 
 
 (set! *random-state* (random-state-from-platform))

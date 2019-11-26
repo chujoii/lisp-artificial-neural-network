@@ -50,8 +50,8 @@
 ;;; Code:
 
 (load "../../../perceptron.scm")
-(load "../../../../../../util/battery-scheme/list.scm")
-(load "../../../../../../util/battery-scheme/print-list.scm")
+(load "../../../../../battery-scheme/list.scm")
+(load "../../../../../battery-scheme/print-list.scm")
 
 (set! *random-state* (random-state-from-platform))
 ;(set! *random-state* (seed->random-state 1.2345))

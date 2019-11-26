@@ -54,7 +54,7 @@
 (use-modules (ice-9 format))
 
 (load "../growing-neural-gas.scm")
-(load "../../../../util/battery-scheme/dir-and-file.scm")
+(load "../../../battery-scheme/dir-and-file.scm")
 
 ;; Convert gng-conn-ages to simple list
 ;; unconnected node doesn't show
