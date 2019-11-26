@@ -66,6 +66,7 @@
 (define *eps-winner*   0.1)
 (define *eps-neighbour* 0.01)
 (define *eps-local-error* 0.5)
+(define *factor-beta-decrease-local-error* 0.9)
 
 (define *limit-conn-age* 3)
 
@@ -203,4 +204,8 @@
 
 (format #t "\nadaptive step: create new neuron:\n")
 (set! *example-gng* (adaptate-step-create-new-neuron *example-gng*))
+(map print-neuron *example-gng*)
+
+(format #t "\nadaptive step: create new neuron:\n")
+(set! *example-gng* (decrease-all-neuron-local-errors *factor-beta-decrease-local-error* *example-gng*))
 (map print-neuron *example-gng*)

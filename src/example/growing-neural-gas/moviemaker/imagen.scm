@@ -65,14 +65,15 @@
 (define *debug-print* #f)
 
 ;;; adaptation coefficients for weight and local-error
-(define *eps-winner*   10.0)
-(define *eps-neighbour* 1.0)
-(define *eps-local-error* 0.5)
+(define *eps-winner*   0.01)
+(define *eps-neighbour* 0.0001)
+(define *eps-local-error* 0.05)
+(define *factor-beta-decrease-local-error* 0.9)
 
-(define *limit-conn-age* 3)
+(define *limit-conn-age* 15)
 
 ;; adaptation step (add neuron in each *lambda-step* to network)
-(define *lambda-step* 1)
+(define *lambda-step* 20)
 
 ;; epoch counter
 (define *epoch* 1)

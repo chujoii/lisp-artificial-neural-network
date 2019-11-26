@@ -102,13 +102,17 @@
    (create-list-of-n-element-filled-by-evaluated-function dimension-sensor random:normal) ; weights
    (make-list dimension-gng *not-connected*) ; not connected, so conn-ages = -1
    0.0)) ; local-error
+
+;; construct neuron from ready data set
+(define (construct-neuron weight conn-age local-error)
+  (list weight conn-age local-error))
+
 (define (get-neuron-weight neuron) (car neuron))
 (define *index-neuron-weight* 0)
 (define (get-neuron-conn-age neuron) (cadr neuron))
 (define *index-neuron-conn-age* 1)
 (define (get-neuron-local-error neuron) (caddr neuron))
 (define *index-neuron-local-error* 2)
-
 
 
 (define (add-neuron neuron gng)
@@ -229,6 +233,16 @@
 
 
 
+;; algorithm:18
+(define (decrease-all-neuron-local-errors factor-beta gng)
+  (map (lambda (neuron) (construct-neuron
+			 (get-neuron-weight neuron)
+			 (get-neuron-conn-age neuron)
+			 (* (get-neuron-local-error neuron) factor-beta)))
+       gng))
+
+
+
 (define (calculate-distance-weight-sensor sensor gng)
   ;; fixme: euclidean-distance not good for cyclic data (angles, ...)
   (map (lambda (x) (euclidean-distance x sensor)) (map get-neuron-weight gng)))
@@ -311,6 +325,9 @@
       (set! *winners* winners)
       ;; danger! following code with small indent:
 
+      ;; algorithm:18
+      (decrease-all-neuron-local-errors *factor-beta-decrease-local-error*
+
       ;; algorithm:10.b
       (find-and-del-unconnected-neuron
 
@@ -340,4 +357,4 @@
 	 (if (and (= 0 (remainder epoch *lambda-step*)) ; adaptation step: create new neuron each lambda-step
 		  (> *limit-network-size* (length gng)))
 	     (adaptate-step-create-new-neuron gng)
-	     gng)))))))))))
+	     gng))))))))))))
