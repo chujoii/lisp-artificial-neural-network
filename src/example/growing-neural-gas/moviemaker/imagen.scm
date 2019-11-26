@@ -41,6 +41,10 @@
 ;; ./datagen.scm | ./imagen.scm
 ;; cd tmp
 ;; ../forall.sh neato -Tpng -O
+;; view images (feh, ...)
+;; cd ../w
+;; ../forall.sh fungnuplot
+;; view images (feh, ...)
 
 
 ;;; History:
