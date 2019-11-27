@@ -39,10 +39,10 @@
 
 ;; mkdir tmp
 ;; ./datagen.scm | ./imagen.scm
-;; cd tmp
+;; cd image-cluster
 ;; ../forall.sh neato -Tpng -O
 ;; view images (feh, ...)
-;; cd ../w
+;; cd ../image-2D
 ;; ../forall.sh fungnuplot
 ;; view images (feh, ...)
 
@@ -89,8 +89,6 @@
 					      '())))
 (update-neuron-conn-age 0 1 + 1 *initial-gng*) ;; need create link beetwin first neuron!
 
-(gng-to-dot-file '() *winners* *initial-gng* (format #f "tmp/~8,'0d.gv" *epoch*))
-
 (define (main epoch-counter gng)
   (format #t "~d\n" epoch-counter)
   (let ((new-gng (growing-neural-gas
@@ -101,9 +99,13 @@
 	(begin
 	  (gng-to-dot-file '() *winners*
 			   new-gng
-			   (format #f "tmp/~8,'0d.gv" epoch-counter))
-	  (display-to-file (format #f "w/~8,'0d.dat" epoch-counter) (weights-to-string (map get-neuron-weight new-gng)))))
+			   (format #f "image-cluster/~8,'0d.gv" epoch-counter))
+	  (display-to-file (format #f "image-2D/~8,'0d.dat" epoch-counter) (weights-to-string (map get-neuron-weight new-gng)))))
     (main (1+ epoch-counter)
 	  new-gng)))
 
+(create-if-not-exist-dir "image-cluster")
+(create-if-not-exist-dir "image-2D")
+
+(gng-to-dot-file '() *winners* *initial-gng* (format #f "image-cluster/~8,'0d.gv" *epoch*))
 (main (1+ *epoch*) *initial-gng*)
