@@ -123,8 +123,8 @@
     (if (null? ls)
 	""
 	(string-append "(list "
-		       (format #f "\t(list ~s)\n" (string-join (map (lambda (x) (format #f "~g" x)) (get-neuron-weight (car ls))) " "))
-		       (format #f "\t(list ~s)\n" (string-join (map (lambda (x) (format #f "~d" x)) (get-neuron-conn-age (car ls))) " "))
+		       (format #f "\t(list ~a)\n" (string-join (map (lambda (x) (format #f "~g" x)) (get-neuron-weight (car ls))) " "))
+		       (format #f "\t(list ~a)\n" (string-join (map (lambda (x) (format #f "~d" x)) (get-neuron-conn-age (car ls))) " "))
 		       (format #f "\t~g" (get-neuron-local-error (car ls)))
 		       ")\n\n"
 		       (iter (cdr ls)))))

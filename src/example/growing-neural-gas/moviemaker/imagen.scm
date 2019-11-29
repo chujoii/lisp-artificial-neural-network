@@ -37,7 +37,11 @@
 
 ;;; Usage:
 
-;; mkdir tmp
+;; you can remove (or rename) stored "knowledge-base.scm"
+;; for start learning from zero
+;; mv knowledge-base.scm old-knowledge-base.scm
+;;
+;; mkdir image-cluste image-2D
 ;; ./datagen.scm | ./imagen.scm
 ;; cd image-cluster
 ;; ../forall.sh neato -Tpng -O
@@ -45,6 +49,9 @@
 ;; cd ../image-2D
 ;; ../forall.sh fungnuplot
 ;; view images (feh, ...)
+;;
+;; or in one string:
+;; rm -rf image-cluster/* image-2D/*; echo '\n\n\nwait for loading and compiling knowledge base ...\n\n\n'; ./datagen.scm | ./imagen.scm; cd image-2D; ../forall.sh fungnuplot; cd image-cluster/; geeqie . & ../forall.sh neato -Tpng -O ; cd ..
 
 
 ;;; History:
@@ -89,6 +96,9 @@
 				  (add-neuron (make-neuron *dimension-of-sensor* 0)
 					      '())))
 (update-neuron-conn-age 0 1 + 1 *initial-gng*) ;; need create link beetwin first neuron!
+
+(if (file-exists? "knowledge-base.scm")
+	   (set! *initial-gng* (load "knowledge-base.scm")))
 
 
 (define *stop* #f)
