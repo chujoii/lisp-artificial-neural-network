@@ -89,11 +89,6 @@
 
 (define *winners* (list 0 1)) ; fixme: global variable
 
-(define (print-neuron neuron)
-  (format #t "w: ~a\t" (map (lambda (x) (format #f "~7,1f" x)) (get-neuron-weight neuron)))
-  (format #t "a: ~a\t" (map (lambda (x) (if (< x *initial-connection-age*) "-" (format #f "~d" x))) (get-neuron-conn-age neuron)))
-  (format #t "e: ~5,1f\n" (get-neuron-local-error neuron)))
-
 
 
 ;; construct neuron from ready data set
@@ -114,6 +109,27 @@
 (define *index-neuron-conn-age* 1)
 (define (get-neuron-local-error neuron) (caddr neuron))
 (define *index-neuron-local-error* 2)
+
+(define (print-neuron neuron)
+  (format #t "w: ~a\t" (map (lambda (x) (format #f "~7,1f" x)) (get-neuron-weight neuron)))
+  (format #t "a: ~a\t" (map (lambda (x) (if (< x *initial-connection-age*) "-" (format #f "~d" x))) (get-neuron-conn-age neuron)))
+  (format #t "e: ~5,1f\n" (get-neuron-local-error neuron)))
+
+;; generate string with start "list"
+;; usage: (print-gng-as-list "~d" (list 1 2 (list 3 4 5)))
+;; result: "(list 1 2 (list 3 4 5))"
+(define (print-gng-as-list gng)
+  (define (iter ls)
+    (if (null? ls)
+	""
+	(string-append "(list "
+		       (format #f "\t(list ~s)\n" (string-join (map (lambda (x) (format #f "~g" x)) (get-neuron-weight (car ls))) " "))
+		       (format #f "\t(list ~s)\n" (string-join (map (lambda (x) (format #f "~d" x)) (get-neuron-conn-age (car ls))) " "))
+		       (format #f "\t~g" (get-neuron-local-error (car ls)))
+		       ")\n\n"
+		       (iter (cdr ls)))))
+
+  (string-append "(list\n" (iter gng) ")"))
 
 
 (define (add-neuron neuron gng)

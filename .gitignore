@@ -12,5 +12,6 @@
 revision.txt                             
 fig.[0-9]*
 fig.mpx
+knowledge-base.scm
 !.gitignore
 !*.example

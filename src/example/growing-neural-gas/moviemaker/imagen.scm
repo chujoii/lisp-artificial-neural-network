@@ -127,4 +127,4 @@
 
 (gng-to-dot-file '() *winners* *initial-gng* (format #f "image-cluster/~8,'0d.gv" *epoch*))
 
-(format #t "~a\n" (print-list-as-list "~f" (main (1+ *epoch*) *initial-gng*)))
+(display-to-file "knowledge-base.scm" (print-gng-as-list (main (1+ *epoch*) *initial-gng*)))

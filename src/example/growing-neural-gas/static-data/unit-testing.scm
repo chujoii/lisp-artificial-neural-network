@@ -54,7 +54,7 @@
 (use-modules (ice-9 format))
 
 (load "../../../growing-neural-gas.scm")
-
+(load "../../../../../battery-scheme/dir-and-file.scm")
 
 
 (set! *random-state* (seed->random-state 0.12345))
@@ -209,3 +209,6 @@
 (format #t "\nadaptive step: create new neuron:\n")
 (set! *example-gng* (decrease-all-neuron-local-errors *factor-beta-decrease-local-error* *example-gng*))
 (map print-neuron *example-gng*)
+
+(format #t "\ntest list-formatted output: see file knowledge-base.scm\n")
+(display-to-file "knowledge-base.scm" (print-gng-as-list *example-gng*))
