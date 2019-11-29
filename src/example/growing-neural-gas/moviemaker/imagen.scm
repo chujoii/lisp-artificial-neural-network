@@ -51,7 +51,7 @@
 ;; view images (feh, ...)
 ;;
 ;; or in one string:
-;; rm -rf image-cluster/* image-2D/*; echo '\n\n\nwait for loading and compiling knowledge base ...\n\n\n'; ./datagen.scm | ./imagen.scm; cd image-2D; ../forall.sh fungnuplot; cd image-cluster/; geeqie . & ../forall.sh neato -Tpng -O ; cd ..
+;; rm -rf image-cluster/* image-2D/*; echo '\n\n\nwait for loading and compiling knowledge base ...\n\n\n'; ./datagen.scm | ./imagen.scm; cd image-2D; ../forall.sh fungnuplot; cd ../image-cluster/; geeqie . & ../forall.sh neato -Tpng -O ; cd ..
 
 
 ;;; History:
@@ -90,6 +90,15 @@
 
 (define *dimension-of-sensor* 2)
 
+;; from sensor you get: (a b c d);
+;; for view in tooltip only "a" and "b" set list to *list-for-print-tooltip*==(0 1)
+(define *list-for-print-tooltip* (list 0 1))
+
+;; limit for weights in format:
+;; ((lo-lim0 hi-lim0) (lo-lim1 hi-lim1) (lo-lim2 hi-lim2) ... (lo-limN hi-limN))
+(define *limit-weight* (list (list 10.0 15.0) (list -2.5 2.5))) ;; select cube
+
+
 (define *image-log-file-step* 100)
 
 (define *initial-gng* (add-neuron (make-neuron *dimension-of-sensor* 1)
@@ -125,7 +134,7 @@
 			gng)))
 	  (if (= 0 (remainder epoch-counter *image-log-file-step*)) ; print only one image of *image-log-file-step*
 	      (begin
-		(gng-to-dot-file '() *winners*
+		(gng-to-dot-file *list-for-print-tooltip* *limit-weight* *winners*
 				 new-gng
 				 (format #f "image-cluster/~8,'0d.gv" epoch-counter))
 		(display-to-file (format #f "image-2D/~8,'0d.dat" epoch-counter) (weights-to-string (map get-neuron-weight new-gng)))))
@@ -135,6 +144,6 @@
 (create-if-not-exist-dir "image-cluster")
 (create-if-not-exist-dir "image-2D")
 
-(gng-to-dot-file '() *winners* *initial-gng* (format #f "image-cluster/~8,'0d.gv" *epoch*))
+(gng-to-dot-file *list-for-print-tooltip* *limit-weight* *winners* *initial-gng* (format #f "image-cluster/~8,'0d.gv" *epoch*))
 
 (display-to-file "knowledge-base.scm" (print-gng-as-list (main (1+ *epoch*) *initial-gng*)))

@@ -83,25 +83,44 @@
 		     (list-to-string-dot-format (cdr conn-list)))))
 
 
-;; from list: (0 2) ((1 2 3 4) (5 6 7 8) (9 10 11 10))
+(define (overflow-limit? limits weights)
+  (if (null? weights)
+      '() ;;(and (<= lo-lim0            weight0) (<= weight0              hi-lim0))
+      (cons (and (<= (caar limits) (car weights)) (<= (car weights) (cadar limits)))
+	    (overflow-limit? (cdr limits) (cdr weights)))))
+
+;; from list: index-column-list=(0 2) weights=((1 2 3 4) (5 6 7 8) (9 10 11 10))
 ;; generate string:
 ;; 0 [tooltip="1 3"]
 ;; 1 [tooltip="5 7"]
 ;; 2 [tooltip="9 11"]
-(define (convert-gng-to-string-tooltip index-column-list weights)
+;;
+;; weight-limits in format: ((lo-lim0 hi-lim0) (lo-lim1 hi-lim1) (lo-lim2 hi-lim2) ... (lo-limN hi-limN))
+;; from list: weight-limits=((4 9) (4 9) (4 9) (4 9)) weights=((1 2 3 4) (5 6 7 8) (9 10 11 10))
+;;                                                              f f f t   t t t t   t  f  f  f
+;; (if (and (<= lo-lim0 weight0) (<= weight0 hi-lim0) (<= lo-lim1 weight1) (<= weight1 hi-lim1) ...)
+;;     color=green
+;;     color=default-black)
+;; generate string:
+;; 0 [color=black]
+;; 1 [tooltip=green]
+;; 2 [tooltip=black]
+(define (convert-gng-to-string-node-attributes index-column-list weight-limits weights)
   (define (inc counter w)
     (if (null? w)
 	""
 	(string-append (number->string counter)
 			     " [tooltip=\""
-			     (string-join (map (lambda (x) (format #f "~,2f" x)) (car w)) " ")
-			     "\"]\n"
+			     (string-join (map (lambda (x) (format #f "~,2f" x)) (list-from-index-list index-column-list (car w))) " ")
+			     "\""
+			     (if (apply list-and (overflow-limit? weight-limits (car w))) ", color=green" "")
+			     "]\n"
 			     (inc (1+ counter) (cdr w)))))
 
-  (inc 0 (map (lambda (x) (list-from-index-list index-column-list x)) weights)))
+  (inc 0 weights))
 
 
-;; copy of convert-gng-to-string-tooltip
+;; copy of convert-gng-to-string-node-attributes
 (define (weights-to-string weights)
   (if (null? weights)
       ""
@@ -115,7 +134,7 @@
   (string-append "graph ai {\n"
 		 "node [shape=circle];\n"
 		 "\n"
-		 "c [label=\"c\", shape=box, color=blue];\n"
+		 "c [label=\"c\", shape=box, color=black, fillcolor=darkgrey, style=filled, fontcolor=white];\n"
 		 "c -- " (number->string (car winners)) ";\n"
 		 "c -- " (number->string (cadr winners)) ";\n"
 		 tooltip
@@ -124,9 +143,9 @@
 
 
 
-(define (gng-to-dot-file list-for-print-tooltip winners gng filename)
+(define (gng-to-dot-file list-for-print-tooltip limits-of-wieght winners gng filename)
   (display-to-file filename
 		 (add-head-tail winners
 				(list-to-string-dot-format (convert-gng-conn-ages-to-simple-list gng))
 				(if (null? list-for-print-tooltip) ""
-				    (convert-gng-to-string-tooltip list-for-print-tooltip (map get-neuron-weight gng))))))
+				    (convert-gng-to-string-node-attributes list-for-print-tooltip limits-of-wieght (map get-neuron-weight gng))))))

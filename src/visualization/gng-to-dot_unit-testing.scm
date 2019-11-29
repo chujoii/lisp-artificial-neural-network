@@ -59,13 +59,17 @@
 ;; for view in tooltip only "a" and "c" set list to *list-for-print-tooltip*==(0 2)
 (define *list-for-print-tooltip* (list 0 2))
 
-(define *example-gng* (list (list (list -9.8 -19.6 -29.4 -39.2) (list -1 1 -1 -1 -1 -1 3) 0.45)
-			    (list (list -7.800000000000001 -17.6 -27.4 -37.2) (list 1 -1 0 -1 -1 -1 -1) 0.5)
-			    (list (list 2.1 2.2 2.3 2.4) (list -1 0 -1 -1 -1 -1 3) 0.4)
-			    (list (list -65.9 -164.8 -263.7 -362.6) (list -1 -1 -1 -1 4 -1 -1) 0.2)
-			    (list (list -1.8000000000000007 -11.600000000000001 -21.4 -31.200000000000003) (list -1 -1 -1 4 -1 -1 -1) 0.3)
-			    (list (list 5.1 5.2 5.3 5.4) (list -1 -1 -1 -1 -1 -1 -1) 0.7)
-			    (list (list -3.8500000000000005 -8.700000000000001 -13.549999999999999 -18.400000000000002) (list 3 -1 3 -1 -1 -1 -1) 0.45)))
+;; limit for weights in format:
+;; ((lo-lim0 hi-lim0) (lo-lim1 hi-lim1) (lo-lim2 hi-lim2) ... (lo-limN hi-limN))
+(define *limit-weight* (list (list -10 10) (list -20 10) (list 0 10) (list 0 10)))
+
+(define *example-gng* (list (list (list  -9.8  -19.6  -29.4  -39.2) (list -1  1 -1 -1 -1 -1  3) 0.45)
+			    (list (list  -7.8  -17.6  -27.4  -37.2) (list  1 -1  0 -1 -1 -1 -1)  0.5)
+			    (list (list   2.1    2.2    2.3    2.4) (list -1  0 -1 -1 -1 -1  3)  0.4)
+			    (list (list -65.9 -164.8 -263.7 -362.6) (list -1 -1 -1 -1  4 -1 -1)  0.2)
+			    (list (list  -1.8  -11.6  -21.4  -31.2) (list -1 -1 -1  4 -1 -1 -1)  0.3)
+			    (list (list   5.1    5.2    5.3    5.4) (list -1 -1 -1 -1 -1 -1 -1)  0.7)
+			    (list (list  -3.9   -8.7  -13.5  -18.4) (list  3 -1  3 -1 -1 -1 -1) 0.45)))
 
 (format #t "\nsimple 7 neurons:\n")
 (map print-neuron *example-gng*)
@@ -76,10 +80,10 @@
 (define *string-body-dot* (list-to-string-dot-format *gng-conn-list*))
 (format #t "\nlist of connection ready for print:\n~a\n" *string-body-dot*)
 
-(define *tooltip* (convert-gng-to-string-tooltip *list-for-print-tooltip* (map get-neuron-weight *example-gng*)))
-(format #t "\ntooltip (weight):\n~a\n" *tooltip*)
+(define *node-attributes* (convert-gng-to-string-node-attributes *list-for-print-tooltip* *limit-weight* (map get-neuron-weight *example-gng*)))
+(format #t "\ntest node attributes: tooltip (weight) and color:\n~a\n" *node-attributes*)
 
-(define *string-dot* (add-head-tail *winners* *string-body-dot* *tooltip*))
+(define *string-dot* (add-head-tail *winners* *string-body-dot* *node-attributes*))
 (format #t "\nDOT ready for print:\n
 # Graphviz example:
 #
@@ -95,6 +99,6 @@
 
 
 
-(gng-to-dot-file *list-for-print-tooltip* *winners* *example-gng* "test2.gv")
+(gng-to-dot-file *list-for-print-tooltip* *limit-weight* *winners* *example-gng* "test2.gv")
 
 (format #t "weights:\n~a\n" (weights-to-string (map get-neuron-weight *example-gng*)))
