@@ -56,10 +56,11 @@
 ;;; Code:
 
 (use-modules (ice-9 format))
-(use-modules (ice-9 rdelim))
 
 (load "../../../growing-neural-gas.scm")
 (load "../../../visualization/gng-to-dot.scm")
+(load "../../../../../battery-scheme/print-list.scm")
+(load "../../../fetch-data.scm")
 
 ;;; Use #t for debug print, or #f for silent
 (define *debug-print* #f)
@@ -89,23 +90,29 @@
 					      '())))
 (update-neuron-conn-age 0 1 + 1 *initial-gng*) ;; need create link beetwin first neuron!
 
+
+
 (define (main epoch-counter gng)
   (format #t "~d\n" epoch-counter)
-  (let ((new-gng (growing-neural-gas
-		  epoch-counter
-		  (map string->number (string-split (read-line) #\space)) ; fixme: need check input data
-		  gng)))
-    (if (= 0 (remainder epoch-counter *image-log-file-step*))
-	(begin
-	  (gng-to-dot-file '() *winners*
-			   new-gng
-			   (format #f "image-cluster/~8,'0d.gv" epoch-counter))
-	  (display-to-file (format #f "image-2D/~8,'0d.dat" epoch-counter) (weights-to-string (map get-neuron-weight new-gng)))))
-    (main (1+ epoch-counter)
-	  new-gng)))
+  (let ((data (read-check-convert-line *dimension-of-sensor*)))
+    (if (null? data)
+	gng
+	(let ((new-gng (growing-neural-gas
+			epoch-counter
+			data
+			gng)))
+	  (if (= 0 (remainder epoch-counter *image-log-file-step*)) ; print only one image of *image-log-file-step*
+	      (begin
+		(gng-to-dot-file '() *winners*
+				 new-gng
+				 (format #f "image-cluster/~8,'0d.gv" epoch-counter))
+		(display-to-file (format #f "image-2D/~8,'0d.dat" epoch-counter) (weights-to-string (map get-neuron-weight new-gng)))))
+	  (main (1+ epoch-counter)
+		new-gng)))))
 
 (create-if-not-exist-dir "image-cluster")
 (create-if-not-exist-dir "image-2D")
 
 (gng-to-dot-file '() *winners* *initial-gng* (format #f "image-cluster/~8,'0d.gv" *epoch*))
+
 (main (1+ *epoch*) *initial-gng*)
