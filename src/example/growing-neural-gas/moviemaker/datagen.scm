@@ -69,6 +69,16 @@
 
 (define *stop* #f)
 
+(define (sig-handler sig)
+  (set! *stop* #t))
+
+(map (lambda (x) (sigaction x sig-handler))
+     (list SIGINT ;; use Ctrl-c to correct quit
+	   SIGTERM ;; termination signal
+	   ;; very strange, but without SIGPIPE all work correct
+	   ;;SIGPIPE ;; write on a pipe with no one to read it
+	   SIGHUP)) ;; controlling terminal is closed
+
 
 (define (rectangle-shape side-a side-b dx dy)
   (format #t "~,2f ~,2f\n"
@@ -118,16 +128,6 @@
 	  ((and (>= shape 820) (< shape 999)) (format #t "~,2f ~,2f\n" (random:normal) (random:normal))) ; nebula
 	  (else        (format #t "~,2f ~,2f\n" (+ 12.5 (random:normal)) (+ 20.0 (random:normal))))) ; rare nebula
     shape))
-
-
-
-(define (sig-handler sig)
-  (set! *stop* #t))
-
-
-
-;; use Ctrl-c to correct quit
-(sigaction SIGINT sig-handler)
 
 
 

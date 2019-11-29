@@ -91,11 +91,23 @@
 (update-neuron-conn-age 0 1 + 1 *initial-gng*) ;; need create link beetwin first neuron!
 
 
+(define *stop* #f)
+
+(define (sig-handler sig)
+  (set! *stop* #t))
+
+(map (lambda (x) (sigaction x sig-handler))
+     (list SIGINT ;; use Ctrl-c to correct quit
+	   SIGTERM ;; termination signal
+	   SIGPIPE ;; write on a pipe with no one to read it
+	   SIGHUP)) ;; controlling terminal is closed
+
+
 
 (define (main epoch-counter gng)
   (format #t "~d\n" epoch-counter)
   (let ((data (read-check-convert-line *dimension-of-sensor*)))
-    (if (null? data)
+    (if (or  *stop* (null? data))
 	gng
 	(let ((new-gng (growing-neural-gas
 			epoch-counter
@@ -115,4 +127,4 @@
 
 (gng-to-dot-file '() *winners* *initial-gng* (format #f "image-cluster/~8,'0d.gv" *epoch*))
 
-(main (1+ *epoch*) *initial-gng*)
+(format #t "~a\n" (print-list-as-list "~f" (main (1+ *epoch*) *initial-gng*)))
