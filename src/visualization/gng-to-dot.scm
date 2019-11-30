@@ -130,11 +130,11 @@
 
 
 
-(define (add-head-tail winners body tooltip)
+(define (add-head-tail colorize-current-node winners body tooltip)
   (string-append "graph ai {\n"
 		 "node [shape=circle];\n"
 		 "\n"
-		 "c [label=\"c\", shape=box, color=black, fillcolor=darkgrey, style=filled, fontcolor=white];\n"
+		 "c [label=\"c\", shape=box, color=black, fillcolor=" colorize-current-node ", style=filled, fontcolor=white];\n"
 		 "c -- " (number->string (car winners)) ";\n"
 		 "c -- " (number->string (cadr winners)) ";\n"
 		 tooltip
@@ -143,9 +143,9 @@
 
 
 
-(define (gng-to-dot-file list-for-print-tooltip limits-of-wieght winners gng filename)
+(define (gng-to-dot-file list-for-print-tooltip limits-of-weight current-sensor-weight winners gng filename)
   (display-to-file filename
-		 (add-head-tail winners
-				(list-to-string-dot-format (convert-gng-conn-ages-to-simple-list gng))
-				(if (null? list-for-print-tooltip) ""
-				    (convert-gng-to-string-node-attributes list-for-print-tooltip limits-of-wieght (map get-neuron-weight gng))))))
+		   (add-head-tail (if (in-limit? limits-of-weight current-sensor-weight) "green" "red")
+				  winners
+				  (list-to-string-dot-format (convert-gng-conn-ages-to-simple-list gng))
+				  (convert-gng-to-string-node-attributes list-for-print-tooltip limits-of-weight (map get-neuron-weight gng)))))

@@ -55,6 +55,9 @@
 
 (load "gng-to-dot.scm")
 
+;;; Sensor (input units)
+(define *example-sensor* (list 0 0 5 7))
+
 ;; from sensor you get: (a b c d);
 ;; for view in tooltip only "a" and "c" set list to *list-for-print-tooltip*==(0 2)
 (define *list-for-print-tooltip* (list 0 2))
@@ -83,7 +86,7 @@
 (define *node-attributes* (convert-gng-to-string-node-attributes *list-for-print-tooltip* *limit-weight* (map get-neuron-weight *example-gng*)))
 (format #t "\ntest node attributes: tooltip (weight) and color:\n~a\n" *node-attributes*)
 
-(define *string-dot* (add-head-tail *winners* *string-body-dot* *node-attributes*))
+(define *string-dot* (add-head-tail (if (in-limit? *limit-weight* *example-sensor*) "green" "red") *winners* *string-body-dot* *node-attributes*))
 (format #t "\nDOT ready for print:\n
 # Graphviz example:
 #
@@ -99,6 +102,6 @@
 
 
 
-(gng-to-dot-file *list-for-print-tooltip* *limit-weight* *winners* *example-gng* "test2.gv")
+(gng-to-dot-file *list-for-print-tooltip* *limit-weight* *example-sensor* *winners* *example-gng* "test2.gv")
 
 (format #t "weights:\n~a\n" (weights-to-string (map get-neuron-weight *example-gng*)))

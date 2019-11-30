@@ -99,7 +99,7 @@
 (define *limit-weight* (list (list 10.0 15.0) (list -2.5 2.5))) ;; select cube
 
 
-(define *image-log-file-step* 100)
+(define *image-log-file-step* (* 10 *lambda-step*))
 
 (define *initial-gng* (add-neuron (make-neuron *dimension-of-sensor* 1)
 				  (add-neuron (make-neuron *dimension-of-sensor* 0)
@@ -107,7 +107,7 @@
 (update-neuron-conn-age 0 1 + 1 *initial-gng*) ;; need create link beetwin first neuron!
 
 (if (file-exists? "knowledge-base.scm")
-	   (set! *initial-gng* (load "knowledge-base.scm")))
+    (set! *initial-gng* (load "knowledge-base.scm")))
 
 
 (define *stop* #f)
@@ -125,16 +125,16 @@
 
 (define (main epoch-counter gng)
   (format #t "~d\n" epoch-counter)
-  (let ((data (read-check-convert-line *dimension-of-sensor*)))
-    (if (or  *stop* (null? data))
+  (let ((sensor-data (read-check-convert-line *dimension-of-sensor*)))
+    (if (or  *stop* (null? sensor-data))
 	gng
 	(let ((new-gng (growing-neural-gas
 			epoch-counter
-			data
+			sensor-data
 			gng)))
 	  (if (= 0 (remainder epoch-counter *image-log-file-step*)) ; print only one image of *image-log-file-step*
 	      (begin
-		(gng-to-dot-file *list-for-print-tooltip* *limit-weight* *winners*
+		(gng-to-dot-file *list-for-print-tooltip* *limit-weight* sensor-data *winners*
 				 new-gng
 				 (format #f "image-cluster/~8,'0d.gv" epoch-counter))
 		(display-to-file (format #f "image-2D/~8,'0d.dat" epoch-counter) (weights-to-string (map get-neuron-weight new-gng)))))
@@ -144,6 +144,6 @@
 (create-if-not-exist-dir "image-cluster")
 (create-if-not-exist-dir "image-2D")
 
-(gng-to-dot-file *list-for-print-tooltip* *limit-weight* *winners* *initial-gng* (format #f "image-cluster/~8,'0d.gv" *epoch*))
+;;(gng-to-dot-file *list-for-print-tooltip* *limit-weight* *winners* (make-list *dimension-of-sensor* 0.0) *initial-gng* (format #f "image-cluster/~8,'0d.gv" *epoch*))
 
 (display-to-file "knowledge-base.scm" (print-gng-as-list (main (1+ *epoch*) *initial-gng*)))
