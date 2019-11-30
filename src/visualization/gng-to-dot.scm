@@ -83,11 +83,11 @@
 		     (list-to-string-dot-format (cdr conn-list)))))
 
 
-(define (overflow-limit? limits weights)
+(define (in-limit? limits weights)
   (if (null? weights)
-      '() ;;(and (<= lo-lim0            weight0) (<= weight0              hi-lim0))
-      (cons (and (<= (caar limits) (car weights)) (<= (car weights) (cadar limits)))
-	    (overflow-limit? (cdr limits) (cdr weights)))))
+      #t ;;(and (<= lo-lim0            weight0) (<= weight0              hi-lim0))
+      (and (<= (caar limits) (car weights)) (<= (car weights) (cadar limits))
+	   (in-limit? (cdr limits) (cdr weights)))))
 
 ;; from list: index-column-list=(0 2) weights=((1 2 3 4) (5 6 7 8) (9 10 11 10))
 ;; generate string:
@@ -113,7 +113,7 @@
 			     " [tooltip=\""
 			     (string-join (map (lambda (x) (format #f "~,2f" x)) (list-from-index-list index-column-list (car w))) " ")
 			     "\""
-			     (if (apply list-and (overflow-limit? weight-limits (car w))) ", color=green" "")
+			     (if (in-limit? weight-limits (car w)) ", color=green" "")
 			     "]\n"
 			     (inc (1+ counter) (cdr w)))))
 
