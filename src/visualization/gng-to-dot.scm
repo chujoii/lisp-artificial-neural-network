@@ -105,6 +105,11 @@
 ;; 0 [color=black]
 ;; 1 [tooltip=green]
 ;; 2 [tooltip=black]
+;;
+;;
+;; fixme: result graph in png rotated as GraphViz want, but it can be solved:
+;; add "GraphViz portPos" as node:compass_point
+;; If a compass point is used, it must have the form "n","ne","e","se","s","sw","w","nw","c"
 (define (convert-gng-to-string-node-attributes index-column-list weight-limits weights)
   (define (inc counter w)
     (if (null? w)
@@ -113,7 +118,7 @@
 			     " [tooltip=\""
 			     (string-join (map (lambda (x) (format #f "~,2f" x)) (list-from-index-list index-column-list (car w))) " ")
 			     "\""
-			     (if (in-limit? weight-limits (car w)) ", color=green" "")
+			     (if (not (in-limit? weight-limits (car w))) ", color=darkred" "")
 			     "]\n"
 			     (inc (1+ counter) (cdr w)))))
 
@@ -132,7 +137,9 @@
 
 (define (add-head-tail colorize-current-node winners body tooltip)
   (string-append "graph ai {\n"
-		 "node [shape=circle];\n"
+		 "graph [overlap=false];\n"
+		 "node [sep=1, shape=circle, color=darkgreen];\n"
+		 "edge [color=darkgrey, decorate=true];\n"
 		 "\n"
 		 "c [label=\"c\", shape=box, color=black, fillcolor=" colorize-current-node ", style=filled, fontcolor=white];\n"
 		 "c -- " (number->string (car winners)) ";\n"
