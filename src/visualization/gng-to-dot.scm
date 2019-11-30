@@ -178,9 +178,12 @@
 
 (define (add-head-tail colorize-current-node winners body tooltip)
   (string-append "graph ai {\n"
-		 "graph [overlap=false];\n"
-		 "node [sep=1, shape=circle, color=darkgreen];\n"
-		 "edge [color=darkgrey, decorate=true];\n"
+		 "node [shape=circle, color=darkgreen];\n"
+		 "edge [color=darkgrey];\n"
+		 "sep=\"+2\";\n"      ; Adding additional space around the nodes
+		 "sep=\"+1\";\n"      ; Adding space for edge. Margin used around polygons for purposes of SPLINE edge routing. Should normally be strictly less than sep.
+		 "splines=false;\n"   ; Controls how, and if, edges are represented. True = nice edges, but increase CPU load (false=line (time=3.23s), polyline (time=10.40s), curved (time=3.25s), ortho (time=3.22s), true=spline (time=10.35s), compound for fdp)
+		 "overlap=scalexy;\n" ; Determines if and how node overlaps should be removed.
 		 "\n"
 		 "c [label=\"c\", shape=box, color=black, fillcolor=" colorize-current-node ", style=filled, fontcolor=white];\n"
 		 "c -- " (number->string (car winners)) ";\n"
