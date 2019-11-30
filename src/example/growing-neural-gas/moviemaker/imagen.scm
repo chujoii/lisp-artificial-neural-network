@@ -122,6 +122,17 @@
 	   SIGHUP)) ;; controlling terminal is closed
 
 
+(define (generate-port-positions limit-weight gng)
+  ;; list of node number:
+  ;;(define *port-positions* (list -1    -1    -1   -1    -1    -1   -1    -1   -1)) == (make-list 9 -1)
+  ;; possible positions:           "n", "ne", "e", "se", "s", "sw", "w", "nw", "c"
+  (define *port-positions* (make-list 9 -1)) ;; fixme: very strange: define (clear) and list-set
+  (list-set! *port-positions*
+	     *compass-point-c* ;; "c" (center)
+	     (car (find-index-of-two-minimal (calculate-distance-weight-sensor (map (lambda (x) (/ (apply + x) 2.0)) limit-weight) gng)))) ;; find nearest node for calculated center (calculation based on limit-weight)
+  *port-positions*)
+
+
 
 (define (main epoch-counter gng)
   (format #t "~d\n" epoch-counter)
@@ -134,7 +145,9 @@
 			gng)))
 	  (if (= 0 (remainder epoch-counter *image-log-file-step*)) ; print only one image of *image-log-file-step*
 	      (begin
-		(gng-to-dot-file *list-for-print-tooltip* *limit-weight* sensor-data *winners*
+		(gng-to-dot-file *list-for-print-tooltip*
+				 (generate-port-positions *limit-weight* new-gng)
+				 *limit-weight* sensor-data *winners*
 				 new-gng
 				 (format #f "image-cluster/~8,'0d.gv" epoch-counter))
 		(display-to-file (format #f "image-2D/~8,'0d.dat" epoch-counter) (weights-to-string (map get-neuron-weight new-gng)))))

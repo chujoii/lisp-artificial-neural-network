@@ -56,6 +56,17 @@
 (load "../growing-neural-gas.scm")
 (load "../../../battery-scheme/dir-and-file.scm")
 
+(define *compass-point-n*  0)
+(define *compass-point-ne* 1)
+(define *compass-point-e*  2)
+(define *compass-point-se* 3)
+(define *compass-point-s*  4)
+(define *compass-point-sw* 5)
+(define *compass-point-w*  6)
+(define *compass-point-nw* 7)
+(define *compass-point-c*  8)
+
+
 ;; Convert gng-conn-ages to simple list
 ;; unconnected node doesn't show
 (define (convert-gng-conn-ages-to-simple-list gng)
@@ -89,6 +100,37 @@
       (and (<= (caar limits) (car weights)) (<= (car weights) (cadar limits))
 	   (in-limit? (cdr limits) (cdr weights)))))
 
+
+;; from index and positions generate node":compass_point".
+;;
+;; result graph in png rotated as GraphViz want, but it can be solved:
+;; add "GraphViz portPos" as node:compass_point
+;; If a compass point is used, it must have the form "n","ne","e","se","s","sw","w","nw","c"
+;;
+;; for example to node 44 add ":ne":
+;; (port-position 44   (-1   44    -1    -1    -1    -1    -1    -1    -1))
+;; possible positions: "n", "ne", "e",  "se", "s",  "sw", "w",  "nw", "c"
+(define (port-position index list-of-port-positions)
+  (define (iter counter pos)
+    (if (null? pos)
+	""
+	(if (= index (car pos))
+	    (cond ((= counter 0) ":n")
+		  ((= counter 1) ":ne")
+		  ((= counter 2) ":e")
+		  ((= counter 3) ":se")
+		  ((= counter 4) ":s")
+		  ((= counter 5) ":sw")
+		  ((= counter 6) ":w")
+		  ((= counter 7) ":nw")
+		  ((= counter 8) ":c")
+		  (else ":-"))
+	    (iter (1+ counter) (cdr pos)))))
+
+  (iter 0 list-of-port-positions))
+
+
+
 ;; from list: index-column-list=(0 2) weights=((1 2 3 4) (5 6 7 8) (9 10 11 10))
 ;; generate string:
 ;; 0 [tooltip="1 3"]
@@ -107,20 +149,19 @@
 ;; 2 [tooltip=black]
 ;;
 ;;
-;; fixme: result graph in png rotated as GraphViz want, but it can be solved:
-;; add "GraphViz portPos" as node:compass_point
-;; If a compass point is used, it must have the form "n","ne","e","se","s","sw","w","nw","c"
-(define (convert-gng-to-string-node-attributes index-column-list weight-limits weights)
+;; for use list-of-port-positions: see function port-position
+(define (convert-gng-to-string-node-attributes index-column-list list-of-port-positions weight-limits weights)
   (define (inc counter w)
     (if (null? w)
 	""
 	(string-append (number->string counter)
-			     " [tooltip=\""
-			     (string-join (map (lambda (x) (format #f "~,2f" x)) (list-from-index-list index-column-list (car w))) " ")
-			     "\""
-			     (if (not (in-limit? weight-limits (car w))) ", color=darkred" "")
-			     "]\n"
-			     (inc (1+ counter) (cdr w)))))
+		       (port-position counter list-of-port-positions)
+		       " [tooltip=\""
+		       (string-join (map (lambda (x) (format #f "~,2f" x)) (list-from-index-list index-column-list (car w))) " ")
+		       "\""
+		       (if (not (in-limit? weight-limits (car w))) ", color=darkred" "")
+		       "]\n"
+		       (inc (1+ counter) (cdr w)))))
 
   (inc 0 weights))
 
@@ -150,9 +191,9 @@
 
 
 
-(define (gng-to-dot-file list-for-print-tooltip limits-of-weight current-sensor-weight winners gng filename)
+(define (gng-to-dot-file list-for-print-tooltip list-of-port-positions limits-of-weight current-sensor-weight winners gng filename)
   (display-to-file filename
 		   (add-head-tail (if (in-limit? limits-of-weight current-sensor-weight) "green" "red")
 				  winners
 				  (list-to-string-dot-format (convert-gng-conn-ages-to-simple-list gng))
-				  (convert-gng-to-string-node-attributes list-for-print-tooltip limits-of-weight (map get-neuron-weight gng)))))
+				  (convert-gng-to-string-node-attributes list-for-print-tooltip list-of-port-positions limits-of-weight (map get-neuron-weight gng)))))
