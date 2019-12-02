@@ -80,8 +80,14 @@
 
 (define *limit-conn-age* 15)
 
-;; adaptation step (add neuron in each *lambda-step* to network)
-(define *lambda-step* 20)
+;; Adaptation step (add neuron in each *lambda-step* to network)
+;;
+;; Inactived nodes may appear if lambda=very_small (high frequency
+;; insertion).
+;;
+;; For lambda=big start to learning goes very smoothly, but rough
+;; clusters are created
+(define *lambda-step* 20) ;; (try 2, 20, 200)
 
 ;; epoch counter
 (define *epoch* 1)

@@ -70,7 +70,13 @@
 
 (define *limit-conn-age* 3)
 
-;; adaptation step (add neuron in each *lambda-step* to network)
+;; Adaptation step (add neuron in each *lambda-step* to network)
+;;
+;; Inactived nodes may appear if lambda=very_small (high frequency
+;; insertion).
+;;
+;; For lambda=big start to learning goes very smoothly, but rough
+;; clusters are created
 (define *lambda-step* 1)
 
 (define *limit-network-size* 100)
