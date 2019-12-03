@@ -42,7 +42,6 @@
 ;; or
 ;; ./datagen.scm
 ;;
-;; test sapes:
 ;; run
 ;; wait some time for collect data (~10 seconds)
 ;; press Ctrl-c (for step generating numbers)

@@ -37,6 +37,8 @@
 
 ;;; Usage:
 
+;; set *dimension-of-sensor* to 2
+;;
 ;; you can remove (or rename) stored "knowledge-base.scm"
 ;; for start learning from zero
 ;; mv knowledge-base.scm old-knowledge-base.scm
@@ -52,7 +54,12 @@
 ;;
 ;; or in one string:
 ;; rm -rf image-cluster/* image-2D/*; echo '\n\n\nwait for loading and compiling knowledge base ...\n\n\n'; ./datagen.scm | ./imagen.scm; cd image-2D; ../forall.sh fungnuplot; cd ../image-cluster/; geeqie . & ../forall.sh neato -Tpng -O ; cd ..
-
+;;
+;; for test heavy-load
+;; delete (rename) knowledge-base.scm
+;; sync *dimension-of-sensor* in files: imagen.scm and heavy-load-datagen.scm (for example set *dimension-of-sensor* to 2, 10, 100 or 1000)
+;; repeat previous command with some changes:
+;; rm -rf image-cluster/* ; echo '\n\n\nwait for loading and compiling knowledge base ...\n\n\n'; ./heavy-load-datagen.scm | ./imagen.scm; cd image-cluster/; geeqie . & ../forall.sh neato -Tpng -O ; cd ..
 
 ;;; History:
 
@@ -103,7 +110,7 @@
 ;; limit for weights in format:
 ;; ((lo-lim0 hi-lim0) (lo-lim1 hi-lim1) (lo-lim2 hi-lim2) ... (lo-limN hi-limN))
 (define *limit-weight* (list (list 10.0 15.0) (list -2.5 2.5))) ;; select cube
-
+(if (> *dimension-of-sensor* 2) (set! *limit-weight* (make-list *dimension-of-sensor* (list -2.5 2.5))))
 
 (define *image-log-file-step* (* 10 *lambda-step*))
 
@@ -141,7 +148,7 @@
 
 
 (define (main epoch-counter gng)
-  (format #t "~d\n" epoch-counter)
+  (format #t "\n~d" epoch-counter)
   (let ((sensor-data (read-check-convert-line *dimension-of-sensor*)))
     (if (or  *stop* (null? sensor-data))
 	gng
@@ -151,12 +158,13 @@
 			gng)))
 	  (if (= 0 (remainder epoch-counter *image-log-file-step*)) ; print only one image of *image-log-file-step*
 	      (begin
+		(format #t "\t image")
 		(gng-to-dot-file *list-for-print-tooltip*
 				 (generate-port-positions *limit-weight* new-gng)
 				 *limit-weight* sensor-data *winners*
 				 new-gng
 				 (format #f "image-cluster/~8,'0d.gv" epoch-counter))
-		(display-to-file (format #f "image-2D/~8,'0d.dat" epoch-counter) (weights-to-string (map get-neuron-weight new-gng)))))
+		(if (= *dimension-of-sensor* 2) (display-to-file (format #f "image-2D/~8,'0d.dat" epoch-counter) (weights-to-string (map get-neuron-weight new-gng))))))
 	  (main (1+ epoch-counter)
 		new-gng)))))
 
