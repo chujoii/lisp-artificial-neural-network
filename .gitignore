@@ -8,10 +8,14 @@
 *.blg
 *.idx
 *.out
-*.toc             
-revision.txt                             
+*.toc
+*.gv
+*.cmapx
+revision.txt
 fig.[0-9]*
 fig.mpx
-knowledge-base.scm
+*knowledge-base.scm
+image-2D
+image-cluster
 !.gitignore
 !*.example
