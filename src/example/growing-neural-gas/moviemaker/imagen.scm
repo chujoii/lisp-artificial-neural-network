@@ -43,23 +43,26 @@
 ;; for start learning from zero
 ;; mv knowledge-base.scm old-knowledge-base.scm
 ;;
-;; mkdir image-cluste image-2D
-;; ./datagen.scm | ./imagen.scm
-;; cd image-cluster
-;; ../forall.sh neato -Tpng -O
-;; view images (feh, ...)
-;; cd ../image-2D
-;; ../forall.sh fungnuplot
-;; view images (feh, ...)
+;; script create temporary files in directory: /tmp/ai/graphviz /tmp/ai/gnuplot
+;; and result image files in directory: /tmp/ai/image-cluster /tmp/ai/image-2D
 ;;
-;; or in one string:
-;; rm -rf image-cluster/* image-2D/*; echo '\n\n\nwait for loading and compiling knowledge base ...\n\n\n'; ./datagen.scm | ./imagen.scm; cd image-2D; ../forall.sh fungnuplot; cd ../image-cluster/; geeqie . & ../forall.sh neato -Tpng -O ; cd ..
+;; in first terminal run inotify watcher:
+;;        ./producer.sh
+;; in second teminal run (wait for loading and compiling knowledge base ...)
+;;        ./datagen.scm | ./imagen.scm
+;;
+;; view images (feh, ...) in /tmp/ai/image-cluster
+;;
+;; if you need generate 2D images: "path-to/forall.sh fungnuplot"
+;; ~/project/util/lisp-artificial-neural-network/src/example/growing-neural-gas/moviemaker/forall.sh fungnuplot
+;; view images (feh, ...) in /tmp/ai/image-2D
+;;
 ;;
 ;; for test heavy-load
 ;; delete (rename) knowledge-base.scm
 ;; sync *dimension-of-sensor* in files: imagen.scm and heavy-load-datagen.scm (for example set *dimension-of-sensor* to 2, 10, 100 or 1000)
 ;; repeat previous command with some changes:
-;; rm -rf image-cluster/* ; echo '\n\n\nwait for loading and compiling knowledge base ...\n\n\n'; ./heavy-load-datagen.scm | ./imagen.scm; cd image-cluster/; geeqie . & ../forall.sh neato -Tpng -O ; cd ..
+;; ./heavy-load-datagen.scm | ./imagen.scm
 
 ;;; History:
 
@@ -78,6 +81,9 @@
 
 ;;; Use #t for debug print, or #f for silent
 (define *debug-print* #f)
+
+;;; Base path to result images
+(define *base-image-path* "/tmp/ai")
 
 ;;; adaptation coefficients for weight and local-error
 (define *eps-winner*   0.01)
@@ -163,14 +169,16 @@
 				 (generate-port-positions *limit-weight* new-gng)
 				 *limit-weight* sensor-data *winners*
 				 new-gng
-				 (format #f "image-cluster/~8,'0d.gv" epoch-counter))
-		(if (= *dimension-of-sensor* 2) (display-to-file (format #f "image-2D/~8,'0d.dat" epoch-counter) (weights-to-string (map get-neuron-weight new-gng))))))
+				 (format #f "~a/graphviz/~8,'0d.gv" *base-image-path* epoch-counter))
+		(if (= *dimension-of-sensor* 2) (display-to-file (format #f "~a/gnuplot/~8,'0d.dat" *base-image-path* epoch-counter) (weights-to-string (map get-neuron-weight new-gng))))))
 	  (main (1+ epoch-counter)
 		new-gng)))))
 
-(create-if-not-exist-dir "image-cluster")
-(create-if-not-exist-dir "image-2D")
+(create-if-not-exist-dir (string-append *base-image-path* "/graphviz"))
+(create-if-not-exist-dir (string-append *base-image-path* "/gnuplot"))
+(create-if-not-exist-dir (string-append *base-image-path* "/image-cluster"))
+(create-if-not-exist-dir (string-append *base-image-path* "/image-2D"))
 
-;;(gng-to-dot-file *list-for-print-tooltip* *limit-weight* *winners* (make-list *dimension-of-sensor* 0.0) *initial-gng* (format #f "image-cluster/~8,'0d.gv" *epoch*))
+;;(gng-to-dot-file *list-for-print-tooltip* *limit-weight* *winners* (make-list *dimension-of-sensor* 0.0) *initial-gng* (format #f "~s/image-cluster/~8,'0d.gv" *base-image-path* *epoch*))
 
 (display-to-file "knowledge-base.scm" (print-gng-as-list (main (1+ *epoch*) *initial-gng*)))
