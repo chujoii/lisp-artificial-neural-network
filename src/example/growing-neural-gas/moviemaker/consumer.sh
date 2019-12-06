@@ -5,20 +5,13 @@
 # This file is part of lisp-artificial-neural-network.
 # License: GPL v3 or later
 
-
 DIR=/tmp/ai/graphviz
 IMAGES=/tmp/ai/image-cluster
+
 FIFO=/tmp/ai/fifo-dot
 
-mkdir -p $DIR
-mkdir -p $IMAGES
-
-rm $FIFO
-mkfifo $FIFO
-
-
-while RES=$(inotifywait -e create $DIR --format %f .)
-do
-    echo RES is $RES at `date`
-    echo $RES > $FIFO
+while [[ true ]]; do
+    DOT=`cat $FIFO`
+    echo $DOT
+    neato -Tpng -o$IMAGES/$DOT.png $DIR/$DOT
 done

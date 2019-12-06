@@ -48,7 +48,9 @@
 ;;
 ;; in first terminal run inotify watcher:
 ;;        ./producer.sh
-;; in second teminal run (wait for loading and compiling knowledge base ...)
+;; in second terminal run GraphViz process:
+;;        ./consumer.sh
+;; in third teminal run GNG (wait for loading and compiling knowledge base ...)
 ;;        ./datagen.scm | ./imagen.scm
 ;;
 ;; view images (feh, ...) in /tmp/ai/image-cluster
