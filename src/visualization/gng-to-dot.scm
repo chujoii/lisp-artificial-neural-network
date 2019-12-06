@@ -150,7 +150,7 @@
 ;;
 ;;
 ;; for use list-of-port-positions: see function port-position
-(define (convert-gng-to-string-node-attributes index-column-list list-of-port-positions weight-limits weights)
+(define (convert-gng-to-string-node-attributes index-column-list list-of-port-positions weight-limits current-sensor-weight weights)
   (define (inc counter w)
     (if (null? w)
 	""
@@ -163,7 +163,10 @@
 		       "]\n"
 		       (inc (1+ counter) (cdr w)))))
 
-  (inc 0 weights))
+  (string-append "c [tooltip=\""
+		 (string-join (map (lambda (x) (format #f "~,2f" x)) (list-from-index-list index-column-list current-sensor-weight)) " ") ; tooltip for current node
+		 "\", shape=box, color=black, fillcolor=" (if (in-limit? weight-limits current-sensor-weight) "green" "red") ", style=filled, fontcolor=white];\n"
+		 (inc 0 weights)))
 
 
 ;; copy of convert-gng-to-string-node-attributes
@@ -176,7 +179,7 @@
 
 
 
-(define (add-head-tail colorize-current-node winners body tooltip)
+(define (add-head-tail winners body tooltip)
   (string-append "graph ai {\n"
 		 "node [shape=circle, color=darkgreen];\n"
 		 "edge [color=darkgrey];\n"
@@ -185,7 +188,6 @@
 		 "splines=false;\n"   ; Controls how, and if, edges are represented. True = nice edges, but increase CPU load (false=line (time=3.23s), polyline (time=10.40s), curved (time=3.25s), ortho (time=3.22s), true=spline (time=10.35s), compound for fdp)
 		 "overlap=scalexy;\n" ; Determines if and how node overlaps should be removed.
 		 "\n"
-		 "c [label=\"c\", shape=box, color=black, fillcolor=" colorize-current-node ", style=filled, fontcolor=white];\n"
 		 "c -- " (number->string (car winners)) ";\n"
 		 "c -- " (number->string (cadr winners)) ";\n"
 		 tooltip
@@ -196,7 +198,7 @@
 
 (define (gng-to-dot-file list-for-print-tooltip list-of-port-positions limits-of-weight current-sensor-weight winners gng filename)
   (display-to-file filename
-		   (add-head-tail (if (in-limit? limits-of-weight current-sensor-weight) "green" "red")
+		   (add-head-tail
 				  winners
 				  (list-to-string-dot-format (convert-gng-conn-ages-to-simple-list gng))
-				  (convert-gng-to-string-node-attributes list-for-print-tooltip list-of-port-positions limits-of-weight (map get-neuron-weight gng)))))
+				  (convert-gng-to-string-node-attributes list-for-print-tooltip list-of-port-positions limits-of-weight current-sensor-weight (map get-neuron-weight gng)))))
