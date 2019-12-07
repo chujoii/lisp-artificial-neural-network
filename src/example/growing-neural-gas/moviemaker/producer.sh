@@ -13,9 +13,7 @@ FIFO=/tmp/ai/fifo-dot
 mkdir -p $DIR
 mkdir -p $IMAGES
 
-rm $FIFO
 touch $FIFO
-
 
 while RES=$(inotifywait -e create $DIR --format %f .)
 do

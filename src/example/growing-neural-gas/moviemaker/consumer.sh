@@ -12,6 +12,8 @@ FIFO=/tmp/ai/fifo-dot
 
 MAXPROC=2
 
+touch $FIFO
+
 fungraphviz ()
 {
     while read -r line

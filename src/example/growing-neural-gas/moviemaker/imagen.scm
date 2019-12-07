@@ -48,10 +48,16 @@
 ;;
 ;; remove files in /tmp/ai/graphviz /tmp/ai/gnuplot
 ;;
+;; after all process (datagen, imagen) run conversion GraphViz(DOT) -> png
+;; ~/project/util/lisp-artificial-neural-network/src/example/growing-neural-gas/moviemaker/forall.sh neato -Tpng -O
+;;
+;; for parallel conversion GraphViz(DOT) -> png use producer.sh and consumer.sh
 ;; in first terminal run inotify watcher:
 ;;        ./producer.sh
 ;; in second terminal run GraphViz process:
 ;;        ./consumer.sh
+;;
+;;
 ;; in third teminal run GNG (wait for loading and compiling knowledge base ...)
 ;;        ./datagen.scm | ./imagen.scm
 ;;
