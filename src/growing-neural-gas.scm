@@ -260,9 +260,13 @@
 
 
 (define (calculate-distance-weight-sensor sensor gng)
-  ;; fixme: euclidean-distance not good for cyclic data (angles, ...)
   (map (lambda (x) (euclidean-distance x sensor)) (map get-neuron-weight gng)))
 
+
+(define (calculate-distance-in-mixed-space-weight-sensor functions-mixed-space sensor gng)
+  ;; because: euclidean-distance not good for cyclic data (angles, ...)
+  ;; functions-mixed-space == (list euclidean-distance euclidean-distance angle-distance angle-distance ...)
+  (map (lambda (fun x) (fun x sensor)) functions-mixed-space (map get-neuron-weight gng)))
 
 
 (define (find-index-of-two-minimal in-list)
@@ -334,8 +338,11 @@
 
 
 (define (growing-neural-gas epoch sensor gng)
-  (let ((distances-w-s (calculate-distance-weight-sensor sensor gng)))
-    (if *debug-print* (format #t "distances-weight-sensor:\n~a\n\n" distances-w-s))
+  (let ((distances-w-s (if (null? *functions-mixed-space*)
+			   (calculate-distance-weight-sensor sensor gng)
+			   (calculate-distance-in-mixed-space-weight-sensor *functions-mixed-space* sensor gng))))
+	(if *debug-print* (format #t "distances-weight-sensor:\n~a\n\n" distances-w-s))
+
     (let ((winners (find-index-of-two-minimal distances-w-s))) ; algorithm:04
       (if *debug-print* (format #t "winners: ~a\n" winners))
       (set! *winners* winners)

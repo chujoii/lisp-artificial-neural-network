@@ -89,6 +89,11 @@
 ;;; Sensor (input units)
 (define *example-sensor* (list 10 20 30 40))
 
+;;; use Euclidean space
+(define *functions-mixed-space* '())
+;;
+;; if use non-Euclidean space, for example last sensor = angle (in degree, where 0=360)
+;; (define *functions-mixed-space* (list euclidean-distance euclidean-distance euclidean-distance angle-distance))
 
 (define *initial-gng* (add-neuron (make-neuron *dimension-of-sensor* 1)
 				  (add-neuron (make-neuron *dimension-of-sensor* 0)
