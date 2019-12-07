@@ -12,16 +12,24 @@ FIFO=/tmp/ai/fifo-dot
 
 MAXPROC=2
 
-while [[ true ]]; do
-    DOT=`cat $FIFO`
-    PC=`pgrep neato | wc -l`
+fungraphviz ()
+{
+    while read -r line
+    do
+	DOT=$line
+	PC=`pgrep neato | wc -l`
 
-    if [ $MAXPROC -gt $PC ]
-    then
-	echo $DOT $PC parallel
-	neato -Tpng -o$IMAGES/$DOT.png $DIR/$DOT &
-    else
-	echo $DOT $PC wait
-	neato -Tpng -o$IMAGES/$DOT.png $DIR/$DOT
-    fi
-done
+	if [ $MAXPROC -gt $PC ]
+	then
+	    echo $DOT $PC parallel
+	    neato -Tpng -o$IMAGES/$DOT.png $DIR/$DOT &
+	else
+	    echo $DOT $PC wait
+	    neato -Tpng -o$IMAGES/$DOT.png $DIR/$DOT
+	fi
+    done
+}
+
+tail -f $FIFO | fungraphviz
+
+#tail -f $FIFO | xargs -I % --max-args=1 --max-procs=$MAXPROC        neato -Tpng -o$IMAGES/%.png $DIR/%

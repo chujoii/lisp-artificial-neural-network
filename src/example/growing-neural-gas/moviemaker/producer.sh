@@ -14,11 +14,11 @@ mkdir -p $DIR
 mkdir -p $IMAGES
 
 rm $FIFO
-mkfifo $FIFO
+touch $FIFO
 
 
 while RES=$(inotifywait -e create $DIR --format %f .)
 do
     echo RES is $RES at `date`
-    echo $RES > $FIFO
+    echo $RES >> $FIFO
 done
