@@ -43,8 +43,10 @@
 ;; for start learning from zero
 ;; mv knowledge-base.scm old-knowledge-base.scm
 ;;
-;; script create temporary files in directory: /tmp/ai/graphviz /tmp/ai/gnuplot
+;; script create temporary files in directory:  /tmp/ai/graphviz /tmp/ai/gnuplot
 ;; and result image files in directory: /tmp/ai/image-cluster /tmp/ai/image-2D
+;;
+;; remove files in /tmp/ai/graphviz /tmp/ai/gnuplot
 ;;
 ;; in first terminal run inotify watcher:
 ;;        ./producer.sh

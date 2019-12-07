@@ -10,8 +10,18 @@ IMAGES=/tmp/ai/image-cluster
 
 FIFO=/tmp/ai/fifo-dot
 
+MAXPROC=2
+
 while [[ true ]]; do
     DOT=`cat $FIFO`
-    echo $DOT
-    neato -Tpng -o$IMAGES/$DOT.png $DIR/$DOT
+    PC=`pgrep neato | wc -l`
+
+    if [ $MAXPROC -gt $PC ]
+    then
+	echo $DOT $PC parallel
+	neato -Tpng -o$IMAGES/$DOT.png $DIR/$DOT &
+    else
+	echo $DOT $PC wait
+	neato -Tpng -o$IMAGES/$DOT.png $DIR/$DOT
+    fi
 done
