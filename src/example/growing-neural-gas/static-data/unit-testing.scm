@@ -140,12 +140,30 @@
 
 (format #t "\nCalculate distance between Weight (neuron number 3) and Sensor ~a:\n(~7,2f ~7,2f ~7,2f ~7,2f ...) compare with:\n"
 	*example-sensor*
-	(euclidean-distance  (get-neuron-weight (car *example-gng*)) *example-sensor*)
-	(euclidean-distance  (get-neuron-weight (cadr *example-gng*)) *example-sensor*)
-	(euclidean-distance  (get-neuron-weight (caddr *example-gng*)) *example-sensor*)
-	(euclidean-distance  (get-neuron-weight (cadddr *example-gng*)) *example-sensor*))
+	(euclidean-distance-vector  (get-neuron-weight (car *example-gng*)) *example-sensor*)
+	(euclidean-distance-vector  (get-neuron-weight (cadr *example-gng*)) *example-sensor*)
+	(euclidean-distance-vector  (get-neuron-weight (caddr *example-gng*)) *example-sensor*)
+	(euclidean-distance-vector  (get-neuron-weight (cadddr *example-gng*)) *example-sensor*))
 (format #t "~a\n" (calculate-distance-weight-sensor *example-sensor* *example-gng*))
 
+
+(format #t "\n\n\nsimple 3 neurons with angle:\n")
+(define *example-gng-with-angle* (add-neuron (make-neuron *dimension-of-sensor* 2)
+					     (add-neuron (make-neuron *dimension-of-sensor* 1)
+							 (add-neuron (make-neuron *dimension-of-sensor* 0)
+								     '()))))
+(list-set! (list-ref *example-gng-with-angle* 0) *index-neuron-weight* (list 0.1 0.2 270 0.4))
+(list-set! (list-ref *example-gng-with-angle* 1) *index-neuron-weight* (list 1.1 1.2 10 1.4))
+(list-set! (list-ref *example-gng-with-angle* 2) *index-neuron-weight* (list 2.1 2.2 300 2.4))
+(map print-neuron *example-gng-with-angle*)
+
+(define *example-sensor-with-angle* (list 10             20                 350            40))
+;;                                        x              x                  alpha          x
+(define *functions-mixed-space* (list euclidean-distance euclidean-distance angle-distance euclidean-distance))
+(format #t "\nSensor with angle ~a:\n" *example-sensor-with-angle*)
+(format #t "\nMinimal distance will be for neuron number 1 (count from 0), because 10 degree nearest to 350 degree (distance=20 degree):\n")
+(format #t "Distance between Weight (with angle) and Sensor (with angle) calculations (also with respect to angle):\n")
+(format #t "~a\n" (calculate-distance-in-mixed-space-weight-sensor *functions-mixed-space* *example-sensor-with-angle* *example-gng-with-angle*))
 
 
 (format #t "\nFind indexes of two minimal elementt (first correct answer, then calculated answer)\n")

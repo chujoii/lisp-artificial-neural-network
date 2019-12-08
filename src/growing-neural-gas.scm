@@ -260,13 +260,14 @@
 
 
 (define (calculate-distance-weight-sensor sensor gng)
-  (map (lambda (x) (euclidean-distance x sensor)) (map get-neuron-weight gng)))
+  (map (lambda (x) (euclidean-distance-vector x sensor)) (map get-neuron-weight gng)))
 
 
 (define (calculate-distance-in-mixed-space-weight-sensor functions-mixed-space sensor gng)
   ;; because: euclidean-distance not good for cyclic data (angles, ...)
   ;; functions-mixed-space == (list euclidean-distance euclidean-distance angle-distance angle-distance ...)
-  (map (lambda (fun x) (fun x sensor)) functions-mixed-space (map get-neuron-weight gng)))
+  ;; dimension of functions-mixed-space --- equivalent to dimension of sensor
+  (map (lambda (x) (sqrt (apply + (map (lambda (a b c) (a b c)) functions-mixed-space x sensor)))) (map get-neuron-weight gng)))
 
 
 (define (find-index-of-two-minimal in-list)

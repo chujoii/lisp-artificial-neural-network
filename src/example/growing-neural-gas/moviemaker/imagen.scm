@@ -119,6 +119,9 @@
 
 (define *dimension-of-sensor* 2)
 
+;;; use Euclidean space for distance calculation
+(define *functions-mixed-space* '())
+
 ;; from sensor you get: (a b c d);
 ;; for view in tooltip only "a" and "b" set list to *list-for-print-tooltip*==(0 1)
 (define *list-for-print-tooltip* (list 0 1))

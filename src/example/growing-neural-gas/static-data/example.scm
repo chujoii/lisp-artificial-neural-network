@@ -89,7 +89,7 @@
 ;;; Sensor (input units)
 (define *example-sensor* (list 10 20 30 40))
 
-;;; use Euclidean space
+;;; use Euclidean space for distance calculation
 (define *functions-mixed-space* '())
 ;;
 ;; if use non-Euclidean space, for example last sensor = angle (in degree, where 0=360)
