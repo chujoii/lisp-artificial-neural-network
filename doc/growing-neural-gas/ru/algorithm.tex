@@ -85,7 +85,7 @@
   победителя $S$, к ней добавляется квадрат расстояния между векторами
   $\vec{W_s}$ и $\vec{X}$.
   
-  $E_{s}\Rightarrow E_{s} + \left\|\vec{X}-\vec{W_s}\right\|^{2}$
+  $E_{s} \Leftarrow E_{s} + \left\|\vec{X}-\vec{W_s}\right\|^{2}$
 
 \item % (6) [6]
   Эта процедура приводит к тому, что наиболее часто выигрывающие
@@ -100,14 +100,14 @@
   сторону входного вектора на расстояния, равные долям
   $\varepsilon _w$ и $\varepsilon _n$ от полного.
 
-  $\vec{W_s}\Rightarrow \vec{W_s}+\varepsilon_w(\vec{X}-\vec{W_s})$
+  $\vec{W_s} \Leftarrow \vec{W_s}+\varepsilon_w(\vec{X}-\vec{W_s})$
   % оригинальная формула:
-  % $\vec{W_s}\Rightarrow \vec{W_s}+\varepsilon_w(\vec{W_s}-\vec{X})$
+  % $\vec{W_s} \Leftarrow \vec{W_s}+\varepsilon_w(\vec{W_s}-\vec{X})$
   % либо varepsilon_w отрицательна, либо порядок вычитания неправильный
 
-  $\vec{W_n}\Rightarrow \vec{W_n}+\varepsilon_n(\vec{X}-\vec{W_n})$
+  $\vec{W_n} \Leftarrow \vec{W_n}+\varepsilon_n(\vec{X}-\vec{W_n})$
   % оригинальная формула:
-  % $\vec{W_n}\Rightarrow \vec{W_n}+\varepsilon_n(\vec{W_n}-\vec{X})$
+  % $\vec{W_n} \Leftarrow \vec{W_n}+\varepsilon_n(\vec{W_n}-\vec{X})$
   % либо varepsilon_w отрицательна, либо порядок вычитания неправильный
 
   Смещение узлов в сторону входного вектора на данном шаге означает,
@@ -120,8 +120,8 @@
   полезности на величину, равную разнице между ошибкой второго лучшего
   нейрона и самого победителя:
 
-  $U_{s}\Rightarrow U_{s} + \left\|\vec{X}-\vec{W_t}\right\|^{2} -
-                           \left\|\vec{X}-\vec{W_s}\right\|^{2}$
+  $U_{s} \Leftarrow U_{s} + \left\|\vec{X}-\vec{W_t}\right\|^{2} -
+                            \left\|\vec{X}-\vec{W_s}\right\|^{2}$
 
   Физически эта добавка представляет собой величину, на которую
   изменилась бы суммарная ошибка сети, если бы нейрон-победитель в ней
@@ -194,11 +194,11 @@
   Уменьшить ошибки нейронов $U$ и $V$, установить значение ошибки
   нейрона $R$.
 
-  $E_u\Leftarrow E_u*a$
+  $E_u \Leftarrow E_u*a$
   
-  $E_v\Leftarrow E_v*a$
+  $E_v \Leftarrow E_v*a$
   
-  $E_r\Leftarrow E_u$
+  $E_r \Leftarrow E_u$
 
 \item % (19) [17]
   Большое значение этой ошибки служит указанием на то, что
