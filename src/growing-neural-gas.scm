@@ -149,15 +149,16 @@
 
 
 
-(define (find-and-del-unconnected-neuron gng)
-  ;; delete-unconnected return: (growing neural gas with-last-element-deleted-list)
+(define (find-and-del-neuron-with-min-utility-factor k gng)
+  ;; delete-min-utility return: (growing neural gas with-list-element-deleted-list)
   ;; nonconsistent --- because need clean conn-age list in rest neuron
-  (define (delete-unconnected counter deleted-list igng)
+  (define (delete-neuron-U-min counter deleted-list E-max minimum-size-of-gng igng)
     (if (null? igng)
 	(list deleted-list) ; significant: list reversed!
-	(if (apply = (cons *not-connected* (get-neuron-conn-age (car igng))))
-	    (delete-unconnected (1+ counter) (cons counter deleted-list) (cdr igng)) ; delete unconnected
-	    (cons (car igng) (delete-unconnected (1+ counter) deleted-list (cdr igng)))))) ; connected
+	(if (and (> minimum-size-of-gng 0)
+		 (> (/ E-max (get-neuron-utility-factor (car igng))) k))
+	    (delete-neuron-U-min (1+ counter) (cons counter deleted-list) E-max (1- minimum-size-of-gng) (cdr igng)) ; delete
+	    (cons (car igng) (delete-neuron-U-min (1+ counter) deleted-list E-max minimum-size-of-gng (cdr igng)))))) ; leave
 
   (define (make-consistent-gng del-list igng)
     (if (null? igng)
@@ -170,9 +171,15 @@
 	conn-age
 	(remove-unexisted-conn-age (cdr del-list) (append (list-head conn-age (car del-list)) (list-tail conn-age (1+ (car del-list)))))))
 
-  (let ((gng-del (delete-unconnected 0 '() gng)))
-    (let ((lengng (1- (length gng-del))))
-      (make-consistent-gng (car (list-tail gng-del lengng)) (list-head gng-del lengng)))))
+
+  (let ((E-max (cdr (extremum (map get-neuron-local-error gng) >)))
+	(minimum-size-of-gng (- (length gng) 5))) ;; leave 2 neuron at least
+    ;; in original algorithm remove only one neuron with min utility:
+    ;; (U-min (extremum (map get-neuron-local-error gng) <)))
+    (let ((gng-del (delete-neuron-U-min 0 '() E-max minimum-size-of-gng gng)))
+      (let ((lengng (1- (length gng-del))))
+	(make-consistent-gng (car (list-tail gng-del lengng)) (list-head gng-del lengng))))))
+
 
 
 ;; usage for update neuron weight vector: neuron number a=3 function=(+) step=10
@@ -301,7 +308,7 @@
 
 ;; Find neuron index with max local-error
 (define (find-neuron-index-with-max-local-error gng)
-  (index-of-max (map get-neuron-local-error gng)))
+  (car (extremum (map get-neuron-local-error gng) >))) ;; get index for extremum (max)
 
 
 
@@ -368,7 +375,7 @@
       (decrease-all-neuron-local-errors *factor-beta-decrease-local-error*
 
       ;; algorithm:11.b
-      (find-and-del-unconnected-neuron
+      (find-and-del-neuron-with-min-utility-factor *k-utility*
 
       ;; algorithm:11.a
       (remove-old-conn-age *limit-conn-age*

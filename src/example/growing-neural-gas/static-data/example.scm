@@ -70,6 +70,10 @@
 
 (define *limit-conn-age* 3)
 
+;; big value of *k-utility* remove too many neurons
+;; small value leave rare neurons and cause slow adaptation
+(define *k-utility* 2.0)
+
 ;; Adaptation step (add neuron in each *lambda-step* to network)
 ;;
 ;; Inactived nodes may appear if lambda=very_small (high frequency

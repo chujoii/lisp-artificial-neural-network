@@ -214,10 +214,26 @@
 (define *example2-gng* (remove-old-conn-age *limit-conn-age* *example-gng*))
 (map print-neuron *example2-gng*)
 
-(format #t "\nremove unconnected neurons:\n")
-(set! *example2-gng* (find-and-del-unconnected-neuron *example2-gng*))
+(define *k-utility* 2)
+(format #t "\nset k-utility to ~f\n" *k-utility*)
+(format #t "remove neurons with min utility-factor, and so all utility-factor=0 leave only 2:\n")
+(set! *example2-gng* (find-and-del-neuron-with-min-utility-factor *k-utility* *example2-gng*))
 (map print-neuron *example2-gng*)
 
+(format #t "\ncopy artificial neural network (because next two manipulation decrease size of net)\n")
+(set! *example2-gng* *example-gng*)
+(format #t "set <<random>> utility factor:\n")
+(update-neuron-utility-factor 0 + 0.9 *example-gng*)
+(update-neuron-utility-factor 1 + 0.4 *example-gng*)
+(update-neuron-utility-factor 2 + 0.5 *example-gng*)
+(update-neuron-utility-factor 3 + 0.8 *example-gng*)
+(update-neuron-utility-factor 4 + 0.7 *example-gng*)
+(update-neuron-utility-factor 5 + 0.1 *example-gng*)
+(map print-neuron *example2-gng*)
+
+(format #t "\nremove neurons with min utility-factor:\n")
+(set! *example2-gng* (find-and-del-neuron-with-min-utility-factor *k-utility* *example2-gng*))
+(map print-neuron *example2-gng*)
 
 (format #t "\nrestore big artificial neural network\n")
 (map print-neuron *example-gng*)

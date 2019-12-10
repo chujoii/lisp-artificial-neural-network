@@ -103,6 +103,10 @@
 
 (define *limit-conn-age* 15)
 
+;; big value of k-utility remove too many neurons
+;; small value leave rare neurons and cause slow adaptation
+(define *k-utility* 2.0)
+
 ;; Adaptation step (add neuron in each *lambda-step* to network)
 ;;
 ;; Inactived nodes may appear if lambda=very_small (high frequency
@@ -175,6 +179,7 @@
 			epoch-counter
 			sensor-data
 			gng)))
+	  (if *debug-print* (map print-neuron new-gng))
 	  (if (= 0 (remainder epoch-counter *image-log-file-step*)) ; print only one image of *image-log-file-step*
 	      (begin
 		(format #t "\t image")
