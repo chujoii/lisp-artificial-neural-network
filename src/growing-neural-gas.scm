@@ -257,7 +257,7 @@
 
 
 
-;; algorithm:18
+;; Decrease local-errors for all neuron
 (define (decrease-all-neuron-local-errors factor-beta gng)
   (map (lambda (neuron) (construct-neuron (get-neuron-weight neuron)
 					  (get-neuron-conn-age neuron)
@@ -291,13 +291,13 @@
     (iter 0 0 (car in-list) 1 (cadr in-list) in-list))
 
 
-;; algorithm:12
+
+;; Find neuron index with max local-error
 (define (find-neuron-index-with-max-local-error gng)
   (index-of-max (map get-neuron-local-error gng)))
 
 
 
-;; algorithm:13
 ;; Find (for selected neuron) neighbours index with max local-error
 (define (find-neighbours-index-with-max-local-error index-max-local-error gng)
   (define (iter counter index-a val-a neighbours)
@@ -313,28 +313,28 @@
 
 
 (define (adaptate-step-create-new-neuron gng)
-  (let ((index-neuron-max-local-error (find-neuron-index-with-max-local-error gng)))
+  (let ((index-neuron-max-local-error (find-neuron-index-with-max-local-error gng))) ;; algorithm:13
 
-    (let ((index-neighbour-for-max-local-error (find-neighbours-index-with-max-local-error index-neuron-max-local-error gng))
+    (let ((index-neighbour-for-max-local-error (find-neighbours-index-with-max-local-error index-neuron-max-local-error gng)) ;; algorithm:14
 	  (index-of-new-neuron (length gng)) ; count from 0
-	  (igng (add-neuron (make-neuron *dimension-of-sensor* (length gng)) gng)))  ; algorithm:14.a
+	  (igng (add-neuron (make-neuron *dimension-of-sensor* (length gng)) gng)))  ; algorithm:15.a
 
       (let ((conn-age-uv (list-ref (get-neuron-conn-age (list-ref gng index-neuron-max-local-error)) index-neighbour-for-max-local-error))
 	    (local-error-u (get-neuron-local-error (list-ref gng index-neuron-max-local-error)))
 	    (local-error-v (get-neuron-local-error (list-ref gng index-neighbour-for-max-local-error))))
 
-	;; algorithm:16
+	;; algorithm:18
 	(update-neuron-local-error index-of-new-neuron (lambda (ignored-value val) val) (* (get-neuron-local-error (list-ref gng index-neuron-max-local-error)) *eps-local-error*)
 	(update-neuron-local-error index-neighbour-for-max-local-error * *eps-local-error*
 	(update-neuron-local-error index-neuron-max-local-error * *eps-local-error*
 
 
-	;; algorithm:15      instead of "lambda" maybe more correct:      ... + (+ conn-age-uv *initial-connection-age*)
+	;; algorithm:16      instead of "lambda" maybe more correct:      ... + (+ conn-age-uv *initial-connection-age*)
 	(update-neuron-conn-age index-neuron-max-local-error index-of-new-neuron                 (lambda (ignored-value val) val) conn-age-uv
 	(update-neuron-conn-age index-of-new-neuron          index-neighbour-for-max-local-error (lambda (ignored-value val) val) conn-age-uv
 	(update-neuron-conn-age index-neuron-max-local-error index-neighbour-for-max-local-error (lambda (ignored-value val) val) *not-connected*
 
-      ;; algorithm:14.b
+      ;; algorithm:15.b
       (update-neuron-weight-vector index-of-new-neuron
 				   (lambda (weights step)
 				     (mul-div-vector-const
@@ -357,19 +357,19 @@
       (set! *winners* winners)
       ;; danger! following code with small indent:
 
-      ;; algorithm:18
+      ;; algorithm:20
       (decrease-all-neuron-local-errors *factor-beta-decrease-local-error*
 
-      ;; algorithm:10.b
+      ;; algorithm:11.b
       (find-and-del-unconnected-neuron
 
-      ;; algorithm:10.a
+      ;; algorithm:11.a
       (remove-old-conn-age *limit-conn-age*
 
-      ;; algorithm:09: set connection to 0 (*initial-connection-age*) between two winners
+      ;; algorithm:10: set connection to 0 (*initial-connection-age*) between two winners
       (update-neuron-conn-age (car winners) (cadr winners) * *initial-connection-age*
 
-      ;; algorithm:08
+      ;; algorithm:09
       (inc-neighbours-conn-age (car winners)
 
       ;; algorithm:07 for winner
@@ -385,7 +385,7 @@
 	;; algorithm:05
 	(update-neuron-local-error (car winners) + (square (list-ref distances-w-s (car winners)))
 
-	 ;; algorithm:11
+	 ;; algorithm:12
 	 (if (and (= 0 (remainder epoch *lambda-step*)) ; adaptation step: create new neuron each lambda-step
 		  (> *limit-network-size* (length gng)))
 	     (adaptate-step-create-new-neuron gng)

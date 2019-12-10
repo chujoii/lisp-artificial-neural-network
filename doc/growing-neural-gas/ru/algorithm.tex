@@ -3,9 +3,10 @@
 \input{../../../TeX/preambula-ru.tex}
 \usepackage[colorlinks=true]{hyperref} % url hyperlink (beamer already include it, so move here for prevent conflict)
 
-\author{Роман В. Приходченко}
+\author{составитель Роман В. Приходченко}
 
-\title{Алгоритм растущего нейронного газа}
+\title{Алгоритм растущего нейронного газа
+  с фактором полезности нейронов}
 
 
 \makeindex
@@ -44,7 +45,10 @@
   литературы.
 \end{itemize}
 
-\section{Описание алгоритма <<Growing Neural Gas with Utility factor>>}
+\section{Описание алгоритма <<GNG-U>>}
+Модифицированный алгоритм <<Growing Neural Gas with Utility factor>>
+(GNG-U).
+
 Начиная всего с двух нейронов, алгоритм последовательно изменяет (по
 большей части, увеличивает) их число, одновременно создавая набор
 связей между нейронами, наилучшим образом отвечающий распределению
