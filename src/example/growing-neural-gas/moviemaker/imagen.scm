@@ -142,7 +142,11 @@
 (update-neuron-conn-age 0 1 + 1 *initial-gng*) ;; need create link beetwin first neuron!
 
 (if (file-exists? "knowledge-base.scm")
-    (set! *initial-gng* (load "knowledge-base.scm")))
+    (begin
+      (set! *initial-gng* (load "knowledge-base.scm"))
+      (if (not (= *dimension-of-sensor* (length (get-neuron-weight (car *initial-gng*)))))
+	  (begin (format #t "Error: size of sensor in file \"knowledge-base.scm\" not equal *dimension-of-sensor* in \"imagen.scm\"\n")
+		 (exit)))))
 
 
 (define *stop* #f)
