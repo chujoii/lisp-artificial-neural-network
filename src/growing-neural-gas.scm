@@ -63,20 +63,21 @@
 ;;;    (weights) - list of weights for input vector from sensors
 ;;;    (conn-ages) - list of connection-age between neurons
 ;;;    local-error - number = old-local-error + (d(Weights, Sensors))^2
+;;;    utility-factor - number
 ;;;
-;;; gag = (abc   de   f)
+;;; gng = (a-b-c   d-e   f)
 ;;;
 ;;;  connection-age == -1 not connected ("nc" or "-" in next table)
 ;;;  connection-age >= 0 connected
 ;;;
-;;;      ((wieght) ( conn-age ) local-error)
-;;;                a b c d e f            ; warning: duplication of conn-age data => duplication of program code
-;;; (    ((1 2 3) (- 0 2 - - -) 0)         ; a   age of connections: a~b=0
-;;;      ((1 2 3) (0 - 1 - - -) 0)         ; b   age of connections: b~c=1
-;;;      ((1 2 3) (2 1 - - - -) 0)         ; c   age of connections: c~a=2
-;;;      ((1 2 3) (- - - - 3 -) 0)         ; d   age of connections: d~e=3
-;;;      ((1 2 3) (- - - 3 - -) 0)         ; e
-;;;      ((1 2 3) (- - - - - -) 0)    )    ; f   not connected
+;;;      ((wieght) ( conn-age ) local-error utility-factor)
+;;;                a b c d e f  ; warning: duplication of conn-age data => duplication of program code
+;;; (    ((1 2 3) (- 0 2 - - -) 0           0)         ; a   age of connections: a~b=0
+;;;      ((1 2 3) (0 - 1 - - -) 0           0)         ; b   age of connections: b~c=1
+;;;      ((1 2 3) (2 1 - - - -) 0           0)         ; c   age of connections: c~a=2
+;;;      ((1 2 3) (- - - - 3 -) 0           0)         ; d   age of connections: d~e=3
+;;;      ((1 2 3) (- - - 3 - -) 0           0)         ; e
+;;;      ((1 2 3) (- - - - - -) 0           0)    )    ; f   not connected
 
 
 
@@ -92,8 +93,8 @@
 
 
 ;; construct neuron from ready data set
-(define (construct-neuron weight conn-age local-error)
-  (list weight conn-age local-error))
+(define (construct-neuron weight conn-age local-error utility-factor)
+  (list weight conn-age local-error utility-factor))
 
 ;; make empty (initial) neuron
 ;; dimension-gng == current size of growing neural gas
@@ -101,7 +102,8 @@
   (construct-neuron
    (create-list-of-n-element-filled-by-evaluated-function dimension-sensor random:normal) ; weights
    (make-list dimension-gng *not-connected*) ; not connected, so conn-ages = -1
-   0.0)) ; local-error
+   0.0   ; local-error
+   0.0)) ; utility-factor
 
 (define (get-neuron-weight neuron) (car neuron))
 (define *index-neuron-weight* 0)
@@ -109,11 +111,14 @@
 (define *index-neuron-conn-age* 1)
 (define (get-neuron-local-error neuron) (caddr neuron))
 (define *index-neuron-local-error* 2)
+(define (get-neuron-utility-factor neuron) (cadddr neuron))
+(define *index-neuron-utility-factor* 3)
 
 (define (print-neuron neuron)
   (format #t "w: ~a\t" (map (lambda (x) (format #f "~7,1f" x)) (get-neuron-weight neuron)))
   (format #t "a: ~a\t" (map (lambda (x) (if (< x *initial-connection-age*) "-" (format #f "~d" x))) (get-neuron-conn-age neuron)))
-  (format #t "e: ~5,1f\n" (get-neuron-local-error neuron)))
+  (format #t "e: ~5,1f\t" (get-neuron-local-error neuron))
+  (format #t "u: ~5,1f\n" (get-neuron-utility-factor neuron)))
 
 ;; generate string with start "list"
 ;; usage: (print-gng-as-list "~d" (list 1 2 (list 3 4 5)))
@@ -126,6 +131,7 @@
 		       (format #f "\t(list ~a)\n" (string-join (map (lambda (x) (format #f "~g" x)) (get-neuron-weight (car ls))) " "))
 		       (format #f "\t(list ~a)\n" (string-join (map (lambda (x) (format #f "~d" x)) (get-neuron-conn-age (car ls))) " "))
 		       (format #f "\t~g" (get-neuron-local-error (car ls)))
+		       (format #f "\t~g" (get-neuron-utility-factor (car ls)))
 		       ")\n\n"
 		       (iter (cdr ls)))))
 
@@ -136,7 +142,7 @@
   (define (add-column-with-conn-age igng)
     (if (null? igng)
 	'()
-	(cons (construct-neuron (get-neuron-weight (car igng)) (append (get-neuron-conn-age (car igng)) (list *not-connected*)) (get-neuron-local-error (car igng)))
+	(cons (construct-neuron (get-neuron-weight (car igng)) (append (get-neuron-conn-age (car igng)) (list *not-connected*)) (get-neuron-local-error (car igng)) (get-neuron-utility-factor (car igng)))
 	      (add-column-with-conn-age (cdr igng)))))
 
   (add-column-with-conn-age (append gng (list neuron))))
@@ -156,7 +162,7 @@
   (define (make-consistent-gng del-list igng)
     (if (null? igng)
 	'()
-	(cons (construct-neuron (get-neuron-weight (car igng)) (remove-unexisted-conn-age del-list (get-neuron-conn-age (car igng))) (get-neuron-local-error (car igng)))
+	(cons (construct-neuron (get-neuron-weight (car igng)) (remove-unexisted-conn-age del-list (get-neuron-conn-age (car igng))) (get-neuron-local-error (car igng)) (get-neuron-utility-factor (car igng)))
 	      (make-consistent-gng del-list (cdr igng)))))
 
   (define (remove-unexisted-conn-age del-list conn-age)
@@ -234,7 +240,8 @@
       '()
       (cons (construct-neuron (get-neuron-weight (car gng))
 			      (map (lambda (x) (if (> x limit-conn-age) *not-connected* x)) (get-neuron-conn-age (car gng)))
-			      (get-neuron-local-error (car gng)))
+			      (get-neuron-local-error (car gng))
+			      (get-neuron-utility-factor (car gng)))
 	    (remove-old-conn-age limit-conn-age (cdr gng)))))
       
 
@@ -254,7 +261,8 @@
 (define (decrease-all-neuron-local-errors factor-beta gng)
   (map (lambda (neuron) (construct-neuron (get-neuron-weight neuron)
 					  (get-neuron-conn-age neuron)
-					  (* (get-neuron-local-error neuron) factor-beta)))
+					  (* (get-neuron-local-error neuron) factor-beta)
+					  (get-neuron-utility-factor neuron)))
        gng))
 
 
