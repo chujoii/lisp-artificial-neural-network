@@ -257,6 +257,13 @@
 
 
 
+(define (update-neuron-utility-factor a function step gng)
+  (list-set! (list-ref gng a) *index-neuron-utility-factor*
+	     (function (get-neuron-utility-factor (list-ref gng a)) step))
+  gng)
+
+
+
 ;; Decrease local-errors for all neuron
 (define (decrease-all-neuron-local-errors factor-beta gng)
   (map (lambda (neuron) (construct-neuron (get-neuron-weight neuron)
@@ -372,6 +379,11 @@
       ;; algorithm:09
       (inc-neighbours-conn-age (car winners)
 
+      ;; algorithm:08
+      (update-neuron-utility-factor (car winners) + (-
+						     (square (list-ref distances-w-s (cadr winners))) ; second winner
+						     (square (list-ref distances-w-s (car winners)))) ; first winner
+
       ;; algorithm:07 for winner
       (update-neuron-weight-vector (car winners)
 				   (lambda (weights step) (sum-sub-vectors + weights (mul-div-vector-const * (sum-sub-vectors - sensor weights) step)))
@@ -389,4 +401,4 @@
 	 (if (and (= 0 (remainder epoch *lambda-step*)) ; adaptation step: create new neuron each lambda-step
 		  (> *limit-network-size* (length gng)))
 	     (adaptate-step-create-new-neuron gng)
-	     gng))))))))))))
+	     gng)))))))))))))
