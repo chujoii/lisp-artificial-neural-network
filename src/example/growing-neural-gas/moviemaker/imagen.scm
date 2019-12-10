@@ -121,6 +121,9 @@
 
 ;;; use Euclidean space for distance calculation
 (define *functions-mixed-space* '())
+;;
+;; if use non-Euclidean space, for example last sensor = angle (in degree, where 0=360)
+;;(define *functions-mixed-space* (make-list *dimension-of-sensor* euclidean-distance))
 
 ;; from sensor you get: (a b c d);
 ;; for view in tooltip only "a" and "b" set list to *list-for-print-tooltip*==(0 1)
