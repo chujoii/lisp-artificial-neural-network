@@ -86,6 +86,7 @@
 
 (load "../../../growing-neural-gas.scm")
 (load "../../../visualization/gng-to-dot.scm")
+(load "../../../visualization/gng-to-gnuplot.scm")
 (load "../../../../../battery-scheme/print-list.scm")
 (load "../../../fetch-data.scm")
 
@@ -188,7 +189,9 @@
 				 *limit-weight* sensor-data *winners*
 				 new-gng
 				 (format #f "~a/graphviz/~8,'0d.gv" *base-image-path* epoch-counter))
-		(if (= *dimension-of-sensor* 2) (display-to-file (format #f "~a/gnuplot/~8,'0d.dat" *base-image-path* epoch-counter) (weights-to-string (map get-neuron-weight new-gng))))))
+		(if (= *dimension-of-sensor* 2)
+		    (gng-to-gnuplot-file sensor-data new-gng
+					 (format #f "~a/gnuplot/~8,'0d.dat" *base-image-path* epoch-counter)))))
 	  (main (1+ epoch-counter)
 		new-gng)))))
 

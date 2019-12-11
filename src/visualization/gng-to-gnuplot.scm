@@ -62,13 +62,16 @@
 
 
 
-(define (gng-to-gnuplot-file gng filename)
+(define (gng-to-gnuplot-file sensor-data gng filename)
   (display-to-file filename
-		   (list-to-string-gnuplot
-		    (replace-connection-to-weight
-		     (map get-neuron-weight gng)
-		     (convert-gng-conn-ages-to-simple-list gng)))))
+		   (string-append
+		    (format #f "~f ~f c\n\n" (car sensor-data) (cadr sensor-data))
+		    (list-to-string-gnuplot
+		     (replace-connection-to-weight
+		      (map get-neuron-weight gng)
+		      (convert-gng-conn-ages-to-simple-list gng))))))
 
-
-(define *initial-gng* (load "knowledge-base.scm"))
-(gng-to-gnuplot-file *initial-gng* "00000200.dat")
+;; unit-testing
+;;(define *sensor-data* (list 0.0 25.0))
+;;(define *initial-gng* (load "knowledge-base.scm"))
+;;(gng-to-gnuplot-file *sensor-data* *initial-gng* "00000200.dat")
