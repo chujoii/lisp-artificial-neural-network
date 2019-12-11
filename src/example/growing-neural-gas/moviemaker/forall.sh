@@ -5,7 +5,7 @@
 # This file is part of lisp-artificial-neural-network.
 # License: GPL v3 or later
 
-function fungnuplot() { gnuplot -e  "set terminal png; set output '/tmp/ai/image-2D/$1.png'; plot '$1'"; }
+function fungnuplot() { gnuplot -e  "set terminal png; set output '/tmp/ai/image-2D/$1.png'; plot '$1' with linespoints pt 7 lt 1"; }
 
 for i in *
 do
