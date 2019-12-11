@@ -91,7 +91,7 @@
 (load "../../../fetch-data.scm")
 
 ;;; Use #t for debug print, or #f for silent
-(define *debug-print* #f)
+(define *debug-print* #t)
 
 ;;; Base path to result images
 (define *base-image-path* "/tmp/ai")
@@ -100,12 +100,12 @@
 (define *eps-winner*   0.01)
 (define *eps-neighbour* 0.0001)
 (define *eps-local-error* 0.05)
-(define *factor-beta-decrease-local-error* 0.9)
+(define *factor-beta-decrease-local-error* 0.9999)
 
 (define *limit-conn-age* 15)
 
-;; big value of k-utility remove too many neurons
-;; small value leave rare neurons and cause slow adaptation
+;; big value of k-utility leave rare neurons and cause slow adaptation
+;; small value for fast remove too many neurons, and accordingly fast adaptation
 (define *k-utility* 2.0)
 
 ;; Adaptation step (add neuron in each *lambda-step* to network)

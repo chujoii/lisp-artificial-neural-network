@@ -70,8 +70,8 @@
 
 (define *limit-conn-age* 3)
 
-;; big value of *k-utility* remove too many neurons
-;; small value leave rare neurons and cause slow adaptation
+;; big value of k-utility leave rare neurons and cause slow adaptation
+;; small value for fast remove too many neurons, and accordingly fast adaptation
 (define *k-utility* 2.0)
 
 ;; Adaptation step (add neuron in each *lambda-step* to network)
