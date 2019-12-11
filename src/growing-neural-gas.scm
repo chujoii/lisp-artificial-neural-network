@@ -171,6 +171,13 @@
 	conn-age
 	(remove-unexisted-conn-age (cdr del-list) (append (list-head conn-age (car del-list)) (list-tail conn-age (1+ (car del-list)))))))
 
+  ;; if set very aggressive coefficients, then network delete all
+  ;; neurons and leave two (maybe unconnected) so need reconnect them
+  (define (reconnect igng)
+    (if (<= (length igng) 2)
+	(update-neuron-conn-age 0 1 + 1 igng))
+    igng)
+
 
   (let ((E-max (cdr (extremum (map get-neuron-local-error gng) >)))
 	(minimum-size-of-gng (- (length gng) 2))) ;; leave 2 neuron at least
@@ -178,7 +185,7 @@
     ;; (U-min (extremum (map get-neuron-local-error gng) <)))
     (let ((gng-del (delete-neuron-U-min 0 '() E-max minimum-size-of-gng gng)))
       (let ((lengng (1- (length gng-del))))
-	(make-consistent-gng (car (list-tail gng-del lengng)) (list-head gng-del lengng))))))
+	(reconnect (make-consistent-gng (car (list-tail gng-del lengng)) (list-head gng-del lengng)))))))
 
 
 
@@ -329,9 +336,13 @@
 (define (adaptive-step-create-new-neuron gng)
   (let ((index-neuron-max-local-error (find-neuron-index-with-max-local-error gng))) ;; algorithm:13
 
-    (let ((index-neighbour-for-max-local-error (find-neighbours-index-with-max-local-error index-neuron-max-local-error gng)) ;; algorithm:14
+    (let ((tmp-index-neighbour-for-max-local-error (find-neighbours-index-with-max-local-error index-neuron-max-local-error gng)) ;; algorithm:14
 	  (index-of-new-neuron (length gng)) ; count from 0
 	  (igng (add-neuron (make-neuron *dimension-of-sensor* (length gng)) gng)))  ; algorithm:15.a
+
+      (let ((index-neighbour-for-max-local-error (if (>= tmp-index-neighbour-for-max-local-error 0) ;; fix situation when all index = -1
+						     tmp-index-neighbour-for-max-local-error        ;; more correct solution: use not aggressive coefficients (k-utility)
+						     (if (= index-neuron-max-local-error 0) 1 0))))
 
       (let ((conn-age-uv (list-ref (get-neuron-conn-age (list-ref gng index-neuron-max-local-error)) index-neighbour-for-max-local-error))
 	    (local-error-u (get-neuron-local-error (list-ref gng index-neuron-max-local-error)))
@@ -363,7 +374,7 @@
 				      (sum-sub-vectors + (get-neuron-weight (list-ref igng index-neuron-max-local-error)) (get-neuron-weight (list-ref igng index-neighbour-for-max-local-error)))
 				      2))
 				   0 ; use "0" and ignored "weights" and "step" --- because previous value are worthless (random)
-				   igng))))))))))))
+				   igng)))))))))))))
 
 
 
