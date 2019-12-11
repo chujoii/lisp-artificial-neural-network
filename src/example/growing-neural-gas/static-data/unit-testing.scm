@@ -243,11 +243,11 @@
 	index-max-local-error (find-neighbours-index-with-max-local-error index-max-local-error *example-gng*))
 
 (format #t "\nadaptive step: create new neuron:\n")
-(set! *example-gng* (adaptate-step-create-new-neuron *example-gng*))
+(set! *example-gng* (adaptive-step-create-new-neuron *example-gng*))
 (map print-neuron *example-gng*)
 
-(format #t "\nadaptive step: create new neuron:\n")
-(set! *example-gng* (decrease-all-neuron-local-errors *factor-beta-decrease-local-error* *example-gng*))
+(format #t "\ndecrease local-error and utility-factor:\n")
+(set! *example-gng* (decrease-all-neuron-local-errors-and-utility-factor *factor-beta-decrease-local-error* *example-gng*))
 (map print-neuron *example-gng*)
 
 (format #t "\ntest list-formatted output: see file knowledge-base.scm\n")

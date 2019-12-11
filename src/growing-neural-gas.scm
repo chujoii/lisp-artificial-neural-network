@@ -150,7 +150,7 @@
 
 
 (define (find-and-del-neuron-with-min-utility-factor k gng)
-  ;; delete-min-utility return: (growing neural gas with-list-element-deleted-list)
+  ;; delete-neuron-U-min (min-utility) return: (growing neural gas with-list-element-deleted-list)
   ;; nonconsistent --- because need clean conn-age list in rest neuron
   (define (delete-neuron-U-min counter deleted-list E-max minimum-size-of-gng igng)
     (if (null? igng)
@@ -271,12 +271,12 @@
 
 
 
-;; Decrease local-errors for all neuron
-(define (decrease-all-neuron-local-errors factor-beta gng)
+;; Decrease local-errors and utility-factor for all neuron
+(define (decrease-all-neuron-local-errors-and-utility-factor factor-beta gng)
   (map (lambda (neuron) (construct-neuron (get-neuron-weight neuron)
 					  (get-neuron-conn-age neuron)
 					  (* (get-neuron-local-error neuron) factor-beta)
-					  (get-neuron-utility-factor neuron)))
+					  (* (get-neuron-utility-factor neuron) factor-beta)))
        gng))
 
 
@@ -326,7 +326,7 @@
 
 
 
-(define (adaptate-step-create-new-neuron gng)
+(define (adaptive-step-create-new-neuron gng)
   (let ((index-neuron-max-local-error (find-neuron-index-with-max-local-error gng))) ;; algorithm:13
 
     (let ((index-neighbour-for-max-local-error (find-neighbours-index-with-max-local-error index-neuron-max-local-error gng)) ;; algorithm:14
@@ -378,8 +378,8 @@
       (set! *winners* winners)
       ;; danger! following code with small indent:
 
-      ;; algorithm:20
-      (decrease-all-neuron-local-errors *factor-beta-decrease-local-error*
+      ;; algorithm:20,21
+      (decrease-all-neuron-local-errors-and-utility-factor *factor-beta-decrease-local-error*
 
       ;; algorithm:11.b
       (find-and-del-neuron-with-min-utility-factor *k-utility*
@@ -414,5 +414,5 @@
 	 ;; algorithm:12
 	 (if (and (= 0 (remainder epoch *lambda-step*)) ; adaptation step: create new neuron each lambda-step
 		  (> *limit-network-size* (length gng)))
-	     (adaptate-step-create-new-neuron gng)
+	     (adaptive-step-create-new-neuron gng)
 	     gng)))))))))))))
