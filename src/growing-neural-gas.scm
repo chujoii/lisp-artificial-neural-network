@@ -173,7 +173,7 @@
 
 
   (let ((E-max (cdr (extremum (map get-neuron-local-error gng) >)))
-	(minimum-size-of-gng (- (length gng) 5))) ;; leave 2 neuron at least
+	(minimum-size-of-gng (- (length gng) 2))) ;; leave 2 neuron at least
     ;; in original algorithm remove only one neuron with min utility:
     ;; (U-min (extremum (map get-neuron-local-error gng) <)))
     (let ((gng-del (delete-neuron-U-min 0 '() E-max minimum-size-of-gng gng)))
@@ -342,6 +342,13 @@
 	(update-neuron-local-error index-neighbour-for-max-local-error * *eps-local-error*
 	(update-neuron-local-error index-neuron-max-local-error * *eps-local-error*
 
+        ;; algorithm:17
+        (update-neuron-utility-factor index-of-new-neuron
+				      (lambda (utility step)
+					(/ (+ (get-neuron-utility-factor (list-ref igng index-neuron-max-local-error)) (get-neuron-utility-factor (list-ref igng index-neighbour-for-max-local-error)))
+					 2))
+				      0 ; use "0" and ignored "utility" and "step" --- because previous value are worthless
+
 
 	;; algorithm:16      instead of "lambda" maybe more correct:      ... + (+ conn-age-uv *initial-connection-age*)
 	(update-neuron-conn-age index-neuron-max-local-error index-of-new-neuron                 (lambda (ignored-value val) val) conn-age-uv
@@ -356,7 +363,7 @@
 				      (sum-sub-vectors + (get-neuron-weight (list-ref igng index-neuron-max-local-error)) (get-neuron-weight (list-ref igng index-neighbour-for-max-local-error)))
 				      2))
 				   0 ; use "0" and ignored "weights" and "step" --- because previous value are worthless (random)
-				   igng)))))))))))
+				   igng))))))))))))
 
 
 
