@@ -148,8 +148,8 @@
 ;;
 ;;
 ;; for use list-of-port-positions: see function port-position
-(define (convert-gng-to-string-node-attributes index-column-list list-of-port-positions weight-limits current-sensor-weight weights)
-  (define (inc counter w)
+(define (convert-gng-to-string-node-attributes index-column-list list-of-port-positions weight-limits current-sensor-weight weights utilities)
+  (define (iter counter w diameter-node)
     (if (null? w)
 	""
 	(string-append (number->string counter)
@@ -158,13 +158,20 @@
 		       (string-join (map (lambda (x) (format #f "~,2f" x)) (list-from-index-list index-column-list (car w))) " ")
 		       "\""
 		       (if (not (in-limit? weight-limits (car w))) ", color=darkred" "")
+		       (format #f ", width=~,2f" (car diameter-node))
 		       "]\n"
-		       (inc (1+ counter) (cdr w)))))
+		       (iter (1+ counter) (cdr w) (cdr diameter-node)))))
 
-  (string-append "c [tooltip=\""
-		 (string-join (map (lambda (x) (format #f "~,2f" x)) (list-from-index-list index-column-list current-sensor-weight)) " ") ; tooltip for current node
-		 "\", shape=box, color=black, fillcolor=" (if (in-limit? weight-limits current-sensor-weight) "green" "red") ", style=filled, fontcolor=white];\n"
-		 (inc 0 weights)))
+  (let ((Umin (cdr (extremum utilities <)))
+	(Umax (cdr (extremum utilities >))))
+    (string-append "c [tooltip=\""
+		   (string-join (map (lambda (x) (format #f "~,2f" x)) (list-from-index-list index-column-list current-sensor-weight)) " ") ; tooltip for current node
+		   "\", shape=box, color=black, fillcolor=" (if (in-limit? weight-limits current-sensor-weight) "green" "red") ", style=filled, fontcolor=white];\n"
+		   ;;  D   - Dmin    U   - Umin
+		   ;; ----------- = -----------
+		   ;; Dmax - Dmin   Umax - Umin
+		   (iter 0 weights (map (lambda (u) (+ (/ (* (- u Umin) (- *Dmax* *Dmin*)) (- Umax Umin)) *Dmin*)) utilities)))))
+
 
 
 ;; copy of convert-gng-to-string-node-attributes
@@ -181,10 +188,11 @@
   (string-append "graph ai {\n"
 		 "node [shape=circle, color=darkgreen];\n"
 		 "edge [color=darkgrey];\n"
-		 "sep=\"+2\";\n"      ; Adding additional space around the nodes
-		 "esep=\"+1\";\n"      ; Adding space for edge. Margin used around polygons for purposes of SPLINE edge routing. Should normally be strictly less than sep.
-		 "splines=false;\n"   ; Controls how, and if, edges are represented. True = nice edges, but increase CPU load (false=line (time=3.23s), polyline (time=10.40s), curved (time=3.25s), ortho (time=3.22s), true=spline (time=10.35s), compound for fdp)
+		 "sep=\"+11\";\n"      ; Adding additional space around the nodes
+		 "esep=\"+10\";\n"      ; Adding space for edge. Margin used around polygons for purposes of SPLINE edge routing. Should normally be strictly less than sep.
+		 "splines=" *edge-splines* ";\n"   ; Controls how, and if, edges are represented. True = nice edges, but increase CPU load (false=line (time=3.23s), polyline (time=10.40s), curved (time=3.25s), ortho (time=3.22s), true=spline (time=10.35s), compound for fdp)
 		 "overlap=scalexy;\n" ; Determines if and how node overlaps should be removed.
+		 "fixedsize=true;\n"  ; When drawn, a node’s actual size is the greater of the requested size and the area needed for its text label, unless fixedsize=true, in which case the width and height values are enforced.
 		 "\n"
 		 "c -- " (number->string (car winners)) ";\n"
 		 "c -- " (number->string (cadr winners)) ";\n"
@@ -199,4 +207,4 @@
 		   (add-head-tail
 				  winners
 				  (list-to-string-dot-format (convert-gng-conn-ages-to-simple-list gng))
-				  (convert-gng-to-string-node-attributes list-for-print-tooltip list-of-port-positions limits-of-weight current-sensor-weight (map get-neuron-weight gng)))))
+				  (convert-gng-to-string-node-attributes list-for-print-tooltip list-of-port-positions limits-of-weight current-sensor-weight (map get-neuron-weight gng) (map get-neuron-utility-factor gng)))))

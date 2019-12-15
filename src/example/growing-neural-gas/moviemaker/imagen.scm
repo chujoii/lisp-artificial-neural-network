@@ -138,6 +138,10 @@
 
 (define *image-log-file-step* (* 10 *lambda-step*))
 
+(define *Dmin* 0.1) ; min diameter of node
+(define *Dmax* 1.0) ; max diameter of node
+(define *edge-splines* "true") ; Controls how, and if, edges are represented. True = nice edges, but increase CPU load (false=line (time=3.23s), polyline (time=10.40s), curved (time=3.25s), ortho (time=3.22s), true=spline (time=10.35s), compound for fdp)
+
 (define *initial-gng* (add-neuron (make-neuron *dimension-of-sensor* 1)
 				  (add-neuron (make-neuron *dimension-of-sensor* 0)
 					      '())))
