@@ -91,7 +91,7 @@
 (load "../../../fetch-data.scm")
 
 ;;; Use #t for debug print, or #f for silent
-(define *debug-print* #t)
+(define *debug-print* #f)
 
 ;;; Base path to result images
 (define *base-image-path* "/tmp/ai")

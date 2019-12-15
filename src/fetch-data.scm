@@ -1,5 +1,3 @@
-#!/usr/bin/guile -s
-!#
 ; coding: utf-8
 
 ;;;; fetch-data.scm ---  script for fetch, check and convert data from stdin
