@@ -151,7 +151,7 @@
 (update-neuron-conn-age 0 1 + 1 *initial-gng*) ;; need create link beetwin first neuron!
 
 (if (file-exists? "knowledge-base.scm")
-    (set! *initial-gng* (load "knowledge-base.scm")))
+    (set! *initial-gng* (primitive-load "knowledge-base.scm")))
 
 
 (define *stop* #f)
