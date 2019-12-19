@@ -186,6 +186,7 @@
 
 (define (add-head-tail winners body tooltip)
   (string-append "graph ai {\n"
+		 "graph [" *image-size* ", " *image-dpi* ", " *image-ratio* "];\n"
 		 "node [shape=circle, color=darkgreen];\n"
 		 "edge [color=darkgrey];\n"
 		 "sep=\"+11\";\n"      ; Adding additional space around the nodes

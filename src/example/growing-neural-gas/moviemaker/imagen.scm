@@ -141,6 +141,9 @@
 (define *Dmin* 0.1) ; min diameter of node
 (define *Dmax* 1.0) ; max diameter of node
 (define *edge-splines* "true") ; Controls how, and if, edges are represented. True = nice edges, but increase CPU load (false=line (time=3.23s), polyline (time=10.40s), curved (time=3.25s), ortho (time=3.22s), true=spline (time=10.35s), compound for fdp)
+(define *image-size* "size=\"100,80\"") ; size in inch
+(define *image-dpi* "dpi=100")
+(define *image-ratio* "ratio=\"compress\"")
 
 (define *initial-gng* (add-neuron (make-neuron *dimension-of-sensor* 1)
 				  (add-neuron (make-neuron *dimension-of-sensor* 0)
