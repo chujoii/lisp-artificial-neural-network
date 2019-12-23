@@ -157,7 +157,8 @@
 	(list deleted-list) ; significant: list reversed!
 	(if (and (> minimum-size-of-gng 0)
 		 (> (/ E-max (get-neuron-utility-factor (car igng))) k))
-	    (delete-neuron-U-min (1+ counter) (cons counter deleted-list) E-max (1- minimum-size-of-gng) (cdr igng)) ; delete
+	    (begin (format #t "d(~d)" counter)
+		   (delete-neuron-U-min (1+ counter) (cons counter deleted-list) E-max (1- minimum-size-of-gng) (cdr igng))) ; delete
 	    (cons (car igng) (delete-neuron-U-min (1+ counter) deleted-list E-max minimum-size-of-gng (cdr igng)))))) ; leave
 
   (define (make-consistent-gng del-list igng)
