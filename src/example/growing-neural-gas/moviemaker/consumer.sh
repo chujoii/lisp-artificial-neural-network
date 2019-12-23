@@ -5,6 +5,8 @@
 # This file is part of lisp-artificial-neural-network.
 # License: GPL v3 or later
 
+EXT=$1
+
 DIR=/tmp/ai/graphviz
 IMAGES=/tmp/ai/image-cluster
 
@@ -24,14 +26,14 @@ fungraphviz ()
 	if [ $MAXPROC -gt $PC ]
 	then
 	    echo $DOT $PC parallel
-	    neato -Tpng -o$IMAGES/$DOT.png $DIR/$DOT &
+	    neato -T$EXT -o$IMAGES/$DOT.$EXT $DIR/$DOT &
 	else
 	    echo $DOT $PC wait
-	    neato -Tpng -o$IMAGES/$DOT.png $DIR/$DOT
+	    neato -T$EXT -o$IMAGES/$DOT.$EXT $DIR/$DOT
 	fi
     done
 }
 
 tail -f $FIFO | fungraphviz
 
-#tail -f $FIFO | xargs -I % --max-args=1 --max-procs=$MAXPROC        neato -Tpng -o$IMAGES/%.png $DIR/%
+#tail -f $FIFO | xargs -I % --max-args=1 --max-procs=$MAXPROC        neato -T$EXT -o$IMAGES/%.$EXT $DIR/%

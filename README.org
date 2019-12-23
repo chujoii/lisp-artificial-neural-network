@@ -36,7 +36,10 @@ simple perceptron (lisp scheme)
   
   
 * Usage:
-read with emacs (3__3) org mode
+
+** GNG(-U)
+
+See "usage" section in src/example/growing-neural-gas/moviemaker/imagen.scm
 
 * History:
 initial project version began about 2019-08(Aug)-28

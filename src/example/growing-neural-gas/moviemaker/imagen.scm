@@ -54,8 +54,8 @@
 ;; for parallel conversion GraphViz(DOT) -> png use producer.sh and consumer.sh
 ;; in first terminal run inotify watcher:
 ;;        ./producer.sh
-;; in second terminal run GraphViz process:
-;;        ./consumer.sh
+;; in second terminal run GraphViz process (as parameter use extension of result image: svg, png):
+;;        ./consumer.sh png
 ;;
 ;;
 ;; in third teminal run GNG (wait for loading and compiling knowledge base ...)
