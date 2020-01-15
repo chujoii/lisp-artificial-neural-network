@@ -6,7 +6,7 @@
 ;;;; Very strange situation: you have simple formula, but use intricate perceptron
 
 
-;;; Copyright (C) 2019 Roman V. Prikhodchenko
+;;; Copyright (C) 2019-2020 Roman V. Prikhodchenko
 
 
 
