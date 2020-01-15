@@ -70,13 +70,20 @@
 ;; ((lo-lim0 hi-lim0) (lo-lim1 hi-lim1) (lo-lim2 hi-lim2) ... (lo-limN hi-limN))
 (define *limit-weight* (list (list -10 10) (list -20 10) (list 0 10) (list 0 10)))
 
-(define *example-gng* (list (list (list  -9.8  -19.6  -29.4  -39.2) (list -1  1 -1 -1 -1 -1  3) 0.45)
-			    (list (list  -7.8  -17.6  -27.4  -37.2) (list  1 -1  0 -1 -1 -1 -1)  0.5)
-			    (list (list   2.1    2.2    2.3    2.4) (list -1  0 -1 -1 -1 -1  3)  0.4)
-			    (list (list -65.9 -164.8 -263.7 -362.6) (list -1 -1 -1 -1  4 -1 -1)  0.2)
-			    (list (list  -1.8  -11.6  -21.4  -31.2) (list -1 -1 -1  4 -1 -1 -1)  0.3)
-			    (list (list   5.1    5.2    5.3    5.4) (list -1 -1 -1 -1 -1 -1 -1)  0.7)
-			    (list (list  -3.9   -8.7  -13.5  -18.4) (list  3 -1  3 -1 -1 -1 -1) 0.45)))
+(define *example-gng* (list (list (list  -9.8  -19.6  -29.4  -39.2) (list -1  1 -1 -1 -1 -1  3) 1 0.45)
+			    (list (list  -7.8  -17.6  -27.4  -37.2) (list  1 -1  0 -1 -1 -1 -1) 2 0.5)
+			    (list (list   2.1    2.2    2.3    2.4) (list -1  0 -1 -1 -1 -1  3) 3 0.4)
+			    (list (list -65.9 -164.8 -263.7 -362.6) (list -1 -1 -1 -1  4 -1 -1) 4 0.2)
+			    (list (list  -1.8  -11.6  -21.4  -31.2) (list -1 -1 -1  4 -1 -1 -1) 5 0.3)
+			    (list (list   5.1    5.2    5.3    5.4) (list -1 -1 -1 -1 -1 -1 -1) 6 0.7)
+			    (list (list  -3.9   -8.7  -13.5  -18.4) (list  3 -1  3 -1 -1 -1 -1) 7 0.45)))
+
+(define *Dmin* 0.1) ; min diameter of node
+(define *Dmax* 1.0) ; max diameter of node
+(define *edge-splines* "true") ; Controls how, and if, edges are represented. True = nice edges, but increase CPU load (false=line (time=3.23s), polyline (time=10.40s), curved (time=3.25s), ortho (time=3.22s), true=spline (time=10.35s), compound for fdp)
+(define *image-size* "size=\"100,80\"") ; size in inch
+(define *image-dpi* "dpi=100")
+(define *image-ratio* "ratio=\"compress\"")
 
 (format #t "\nsimple 7 neurons:\n")
 (map print-neuron *example-gng*)
@@ -87,10 +94,10 @@
 (define *string-body-dot* (list-to-string-dot-format *gng-conn-list*))
 (format #t "\nlist of connection ready for print:\n~a\n" *string-body-dot*)
 
-(define *node-attributes* (convert-gng-to-string-node-attributes *list-for-print-tooltip* '() *limit-weight* (map get-neuron-weight *example-gng*)))
+(define *node-attributes* (convert-gng-to-string-node-attributes *list-for-print-tooltip* '() *limit-weight* *example-sensor* (map get-neuron-weight *example-gng*) (map get-neuron-utility-factor *example-gng*)))
 (format #t "\ntest node attributes: tooltip (weight) and color:\n~a\n" *node-attributes*)
 
-(define *string-dot* (add-head-tail (if (in-limit? *limit-weight* *example-sensor*) "green" "red") *winners* *string-body-dot* *node-attributes*))
+(define *string-dot* (add-head-tail *winners* *string-body-dot* *node-attributes*))
 (format #t "\nDOT ready for print:\n
 # Graphviz example:
 #
