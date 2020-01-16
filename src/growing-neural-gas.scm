@@ -84,6 +84,7 @@
 (load "../../battery-scheme/list.scm")
 (load "../../battery-scheme/vector.scm")
 (load "../../battery-scheme/minimax.scm")
+(load "../../battery-scheme/unique-list.scm")
 
 (define *not-connected* -1)
 (define *initial-connection-age* 0)
@@ -459,21 +460,34 @@
     (iterq 0 in-list))
 
   ;; return #f if (car x) not part of list "y"
-  ;; return merged list if is part of list:
+  ;; return merged list if first element of "x" is part of list "y":
   ;; x = (list 3 4 5)
   ;; y = (list 7 6 3 2 1)
-  ;; "try-merge" search only "3" and return (list 7 6   3 4 5   2 1)
+  ;; "try-merge" search only "3" and return (list 7 6   3   2 1   4 5)
   (define (try-merge x y)
-    (format #t "\ngrouping [~a] [~a]" x y)
     (let ((index (index-of-element-in-list (car x) y))) ;; see memv
-      (format #t " ~d" index)
       (if (< index 0)
 	  #f
 	  (append y (cdr x)))))
 
-  (let ((triangle-array (add-number-remove-double 0 conn-ages)))
-    ;(format #t "<~a>" (index-of-element-in-list 1 (car triangle-array)))
-    ;(format #t "<~a>" (index-of-element-in-list 7 (car triangle-array)))
-    (format #t "{~a}" (try-merge (cadr triangle-array) (car triangle-array)))
-    (format #t "{~a}" (try-merge (cadddr triangle-array) (car triangle-array)))
-    triangle-array))
+
+
+  (define (grouping lst)
+    (define (iter head-element tail-list unconnected-list)
+      (if (null? tail-list)
+	  (cons head-element unconnected-list)
+	  (let ((merge-result (try-merge (car tail-list) head-element)))
+	    (if merge-result
+		(iter merge-result (cdr tail-list) unconnected-list) ; result = list, so use updated merge-result (new head-elemnt)
+		(iter head-element (cdr tail-list) (append unconnected-list (list (car tail-list)))) ; result = #f, so use old head-element
+	     ))))
+
+    (if (null? lst)
+	'()
+	(let ((result (iter (car lst) (cdr lst) '())))
+	  (cons (car result)
+		(grouping (cdr result))))))
+
+
+
+  (map unique-list (grouping (add-number-remove-double 0 conn-ages))))

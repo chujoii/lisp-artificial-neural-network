@@ -55,7 +55,6 @@
 
 (load "../../../growing-neural-gas.scm")
 (load "../../../../../battery-scheme/dir-and-file.scm")
-(load "../../../../../battery-scheme/print-list.scm")
 
 
 (set! *random-state* (seed->random-state 0.12345))
@@ -255,7 +254,5 @@
 (display-to-file "knowledge-base.scm" (print-gng-as-list *example-gng*))
 
 (format #t "\nfrom conn-age\n")
-(print-list-without-bracket (map get-neuron-conn-age *example-gng*))
-(format #t "\nextract groups:\n")
-(print-list-without-bracket (extract-groups-from-conn-ages (map get-neuron-conn-age *example-gng*)))
-(format #t "\n~a\n" (extract-groups-from-conn-ages (map get-neuron-conn-age *example-gng*)))
+(map (lambda (x) (format #t "~a\n" x)) (map get-neuron-conn-age *example-gng*))
+(format #t "\nextract groups: ~a\n" (extract-groups-from-conn-ages (map get-neuron-conn-age *example-gng*)))
