@@ -190,9 +190,11 @@
 	  (if *debug-print* (map print-neuron new-gng))
 	  (if (= 0 (remainder epoch-counter *image-log-file-step*)) ; print only one image of *image-log-file-step*
 	      (begin
-		(format #t "\t image")
+		(format #t "\t image\n")
+		(map print-neuron new-gng)
 		(gng-to-dot-file *list-for-print-tooltip*
 				 (generate-port-positions *limit-weight* new-gng)
+				 (extract-groups-from-conn-ages (map get-neuron-conn-age new-gng))
 				 *limit-weight* sensor-data *winners*
 				 new-gng
 				 (format #f "~a/graphviz/~8,'0d.gv" *base-image-path* epoch-counter))

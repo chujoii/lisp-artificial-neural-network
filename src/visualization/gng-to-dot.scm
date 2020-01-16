@@ -64,6 +64,23 @@
 (define *compass-point-nw* 7)
 (define *compass-point-c*  8)
 
+(define *color-list* (list ; based on https://en.wikipedia.org/wiki/Web_colors
+		      "White"
+		      "Silver"
+		      "Gray"
+		      "Black"
+		      "Red"
+		      "Maroon"
+		      "Yellow"
+		      "Olive"
+		      "Lime"
+		      "Green"
+		      "Aqua"
+		      "Teal"
+		      "Blue"
+		      "Navy"
+		      "Fuchsia"
+		      "Purple"))
 
 ;; Convert gng-conn-ages to simple list
 ;; unconnected node doesn't show
@@ -129,6 +146,21 @@
 
 
 
+(define (number-to-group-color number group)
+  (define (iter group-counter grp)
+    (if (null? grp)
+	"White"
+	(if (not (memv number (car grp))) ; search in list
+	    (iter (1+ group-counter) (cdr grp)); not finded
+	    (if (>= group-counter (length *color-list*)) ; find element in list
+		"White"
+		(list-ref *color-list* group-counter)))))
+
+  (format #t "~d ~a\n" number group)
+  (iter 0 group))
+
+
+
 ;; from list: index-column-list=(0 2) weights=((1 2 3 4) (5 6 7 8) (9 10 11 10))
 ;; generate string:
 ;; 0 [tooltip="1 3"]
@@ -148,7 +180,7 @@
 ;;
 ;;
 ;; for use list-of-port-positions: see function port-position
-(define (convert-gng-to-string-node-attributes index-column-list list-of-port-positions weight-limits current-sensor-weight weights utilities)
+(define (convert-gng-to-string-node-attributes index-column-list list-of-port-positions list-of-groups weight-limits current-sensor-weight weights utilities)
   (define (iter counter w diameter-node)
     (if (null? w)
 	""
@@ -158,6 +190,7 @@
 		       (string-join (map (lambda (x) (format #f "~,2f" x)) (list-from-index-list index-column-list (car w))) " ")
 		       "\""
 		       (if (not (in-limit? weight-limits (car w))) ", color=darkred" "")
+		       ", style=filled, fillcolor=" (number-to-group-color counter list-of-groups)
 		       (format #f ", width=~,2f" (car diameter-node))
 		       "]\n"
 		       (iter (1+ counter) (cdr w) (cdr diameter-node)))))
@@ -203,9 +236,15 @@
 
 
 
-(define (gng-to-dot-file list-for-print-tooltip list-of-port-positions limits-of-weight current-sensor-weight winners gng filename)
+(define (gng-to-dot-file list-for-print-tooltip list-of-port-positions list-of-groups limits-of-weight current-sensor-weight winners gng filename)
   (display-to-file filename
 		   (add-head-tail
 				  winners
 				  (list-to-string-dot-format (convert-gng-conn-ages-to-simple-list gng))
-				  (convert-gng-to-string-node-attributes list-for-print-tooltip list-of-port-positions limits-of-weight current-sensor-weight (map get-neuron-weight gng) (map get-neuron-utility-factor gng)))))
+				  (convert-gng-to-string-node-attributes list-for-print-tooltip
+									 list-of-port-positions
+									 list-of-groups
+									 limits-of-weight
+									 current-sensor-weight
+									 (map get-neuron-weight gng)
+									 (map get-neuron-utility-factor gng)))))
