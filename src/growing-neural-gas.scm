@@ -439,10 +439,41 @@
 	    (remove-nc (1+ counter) (cdr lst))
 	    (cons counter (remove-nc (1+ counter) (cdr lst))))))
 
-  (define (add-number-remove-double counter lst) ;; leave triangle matrix of connections
+  ;; generate triangle matrix of connections with first element = number in array
+  (define (add-number-remove-double counter lst)
     (if (null? lst)
 	'()
 	(cons (cons counter (remove-nc (1+ counter) (list-tail (car lst) (1+ counter))))
 	      (add-number-remove-double (1+ counter) (cdr lst)))))
 
-  (add-number-remove-double 0 conn-ages))
+  ;; return -1 if element not find
+  ;; return index if find
+  (define (index-of-element-in-list element in-list)
+    (define (iterq counter lst)
+      (if (null? lst)
+	  -1
+	  (if (= element (car lst))
+	      counter
+	      (iterq (+ 1 counter) (cdr lst)))))
+
+    (iterq 0 in-list))
+
+  ;; return #f if (car x) not part of list "y"
+  ;; return merged list if is part of list:
+  ;; x = (list 3 4 5)
+  ;; y = (list 7 6 3 2 1)
+  ;; "try-merge" search only "3" and return (list 7 6   3 4 5   2 1)
+  (define (try-merge x y)
+    (format #t "\ngrouping [~a] [~a]" x y)
+    (let ((index (index-of-element-in-list (car x) y))) ;; see memv
+      (format #t " ~d" index)
+      (if (< index 0)
+	  #f
+	  (append y (cdr x)))))
+
+  (let ((triangle-array (add-number-remove-double 0 conn-ages)))
+    ;(format #t "<~a>" (index-of-element-in-list 1 (car triangle-array)))
+    ;(format #t "<~a>" (index-of-element-in-list 7 (car triangle-array)))
+    (format #t "{~a}" (try-merge (cadr triangle-array) (car triangle-array)))
+    (format #t "{~a}" (try-merge (cadddr triangle-array) (car triangle-array)))
+    triangle-array))
