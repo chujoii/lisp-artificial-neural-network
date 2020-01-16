@@ -428,3 +428,21 @@
 		  (> *limit-network-size* (length gng)))
 	     (adaptive-step-create-new-neuron gng)
 	     gng)))))))))))))
+
+
+
+(define (extract-groups-from-conn-ages conn-ages)
+  (define (remove-nc counter lst)
+    (if (null? lst)
+	'()
+	(if (= *not-connected* (car lst))
+	    (remove-nc (1+ counter) (cdr lst))
+	    (cons counter (remove-nc (1+ counter) (cdr lst))))))
+
+  (define (add-number-remove-double counter lst) ;; leave triangle matrix of connections
+    (if (null? lst)
+	'()
+	(cons (cons counter (remove-nc (1+ counter) (list-tail (car lst) (1+ counter))))
+	      (add-number-remove-double (1+ counter) (cdr lst)))))
+
+  (add-number-remove-double 0 conn-ages))
