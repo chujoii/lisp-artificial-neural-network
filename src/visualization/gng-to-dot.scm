@@ -195,7 +195,7 @@
 
   (let ((Umin (cdr (extremum utilities <)))
 	(Umax (cdr (extremum utilities >))))
-    (string-append "c [tooltip=\""
+    (string-append "c [tooltip=\"" ; current measurement from sensor
 		   (string-join (map (lambda (x) (format #f "~,2f" x)) (list-from-index-list index-column-list current-sensor-weight)) " ") ; tooltip for current node
 		   "\", shape=box, color=black, fillcolor=" (if (in-limit? weight-limits current-sensor-weight) "green" "red") ", style=filled, fontcolor=white];\n"
 		   ;;  D   - Dmin    U   - Umin
@@ -226,8 +226,8 @@
 		 "overlap=scalexy;\n" ; Determines if and how node overlaps should be removed.
 		 "fixedsize=true;\n"  ; When drawn, a node’s actual size is the greater of the requested size and the area needed for its text label, unless fixedsize=true, in which case the width and height values are enforced.
 		 "\n"
-		 "c -- " (number->string (car winners)) ";\n"
-		 "c -- " (number->string (cadr winners)) ";\n"
+		 "c -- " (number->string (car winners)) " [style=dashed];\n"
+		 "c -- " (number->string (cadr winners)) " [style=dotted];\n"
 		 tooltip
 		 "\n\n"
 		 body "}\n"))
