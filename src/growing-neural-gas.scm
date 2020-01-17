@@ -433,6 +433,8 @@
 
 
 (define (extract-groups-from-conn-ages conn-ages)
+  (define *changes* 0) ; fixme: global variable
+
   (define (remove-nc counter lst)
     (if (null? lst)
 	'()
@@ -478,7 +480,8 @@
 	  (cons head-element unconnected-list)
 	  (let ((merge-result (try-merge (car tail-list) head-element)))
 	    (if merge-result
-		(iter merge-result (cdr tail-list) unconnected-list) ; result = list, so use updated merge-result (new head-elemnt)
+		(begin (set! *changes* (1+ *changes*))
+		       (iter merge-result (cdr tail-list) unconnected-list)) ; result = list, so use updated merge-result (new head-elemnt)
 		(iter head-element (cdr tail-list) (append unconnected-list (list (car tail-list)))) ; result = #f, so use old head-element
 	     ))))
 
@@ -489,5 +492,11 @@
 		(grouping (cdr result))))))
 
 
+  (define (fix-cycle-connections lst)
+    (let ((result (grouping lst)))
+      (if (= *changes* 0)
+	  result
+	  (begin (set! *changes* 0)
+		 (fix-cycle-connections result)))))
 
-  (map unique-list (grouping (add-number-remove-double 0 conn-ages))))
+  (map unique-list (fix-cycle-connections (add-number-remove-double 0 conn-ages))))
