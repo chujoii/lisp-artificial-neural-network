@@ -465,12 +465,17 @@
   ;; return merged list if first element of "x" is part of list "y":
   ;; x = (list 3 4 5)
   ;; y = (list 7 6 3 2 1)
-  ;; "try-merge" search only "3" and return (list 7 6   3   2 1   4 5)
+  ;; "try-merge" return (list 7 6   3   2 1   4 5)
   (define (try-merge x y)
-    (let ((index (index-of-element-in-list (car x) y))) ;; see memv
-      (if (< index 0)
+    (define (iter a b)
+      (if (or (null? a) (null? b))
 	  #f
-	  (append y (cdr x)))))
+	  (let ((index (index-of-element-in-list (car a) b))) ;; see memv
+	    (if (< index 0)
+		(iter (cdr a) b)
+		(append y x)))))
+
+    (iter x y))
 
 
 
