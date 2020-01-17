@@ -66,15 +66,15 @@
 
 (define *color-list* (list ; based on https://en.wikipedia.org/wiki/Web_colors
 		      "White"
-		      "Silver"
+		      ;"Silver" ; similar to Gray
 		      "Gray"
-		      "Black"
-		      "Red"
+		      ;"Black" ; fixme: need change font color for contrast
+		      ;"Red" ; already used for border (border=red if value out of limit)
 		      "Maroon"
 		      "Yellow"
 		      "Olive"
 		      "Lime"
-		      "Green"
+		      ;"Green" ; already used for border (border=green if value inside limit)
 		      "Aqua"
 		      "Teal"
 		      "Blue"
@@ -152,9 +152,7 @@
 	"White"
 	(if (not (memv number (car grp))) ; search in list
 	    (iter (1+ group-counter) (cdr grp)); not finded
-	    (if (>= group-counter (length *color-list*)) ; find element in list
-		"White"
-		(list-ref *color-list* group-counter)))))
+	    (list-ref *color-list* (remainder group-counter (length *color-list*)))))) ; find element in list
 
   (format #t "~d ~a\n" number group)
   (iter 0 group))
