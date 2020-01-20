@@ -65,7 +65,7 @@
 (define *compass-point-c*  8)
 
 (define *color-list* (list ; based on https://en.wikipedia.org/wiki/Web_colors
-		      "White"
+		      ;"White"
 		      ;"Silver" ; similar to Gray
 		      "Gray"
 		      ;"Black" ; fixme: need change font color for contrast
@@ -218,8 +218,8 @@
 (define (add-head-tail winners body tooltip)
   (string-append "graph ai {\n"
 		 "graph [" *image-size* ", " *image-dpi* ", " *image-ratio* "];\n"
-		 "node [shape=circle, color=darkgreen];\n"
-		 "edge [color=darkgrey];\n"
+		 "node [shape=circle, color=darkgreen, penwidth=3];\n"
+		 "edge [color=black, penwidth=3];\n"
 		 "sep=\"+11\";\n"      ; Adding additional space around the nodes
 		 "esep=\"+10\";\n"      ; Adding space for edge. Margin used around polygons for purposes of SPLINE edge routing. Should normally be strictly less than sep.
 		 "splines=" *edge-splines* ";\n"   ; Controls how, and if, edges are represented. True = nice edges, but increase CPU load (false=line (time=3.23s), polyline (time=10.40s), curved (time=3.25s), ortho (time=3.22s), true=spline (time=10.35s), compound for fdp)
