@@ -148,7 +148,7 @@
   ;; nonconsistent --- because need clean conn-age list in rest neuron
   (define (delete-unconnected counter deleted-list igng)
     (if (null? igng)
-	(list deleted-list) ; significant: list reversed!
+	(list deleted-list) ; add deleted-list to returned GNG list, so return: (list GNG deleted);  significant: list reversed!
 	(if (apply = (cons *not-connected* (get-neuron-conn-age (car igng))))
 	    (delete-unconnected (1+ counter) (cons counter deleted-list) (cdr igng)) ; delete unconnected
 	    (cons (car igng) (delete-unconnected (1+ counter) deleted-list (cdr igng)))))) ; connected
