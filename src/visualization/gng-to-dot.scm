@@ -84,6 +84,8 @@
 
 ;; Convert gng-conn-ages to simple list
 ;; unconnected node doesn't show
+;; firs and second element of return = number of neurons
+;; third element of return = conn-age
 (define (convert-gng-conn-ages-to-simple-list gng)
   (define (iter-x x conn-ages)
     (if (null? conn-ages)
@@ -95,7 +97,7 @@
 	'()
 	(if (or (> x y) (< (car line) *initial-connection-age*))
 	    (iter-y x (1+ y) (cdr line))
-	    (cons (list x y) (iter-y x (1+ y) (cdr line))))))
+	    (cons (list x y (car line)) (iter-y x (1+ y) (cdr line))))))
 
   (iter-x 0 (map get-neuron-conn-age gng)))
 
@@ -104,7 +106,7 @@
 (define (list-to-string-dot-format conn-list)
   (if (null? conn-list)
       ""
-      (string-append (string-join (map number->string (car conn-list)) " -- ")
+      (string-append (format #f "~d -- ~d [label=\"~d\"]" (caar conn-list) (cadar conn-list) (caddar conn-list))
 		     ";\n"
 		     (list-to-string-dot-format (cdr conn-list)))))
 
