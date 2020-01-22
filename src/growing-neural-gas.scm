@@ -153,14 +153,17 @@
 (define (find-and-del-neuron-with-min-utility-factor k gng)
   ;; delete-neuron-U-min (min-utility) return: (growing neural gas with-list-element-deleted-list)
   ;; nonconsistent --- because need clean conn-age list in rest neuron
-  (define (delete-neuron-U-min counter deleted-list E-max minimum-size-of-gng igng)
-    (if (null? igng)
-	(list deleted-list) ; significant: list reversed!
-	(if (and (> minimum-size-of-gng 0)
-		 (> (/ E-max (get-neuron-utility-factor (car igng))) k))
-	    (begin (format #t "d(~d)" counter)
-		   (delete-neuron-U-min (1+ counter) (cons counter deleted-list) E-max (1- minimum-size-of-gng) (cdr igng))) ; delete
-	    (cons (car igng) (delete-neuron-U-min (1+ counter) deleted-list E-max minimum-size-of-gng (cdr igng)))))) ; leave
+  (define (delete-neuron-U-min igng)
+    (if (or (null? igng) (<= (length igng) 2))
+	(append igng (list '())) ; too small: leave unchanged; add deleted-list to returned GNG list, so return: (list GNG deleted);  significant: list reversed!
+	(let ((E-max (cdr (extremum (map get-neuron-local-error igng) >)))
+	      (U-min (extremum (map get-neuron-utility-factor igng) <)))
+					;	      (format #t "U-min=~a\n" U-min)
+	  (if (> (/ E-max (cdr U-min)) k) ; (cdr U-min) == value
+	      (begin (format #t "d[~d]:(Emax=~7,1f / Umin=~7,1f)=~7,1f" (car U-min) E-max (cdr U-min) (/ E-max (cdr U-min)))
+		     (append (list-head igng (car U-min)) (list-tail igng (1+ (car U-min)))
+			     (list (list (car U-min))))) ; (cdr U-min) == index
+	      (append igng (list '())))))) ; nothing for delete: leave unchanged
 
   (define (make-consistent-gng del-list igng)
     (if (null? igng)
@@ -181,13 +184,12 @@
     igng)
 
 
-  (let ((E-max (cdr (extremum (map get-neuron-local-error gng) >)))
-	(minimum-size-of-gng (- (length gng) 2))) ;; leave 2 neuron at least
+
     ;; in original algorithm remove only one neuron with min utility:
     ;; (U-min (extremum (map get-neuron-local-error gng) <)))
-    (let ((gng-del (delete-neuron-U-min 0 '() E-max minimum-size-of-gng gng)))
+    (let ((gng-del (delete-neuron-U-min gng)))
       (let ((lengng (1- (length gng-del))))
-	(reconnect (make-consistent-gng (car (list-tail gng-del lengng)) (list-head gng-del lengng)))))))
+	(reconnect (make-consistent-gng (car (list-tail gng-del lengng)) (list-head gng-del lengng))))))
 
 
 

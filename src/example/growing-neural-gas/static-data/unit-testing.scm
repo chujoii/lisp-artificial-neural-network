@@ -216,9 +216,23 @@
 
 (define *k-utility* 2)
 (format #t "\nset k-utility to ~f\n" *k-utility*)
-(format #t "remove neurons with min utility-factor, and so all utility-factor=0 leave only 2:\n")
+(format #t "remove neurons with min utility-factor (first element (if utility-factor equal)):\n")
 (set! *example2-gng* (find-and-del-neuron-with-min-utility-factor *k-utility* *example2-gng*))
 (map print-neuron *example2-gng*)
+
+(format #t "repeat deletion:\n")
+(set! *example2-gng* (find-and-del-neuron-with-min-utility-factor *k-utility* *example2-gng*))
+(map print-neuron *example2-gng*)
+(format #t "repeat deletion:\n")
+(set! *example2-gng* (find-and-del-neuron-with-min-utility-factor *k-utility* *example2-gng*))
+(map print-neuron *example2-gng*)
+(format #t "repeat deletion:\n")
+(set! *example2-gng* (find-and-del-neuron-with-min-utility-factor *k-utility* *example2-gng*))
+(map print-neuron *example2-gng*)
+(format #t "last repeat deletion (because size of network=2 and nothing will be deleted):\n")
+(set! *example2-gng* (find-and-del-neuron-with-min-utility-factor *k-utility* *example2-gng*))
+(map print-neuron *example2-gng*)
+
 
 (format #t "\ncopy artificial neural network (because next two manipulation decrease size of net)\n")
 (set! *example2-gng* *example-gng*)
