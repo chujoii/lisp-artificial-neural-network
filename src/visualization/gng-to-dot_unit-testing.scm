@@ -37,9 +37,11 @@
 
 ;;; Usage:
 
-;; guile gng-to-dot_unit-testing.scm
+;; guile gng-to-dot_unit-testing.scm; neato -Tpng -O test.gv
 ;; or
-;; ./gng-to-dot_unit-testing.scm
+;; ./gng-to-dot_unit-testing.scm; neato -Tpng -O test.gv
+;;
+;; result you can see in test.png
 
 
 
@@ -94,7 +96,7 @@
 (define *string-body-dot* (list-to-string-dot-format *gng-conn-list*))
 (format #t "\nlist of connection ready for print:\n~a\n" *string-body-dot*)
 
-(define *node-attributes* (convert-gng-to-string-node-attributes *list-for-print-tooltip* '() *limit-weight* *example-sensor* (map get-neuron-weight *example-gng*) (map get-neuron-utility-factor *example-gng*)))
+(define *node-attributes* (convert-gng-to-string-node-attributes *list-for-print-tooltip* '() (extract-groups-from-conn-ages (map get-neuron-conn-age *example-gng*)) *limit-weight* *example-sensor* (map get-neuron-weight *example-gng*) (map get-neuron-utility-factor *example-gng*)))
 (format #t "\ntest node attributes: tooltip (weight) and color:\n~a\n" *node-attributes*)
 
 (define *string-dot* (add-head-tail *winners* *string-body-dot* *node-attributes*))
@@ -132,6 +134,6 @@
 (map print-neuron *example-gng*)
 (format #t "see last element in list (\"c\"): ~a\n" (generate-port-positions *limit-weight* *example-gng*))
 
-(gng-to-dot-file *list-for-print-tooltip* *port-positions* *limit-weight* *example-sensor* *winners* *example-gng* "test.gv")
+(gng-to-dot-file *list-for-print-tooltip* *port-positions* (extract-groups-from-conn-ages (map get-neuron-conn-age *example-gng*)) *limit-weight* *example-sensor* *winners* *example-gng* "test.gv")
 
 
