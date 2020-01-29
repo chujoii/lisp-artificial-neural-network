@@ -85,6 +85,7 @@
 (load "../../battery-scheme/vector.scm")
 (load "../../battery-scheme/minimax.scm")
 (load "../../battery-scheme/unique-list.scm")
+(load "../../battery-scheme/filter.scm")
 
 (define *not-connected* -1)
 (define *initial-connection-age* 0)
@@ -156,11 +157,11 @@
   (define (delete-neuron-U-min igng)
     (if (or (null? igng) (<= (length igng) 2))
 	(append igng (list '())) ; too small: leave unchanged; add deleted-list to returned GNG list, so return: (list GNG deleted);  significant: list reversed!
-	(let ((E-max (cdr (extremum (map get-neuron-local-error igng) >)))
+	(let ((E-median (median (map get-neuron-local-error igng) >)) ;; fixme: it is necessary to combine the calculations for finding the values of "maximum local error" and "median local error"
 	      (U-min (extremum (map get-neuron-utility-factor igng) <)))
-					;	      (format #t "U-min=~a\n" U-min)
-	  (if (> (/ E-max (cdr U-min)) k) ; (cdr U-min) == value
-	      (begin (format #t "d[~d]:(Emax=~7,1f / Umin=~7,1f)=~7,1f" (car U-min) E-max (cdr U-min) (/ E-max (cdr U-min)))
+					;(format #t "E/u=~e" (/ E-median (cdr U-min)))
+	  (if (> (/ E-median (cdr U-min)) k) ; (cdr U-min) == value
+	      (begin (format #t "d[~d]:(Emedian=~7,1f / Umin=~7,1f)=~e\n" (car U-min) E-median (cdr U-min) (/ E-median (cdr U-min)))
 		     (append (list-head igng (car U-min)) (list-tail igng (1+ (car U-min)))
 			     (list (list (car U-min))))) ; (cdr U-min) == index
 	      (append igng (list '())))))) ; nothing for delete: leave unchanged
@@ -317,6 +318,7 @@
 
 
 
+;; fixme: it is necessary to combine the calculations for finding the values of "maximum local error" and "median local error"
 ;; Find neuron index with max local-error
 (define (find-neuron-index-with-max-local-error gng)
   (car (extremum (map get-neuron-local-error gng) >))) ;; get index for extremum (max)
