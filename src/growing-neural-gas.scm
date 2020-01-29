@@ -388,10 +388,8 @@
   (let ((distances-w-s (if (null? *functions-mixed-space*)
 			   (calculate-distance-weight-sensor sensor gng)
 			   (calculate-distance-in-mixed-space-weight-sensor *functions-mixed-space* sensor gng))))
-	(if *debug-print* (format #t "distances-weight-sensor:\n~a\n\n" distances-w-s))
 
     (let ((winners (find-index-of-two-minimal distances-w-s))) ; algorithm:04
-      (if *debug-print* (format #t "winners: ~a\n" winners))
       (set! *winners* winners)
       ;; danger! following code with small indent:
 

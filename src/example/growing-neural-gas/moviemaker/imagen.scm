@@ -120,6 +120,9 @@
 ;; epoch counter
 (define *epoch* 1)
 
+(define *size-of-gng-new* 0)
+(define *size-of-gng-old* 0)
+
 (define *limit-network-size* 100)
 
 (define *dimension-of-sensor* 2)
@@ -179,7 +182,7 @@
 
 
 (define (main epoch-counter gng)
-  (format #t "\n~d" epoch-counter)
+  (display ".")
   (let ((sensor-data (read-check-convert-line *dimension-of-sensor*)))
     (if (or  *stop* (null? sensor-data))
 	gng
@@ -187,11 +190,15 @@
 			epoch-counter
 			sensor-data
 			gng)))
-	  (if *debug-print* (map print-neuron new-gng))
+	  (if *debug-print* (begin (set! *size-of-gng-new* (length new-gng))
+				   (if (> (abs (- *size-of-gng-new* *size-of-gng-old*)) 1)
+				       (format #t "\n~d\td(size)=~d ~a\t" epoch-counter (- *size-of-gng-new* *size-of-gng-old*) (>= (abs (- *size-of-gng-new* *size-of-gng-old*)) 1)))
+				   (display-to-file (format #f "~a/debug/~8,'0d-gng.scm" *base-image-path* epoch-counter) (print-gng-as-list new-gng))
+				   (display-to-file (format #f "~a/debug/~8,'0d-sensor.txt" *base-image-path* epoch-counter) (format #f "~a" sensor-data))
+				   (set! *size-of-gng-old* *size-of-gng-new*)))
 	  (if (= 0 (remainder epoch-counter *image-log-file-step*)) ; print only one image of *image-log-file-step*
 	      (begin
-		(format #t "\t image\n")
-		(map print-neuron new-gng)
+		(format #t " ~d\t image\n" epoch-counter)
 		(gng-to-dot-file *list-for-print-tooltip*
 				 (generate-port-positions *limit-weight* new-gng)
 				 (extract-groups-from-conn-ages (map get-neuron-conn-age new-gng))

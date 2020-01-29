@@ -156,7 +156,6 @@
 	    (iter (1+ group-counter) (cdr grp)); not finded
 	    (list-ref *color-list* (remainder group-counter (length *color-list*)))))) ; find element in list
 
-  (format #t "~d ~a\n" number group)
   (iter 0 group))
 
 
