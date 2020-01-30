@@ -325,6 +325,7 @@
 
 
 
+;; fixme: it is necessary to combine the calculations for finding the values of "maximum local error" and "median local error"
 ;; Find (for selected neuron) neighbours index with max local-error
 (define (find-neighbours-index-with-max-local-error index-max-local-error gng)
   (define (iter counter index-a val-a neighbours)
