@@ -119,8 +119,8 @@
 (define (print-neuron neuron)
   (format #t "w: ~a\t" (map (lambda (x) (format #f "~7,1f" x)) (get-neuron-weight neuron)))
   (format #t "a: ~a\t" (map (lambda (x) (if (< x *initial-connection-age*) "-" (format #f "~d" x))) (get-neuron-conn-age neuron)))
-  (format #t "e: ~5,1f\t" (get-neuron-local-error neuron))
-  (format #t "u: ~5,1f\n" (get-neuron-utility-factor neuron)))
+  (format #t "e: ~5,3f\t" (get-neuron-local-error neuron))
+  (format #t "u: ~5,3f\n" (get-neuron-utility-factor neuron)))
 
 ;; generate string with start "list"
 ;; usage: (print-gng-as-list "~d" (list 1 2 (list 3 4 5)))
@@ -351,9 +351,7 @@
 						     tmp-index-neighbour-for-max-local-error        ;; more correct solution: use not aggressive coefficients (k-utility)
 						     (if (= index-neuron-max-local-error 0) 1 0))))
 
-      (let ((conn-age-uv (list-ref (get-neuron-conn-age (list-ref gng index-neuron-max-local-error)) index-neighbour-for-max-local-error))
-	    (local-error-u (get-neuron-local-error (list-ref gng index-neuron-max-local-error)))
-	    (local-error-v (get-neuron-local-error (list-ref gng index-neighbour-for-max-local-error))))
+      (let ((conn-age-uv (list-ref (get-neuron-conn-age (list-ref gng index-neuron-max-local-error)) index-neighbour-for-max-local-error)))
 
 	;; algorithm:18
 	(update-neuron-local-error index-of-new-neuron (lambda (ignored-value val) val) (* (get-neuron-local-error (list-ref gng index-neuron-max-local-error)) *eps-local-error*)
