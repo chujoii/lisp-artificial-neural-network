@@ -66,7 +66,7 @@
 (define *eps-winner*   0.1)
 (define *eps-neighbour* 0.01)
 (define *eps-local-error* 0.5)
-(define *factor-beta-decrease-local-error* 0.9)
+(define *factor-beta-decrease-local-error* 0.1)
 
 (define *limit-conn-age* 3)
 

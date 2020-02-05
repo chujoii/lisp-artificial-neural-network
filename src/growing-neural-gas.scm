@@ -287,8 +287,8 @@
 (define (decrease-all-neuron-local-errors-and-utility-factor factor-beta gng)
   (map (lambda (neuron) (construct-neuron (get-neuron-weight neuron)
 					  (get-neuron-conn-age neuron)
-					  (* (get-neuron-local-error neuron) factor-beta)
-					  (* (get-neuron-utility-factor neuron) factor-beta)))
+					  (* (get-neuron-local-error neuron) (- 1.0 factor-beta))
+					  (* (get-neuron-utility-factor neuron) (- 1.0 factor-beta))))
        gng))
 
 

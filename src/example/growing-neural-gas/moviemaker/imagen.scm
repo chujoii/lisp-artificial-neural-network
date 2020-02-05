@@ -100,7 +100,7 @@
 (define *eps-winner*   0.01)
 (define *eps-neighbour* 0.0001)
 (define *eps-local-error* 0.05)
-(define *factor-beta-decrease-local-error* 0.9999)
+(define *factor-beta-decrease-local-error* 0.0001)
 
 (define *limit-conn-age* 15)
 
