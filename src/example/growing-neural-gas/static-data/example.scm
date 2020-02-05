@@ -99,10 +99,6 @@
 ;; if use non-Euclidean space, for example last sensor = angle (in degree, where 0=360)
 ;; (define *functions-mixed-space* (list euclidean-distance euclidean-distance euclidean-distance angle-distance))
 
-(define *initial-gng* (add-neuron (make-neuron *dimension-of-sensor* 1)
-				  (add-neuron (make-neuron *dimension-of-sensor* 0)
-					      '())))
-
 (define *example-gng* (add-neuron (make-neuron *dimension-of-sensor* 5)
 				  (add-neuron (make-neuron *dimension-of-sensor* 4)
 					      (add-neuron (make-neuron *dimension-of-sensor* 3)
@@ -110,11 +106,6 @@
 								      (add-neuron (make-neuron *dimension-of-sensor* 1)
 										  (add-neuron (make-neuron *dimension-of-sensor* 0)
 											      '())))))))
-(format #t "simple 2 initial neurons:\n\tweight\t\t\t\tconn-age\tlocal-error\n")
-(if *debug-print* (map print-neuron *initial-gng*))
-(format #t "\nupdate neuron connection age for 0 1\n")
-(update-neuron-conn-age 0 1 + 1 *initial-gng*) ;; need create link beetwin first neuron!
-(if *debug-print* (map print-neuron *initial-gng*))
 
 
 (format #t "\nsimple 6 neurons (see ../../../growing-neural-gas.scm):\n")
