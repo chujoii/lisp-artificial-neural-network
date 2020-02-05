@@ -392,9 +392,8 @@
       (set! *winners* winners)
       ;; danger! following code with small indent:
 
-      ;; algorithm:20,21
-      (decrease-all-neuron-local-errors-and-utility-factor *factor-beta-decrease-local-error*
 
+      (let ((common-step-gng
       ;; algorithm:11.b
       (find-and-del-neuron-with-min-utility-factor *k-utility*
 
@@ -417,21 +416,23 @@
 				   (lambda (weights step) (sum-sub-vectors + weights (mul-div-vector-const * (sum-sub-vectors - sensor weights) step)))
 				   *eps-winner*
 
-       ;; algorithm:07 for neighbours ; wrong formula: W=Wold*eps ; correct formula: W = Wold + eps*(Wols - Eold)
+       ;; algorithm:07 for neighbours
        (update-neighbours-weights (lambda (weights step) (sum-sub-vectors + weights (mul-div-vector-const * (sum-sub-vectors - sensor weights) step)))
 				  (get-neuron-conn-age (list-ref gng (car winners)))
 				  *eps-neighbour*
 
 	;; algorithm:05
 	(update-neuron-local-error (car winners) + (square (list-ref distances-w-s (car winners)))
+	     gng))))))))))
+
+      ;; algorithm:20,21
+      (decrease-all-neuron-local-errors-and-utility-factor *factor-beta-decrease-local-error*
 
 	 ;; algorithm:12
 	 (if (and (= 0 (remainder epoch *lambda-step*)) ; adaptation step: create new neuron each lambda-step
-		  (> *limit-network-size* (length gng)))
-	     (adaptive-step-create-new-neuron gng)
-	     gng)))))))))))))
-
-
+		  (> *limit-network-size* (length common-step-gng)))
+	     (adaptive-step-create-new-neuron common-step-gng)
+	     common-step-gng))))))
 
 (define (extract-groups-from-conn-ages conn-ages)
   (define *changes* 0) ; fixme: global variable
