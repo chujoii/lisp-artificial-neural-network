@@ -191,7 +191,7 @@
 		       (if (not (in-limit? weight-limits (car w))) ", color=darkred" "")
 		       ", style=filled, fillcolor=" (number-to-group-color counter list-of-groups)
 		       (format #f ", width=~,2f" (car diameter-node))
-		       "]\n"
+		       "];\n"
 		       (iter (1+ counter) (cdr w) (cdr diameter-node)))))
 
   (let ((Umin (cdr (extremum utilities <)))
