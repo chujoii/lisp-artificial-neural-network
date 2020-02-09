@@ -189,7 +189,7 @@
 		       (string-join (map (lambda (x) (format #f "~,2f" x)) (list-from-index-list index-column-list (car w))) " ")
 		       "\""
 		       (if (not (in-limit? weight-limits (car w))) ", color=darkred" "")
-		       ", style=filled, fillcolor=" (number-to-group-color counter list-of-groups)
+		       ", fillcolor=" (number-to-group-color counter list-of-groups)
 		       (format #f ", width=~,2f" (car diameter-node))
 		       "];\n"
 		       (iter (1+ counter) (cdr w) (cdr diameter-node)))))
@@ -198,7 +198,7 @@
 	(Umax (cdr (extremum utilities >))))
     (string-append "c [tooltip=\"" ; current measurement from sensor
 		   (string-join (map (lambda (x) (format #f "~,2f" x)) (list-from-index-list index-column-list current-sensor-weight)) " ") ; tooltip for current node
-		   "\", shape=box, color=black, fillcolor=" (if (in-limit? weight-limits current-sensor-weight) "green" "red") ", style=filled, fontcolor=white];\n"
+		   "\", shape=box, color=black, fillcolor=" (if (in-limit? weight-limits current-sensor-weight) "green" "red") ", fontcolor=white];\n"
 		   ;;  D   - Dmin    U   - Umin
 		   ;; ----------- = -----------
 		   ;; Dmax - Dmin   Umax - Umin
@@ -219,7 +219,7 @@
 (define (add-head-tail winners body tooltip)
   (string-append "graph ai {\n"
 		 "graph [" *image-size* ", " *image-dpi* ", " *image-ratio* "];\n"
-		 "node [shape=circle, color=darkgreen, penwidth=3];\n"
+		 "node [shape=circle, color=darkgreen, style=filled, penwidth=3];\n"
 		 "edge [color=black, penwidth=3];\n"
 		 "sep=\"+11\";\n"      ; Adding additional space around the nodes
 		 "esep=\"+10\";\n"      ; Adding space for edge. Margin used around polygons for purposes of SPLINE edge routing. Should normally be strictly less than sep.
