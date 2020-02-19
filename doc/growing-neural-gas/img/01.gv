@@ -8,9 +8,9 @@ splines=true;
 overlap=scalexy;
 fixedsize=true;
 
-#z [shape=box, color=black, fillcolor=red];
-#z -- k [style=dashed, color=black];
-#z -- l [style=dotted, color=black];
+#c [shape=box, color=black, fillcolor=red];
+#c -- k [style=dashed, color=black];
+#c -- l [style=dotted, color=black];
 
 k [fillcolor=orange];
 l:sw [fillcolor=orange];

@@ -9,8 +9,8 @@ overlap=scalexy;
 fixedsize=true;
 
 c [shape=box, color=black, fillcolor=red];
-c -- k [style=dashed, color=black];
-c -- h [style=dotted, color=black];
+c -- h [style=dashed, color=black];
+c -- d [style=dotted, color=black];
 
 k [fillcolor=green];
 l:sw [fillcolor=green];
@@ -24,15 +24,15 @@ g [fillcolor=green];
 h [fillcolor=green];
 
 m -- n [label="0"];
-n -- k [label="1", fontcolor=black, color=black];
-k -- l [label="1", fontcolor=black, color=black];
+n -- k [label="1"];
+k -- l [label="1"];
 l -- m [label="0"];
 
 d -- e [label="0"];
 e -- f [label="0"];
 f -- g [label="0"];
-g -- h [label="0"];
-h -- d [label="0"];
+g -- h [label="1", fontcolor=black, color=black];
+h -- d [label="0", fontcolor=black, color=black];
 
-k -- h [label="0", fontcolor=black, color=black];
+k -- h [label="1", fontcolor=black, color=black];
 }
