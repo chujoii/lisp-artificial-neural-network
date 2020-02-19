@@ -529,8 +529,18 @@ $LIMIT\_CONN\_AGE = 10$
 \begin{figure}[h]
   \center
   \includegraphics[width=5cm]{01.eps} % fixme: strange error with path "../img/01.eps"
-  \caption{шаг 01}
+  \caption{два разных кластера; возраст всех соединений равен 0}
   \label{conn-step:01}
+\end{figure}
+
+\begin{figure}[h]
+  \center
+  \includegraphics[width=5cm]{02.eps}
+  \caption{возникло состояние входного вектора <<c>> между двумя
+    кластерами и как следствие: увеличился на 1 возраст всех
+    соединений из первого победителя <<k>>; возникло соединения между
+    первым победителем <<k>> и вторым победителем <<h>>}
+  \label{conn-step:02}
 \end{figure}
 
 

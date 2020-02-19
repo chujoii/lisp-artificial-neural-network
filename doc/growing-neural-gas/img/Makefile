@@ -24,7 +24,10 @@ all : clusterizator
 
 
 clusterizator :
-	neato -Teps -O *.gv
+	# Makefile_basename != GNU_basename
+	for i in $(wildcard *.gv) ; do \
+		neato -Teps -O $$i ; \
+	done
 	rename .gv.eps .eps *.gv.eps
 
 # fixme: strange error with path: Package pdftex.def Error: File `../img/01-eps-converted-to.pdf' not found: using draft setting
