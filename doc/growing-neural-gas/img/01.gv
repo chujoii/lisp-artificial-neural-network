@@ -1,0 +1,36 @@
+graph ai {
+graph [size="10,8", dpi=100, ratio="compress", label=""];
+node [shape=circle, color=grey, style=filled, penwidth=3];
+edge [color=black, penwidth=3];
+sep="+11";
+esep="+10";
+splines=true;
+overlap=scalexy;
+fixedsize=true;
+
+z [shape=box, color=black, fillcolor=red];
+z -- k [style=dashed];
+z -- l [style=dotted];
+
+k [fillcolor=orange];
+l:sw [fillcolor=orange];
+m:nw [fillcolor=orange];
+n [fillcolor=orange];
+
+d [fillcolor=green];
+e:ne [fillcolor=green];
+f:se [fillcolor=green];
+g [fillcolor=green];
+h [fillcolor=green];
+
+m -- n [label="0"];
+n -- k [label="0"];
+k -- l [label="0"];
+l -- m [label="0"];
+
+d -- e [label="0"];
+e -- f [label="0"];
+f -- g [label="0"];
+g -- h [label="0"];
+h -- d [label="0"];
+}
